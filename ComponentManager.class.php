@@ -42,7 +42,7 @@ final class ComponentManager extends BaseComponent {
 		$this->addEvent(COMPONENT_STARTUP_COMPLETE);
 		Application::getInstance()->addEventListener(BOOT_SHUTDOWN, array(&$this, 'shutdown'));
 
-		$this->config = new StandardConfig(dirname(__FILE__).'/../config', 'components.yaml');
+		$this->config = new StandardConfig(ROOT.'/config', 'components.yaml');
 
 		$this->loadSettings();
 		$this->_output = array();
@@ -129,8 +129,7 @@ final class ComponentManager extends BaseComponent {
 		$this->_availableClasses = $this->_getAvailableComponents();
 		$this->_installedClasses = array_merge(array_intersect($this->_availableClasses, $this->config->getConfigValue('installed_components', array())));
 		$this->_enabledClasses = array_merge(array_intersect($this->_availableClasses, $this->config->getConfigValue('enabled_components', array())));
-		$this->_startupClasses = array_merge(array_intersect($this->_availableClasses, $this->config->getConfigValue('startup_components', array())));
-		
+		$this->_startupClasses = array_merge(array_intersect($this->_availableClasses, $this->config->getConfigValue('startup_components', array())));	
 	}
 
 	/**
@@ -152,8 +151,8 @@ final class ComponentManager extends BaseComponent {
 			if (!class_exists($component) && in_array($component, $this->_enabledClasses)) {
 				$root = dirname(__FILE__).'/../components';
 				$class_file = $root.'/'.$component.'/'.$component.'.component';
-				if (is_file($class_file)) {
-					require_once $class_file;
+				if (is_file($class_file) && !class_exists($component)) {
+					require $class_file;
 				}
 			}
 			$this->startupComponent($component);
@@ -230,8 +229,8 @@ final class ComponentManager extends BaseComponent {
 				$comp_dir = $dir->path.'/'.$comp;
 				$class_name = ucfirst(basename($comp));
 				$class_file = $comp_dir.'/'.$class_name.'.component';
-				if (is_file($class_file) && (in_array($class_name, $this->_installedClasses))) {
-					require_once $class_file;
+				if (is_file($class_file) && (in_array($class_name, $this->_installedClasses)) && !class_exists($class_name)) {
+					require $class_file;
 				}
 			}
 		}

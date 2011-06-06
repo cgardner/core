@@ -73,13 +73,18 @@ abstract class EventDispatcher {
 	}
 	
 	public function addEventListenerTo($class, $event, $function) {
+		if(!class_exists($class))
+			trigger_error('Tried to bind to an event for a class that does not exist.', E_USER_WARNING);
 		if(is_string($function)) {
 			$callback = array($this, $function);
 		} else if (is_callable($function)) {
 			$callback = $function;
 		}
 		$instance = call_user_func(array($class, 'getInstance'));
-		return $instance->addEventListener($event, $callback);
+		if($instance)
+			return $instance->addEventListener($event, $callback);
+		else
+			trigger_error("Tried to bind event to class $class which has not yet been instantiated");
 	}
 	
 	/**

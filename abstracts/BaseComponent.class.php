@@ -29,13 +29,11 @@ abstract class BaseComponent extends EventDispatcher {
 		$this->_registerEvents();
 		parent::__construct();
 		$this->_output = array();
-		$this->config = new StandardConfig($this->rootDirectory().'/config', 'config.yaml');
+		$this->config = new StandardConfig(ROOT.'/config', get_class($this).'.yaml');
 		
-		$cm = Application::getComponentManager();
-		if($cm)
-			$cm->addEventListener(COMPONENT_STARTUP_COMPLETE, array(static::_getThis(), 'startup'));
-		
-		Application::getInstance()->addEventListener(BOOT_SHUTDOWN, array(&$this, 'shutdown'));
+		@$this->addEventListenerTo('ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
+		$this->addEventListenerTo('Application', BOOT_SHUTDOWN, 'shutdown');
+
 		$this->addEvent(EVENT_LOGGED);
 	}
 

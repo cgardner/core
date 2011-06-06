@@ -12,7 +12,7 @@
  * @link       http://cumula.org
  */
 
-require(__DIR__.DIRECTORY_SEPARATOR."includes".DIRECTORY_SEPARATOR."core.inc");
+require_once(__DIR__.DIRECTORY_SEPARATOR."includes".DIRECTORY_SEPARATOR."core.inc");
 
 
 /**
@@ -66,6 +66,8 @@ final class Application extends EventDispatcher {
 			$core_path	= 'core';
 			$component_path = 'components';
 			$config_path = 'config';
+			$data_path = 'data';
+			$template_path = 'templates';
 		} else {
 			extract($paths);
 		}
@@ -81,10 +83,18 @@ final class Application extends EventDispatcher {
 
 		if(!is_dir($config_path) and is_dir(ROOT.$config_path))
 			$config_path = ROOT.$config_path;
+			
+		if(!is_dir($data_path) and is_dir(ROOT.$data_path))
+			$data_path = ROOT.$data_path;
+			
+		if(!is_dir($template_path) and is_dir(ROOT.$template_path))
+			$template_path = ROOT.$template_path;	
 
 		define('APPROOT', realpath($core_path).DIRECTORY_SEPARATOR);
 		define('COMPROOT', realpath($component_path).DIRECTORY_SEPARATOR);
 		define('CONFIGROOT', realpath($config_path).DIRECTORY_SEPARATOR);
+		define('DATAROOT', realpath($data_path).DIRECTORY_SEPARATOR);
+		define('TEMPLATEROOT', realpath($template_path).DIRECTORY_SEPARATOR);
 		define('CUMULAVERSION', "0.01");
 	}
 	
