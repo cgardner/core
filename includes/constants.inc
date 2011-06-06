@@ -34,3 +34,10 @@ const SETTING_SITE_URL = 'site_url';
 
 const SETTING_SITE_TITLE = 'site_title';
 const DEFAULT_SITE_TITLE = 'Welcome to Cumula';
+
+const LOG_LEVEL_ALL = 'All';
+const LOG_LEVEL_DEBUG = 'DEBUG';
+const LOG_LEVEL_INFO = 'INFO';
+const LOG_LEVEL_WARN = 'WARNING';
+const LOG_LEVEL_ERROR = 'ERROR';
+const LOG_LEVEL_FATAL = 'FATAL';
