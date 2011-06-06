@@ -29,3 +29,5 @@ const SYSTEMCONFIG_GET_VALUE = 'system_config_get_value';
 
 //Event Dispatcher Events
 const EVENTDISPATCHER_EVENT_DISPATCHED = 'event_dispatched';
+
+const EVENT_LOGGED = 'message_logged';

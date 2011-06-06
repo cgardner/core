@@ -36,6 +36,7 @@ abstract class BaseComponent extends EventDispatcher {
 			$cm->addEventListener(COMPONENT_STARTUP_COMPLETE, array(static::_getThis(), 'startup'));
 		
 		Application::getInstance()->addEventListener(BOOT_SHUTDOWN, array(&$this, 'shutdown'));
+		$this->addEvent(EVENT_LOGGED);
 	}
 
 	
@@ -126,11 +127,8 @@ abstract class BaseComponent extends EventDispatcher {
 		$className = get_called_class();
 		$timestamp = date("r");
 		$message = "$timestamp $className: $message";
-		Application::getSystemConfig()->getValue('logger', 'Logger');
-		$logger = Application::getLogger();
-		if($logger) {
-			$logger->logMessage($logLevel, $message, $other_args);
-		}
+		$args = array($logLevel, $message, $other_args);
+		$this->dispatch(EVENT_LOGGED, $args);
 	}
 	
 	/**********************************************

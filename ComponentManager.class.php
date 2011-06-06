@@ -55,9 +55,7 @@ final class ComponentManager extends BaseComponent {
 	 * 
 	 */
 	public function startup() {
-		$am = Application::getAdminInterface();
-		if($am)
-			$am->addEventListener(ADMIN_COLLECT_SETTINGS_PAGES, array(&$this, 'setupAdminPages'));
+		$this->addEventListenerTo('AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
 	}
 	
 	
@@ -88,23 +86,29 @@ final class ComponentManager extends BaseComponent {
 		/**
 		 * If there are uninstalled components, show a menu item for those with the number of components in the title 
 		 */
+
+		$page = $am->newAdminPage();
+		$page->title = 'New Components';
+		if(count($uninstalled) > 0) {
+			$componentNumber = ' <strong>'.count($uninstalled).'</strong>';
+			$page->title .= $componentNumber;
+		}
+		$page->description = 'Below are the components available for installation.';
+		$page->route = '/admin/new_components';				
+		$page->component = &$this;
+		$page->callback = 'installComponents';
 		if (count($uninstalled) > 0)
 		{
-			$page = $am->newAdminPage();
-			$componentNumber = ' <strong>'.count($uninstalled).'</strong>';
-			$page->title = 'New Components'. $componentNumber;
-			$page->description = 'Below are the components available for installation.';
-			$page->route = '/admin/new_components';				
-			$page->component = &$this;
-			$page->callback = 'installComponents';
 			$page->fields = array(array('name' => 'installed_components',
-					'title' => 'Uninstalled Components',
-					'type' => 'checkboxes',
-					'values' => array_merge($uninstalled),
-					'labels' => array_merge($uninstalled)
-					));
-			$am->addAdminPage($page);
+				'title' => 'Uninstalled Components',
+				'type' => 'checkboxes',
+				'values' => array_merge($uninstalled),
+				'labels' => array_merge($uninstalled)
+				));
+		} else {
+			$page->fields = array();
 		}
+		$am->addAdminPage($page);
 		
 	}
 	
