@@ -5,7 +5,6 @@
  *  @version    $Id$
  */
 
-require_once dirname(__FILE__) . '/../../common/YAMLDataStore/YAMLDataStore.class.php';
 
 /**
  * The StandardConfig represents the standard configuration storage and access mechanism for components.

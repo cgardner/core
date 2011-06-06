@@ -39,6 +39,9 @@ require_once dirname(__FILE__) . '/../SystemConfig.class.php' ;
 
 require_once dirname(__FILE__) . '/../common/ContentBlock/ContentBlock.class.php';
 require_once dirname(__FILE__) . '/../common/SqliteDataStore/SqliteDataStore.class.php';
+require_once dirname(__FILE__) . '/../common/StandardConfig/StandardConfig.class.php';
+require_once dirname(__FILE__) . '/../common/YAMLDataStore/YAMLDataStore.class.php';
+
 
 
 

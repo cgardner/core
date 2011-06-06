@@ -12,7 +12,8 @@
  * @link       http://cumula.org
  */
 
-require_once 'includes/core.inc';
+require(__DIR__.DIRECTORY_SEPARATOR."includes".DIRECTORY_SEPARATOR."core.inc");
+
 
 /**
  * Application Class

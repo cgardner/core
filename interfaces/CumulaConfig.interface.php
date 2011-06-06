@@ -12,8 +12,6 @@
  * @link       http://cumula.org
  */
 
-require_once 'includes/core.inc';
-
 /**
  * CumulaConfig Interface
  *

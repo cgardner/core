@@ -4,9 +4,6 @@
  *  @subpackage SystemConfig
  *  @version    $Id$
  */
-
-require_once dirname(__FILE__) . '/common/StandardConfig/StandardConfig.class.php';
-
 /**
  * The main storage for system wide configuration settings.
  * 
