@@ -17,6 +17,18 @@
  *
  * The abstract BaseComponent class is the basis of all Cumula components.
  *
+ * ### Events
+ * The BaseComponent Class defines the following events:
+ *
+ * #### EVENT_LOGGED
+ * This event is fired whenever the base component logging functions are called.
+ *
+ * **Args**:
+ * 
+ * 1. **LogLevel**: the loglevel of the message
+ * 2. **Message**: the text of the log message
+ * 3. **Args**: an optional array of args to be logged
+ *
  * @package		Cumula
  * @subpackage	Core
  * @author     Seabourne Consulting

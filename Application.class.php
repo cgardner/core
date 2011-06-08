@@ -14,13 +14,83 @@
 
 require_once(__DIR__.DIRECTORY_SEPARATOR."includes".DIRECTORY_SEPARATOR."core.inc");
 
-
 /**
  * Application Class
  *
  * The core application class.  This class does two main things:
- * 1) It initializes a few core classes, like the component_manager to handle plugins and extensiosn
- * 2) It works through a bootstrap proces which forms the core of the application lifecycle.
+ * 
+ * 1. It initializes a few core classes, like the component_manager to handle plugins and extensiosn
+ * 2. It works through a bootstrap proces which forms the core of the application lifecycle.
+ *
+ * ### Events
+ * The Application Class defines the following events:
+ *
+ * #### BOOT_INIT
+ * The first part of the boot stage, BOOT_INIT can be used by any component that registers for startup treatment with the 
+ * component manager.  BOOT_INIT should be used to initialize components.
+ *
+ * **Args**:
+ * 
+ * 1. **Request**: the Request object 
+ * 2. **Response**: the Response object
+ * 
+ * #### BOOT_STARTUP
+ * BOOT_STARTUP should be used to do startup tasks that are dependent on all classes being initialized and loaded into the 
+ * global namespace.
+ *
+ * **Args**:
+ * 
+ * 1. **Request**: the Request object 
+ * 2. **Response**: the Response object
+ *
+ * #### BOOT_PREPARE
+ * BOOT_PREPARE should be used to collect information or generally prepare components for processing.
+ *
+ * **Args**:
+ * 
+ * 1. **Request**: the Request object 
+ * 2. **Response**: the Response object
+ *
+ * #### BOOT_PREPROCESS
+ * BOOT_PREPROCESS can be used to filter and/or adjust functionality before the request is processed.
+ *
+ * **Args**:
+ * 
+ * 1. **Request**: the Request object 
+ * 2. **Response**: the Response object
+ *
+ * #### BOOT_PROCESS
+ * BOOT_PROCESS should be used to run application logic and render content for display on the client browser.
+ *
+ * **Args**:
+ * 
+ * 1. **Request**: the Request object 
+ * 2. **Response**: the Response object
+ * 
+ * #### BOOT_POSTPROCESS
+ * BOOT_POSTPROCESS can be used for any cleanup that needs to happen, or filtering of rendered content.
+ *
+ * **Args**:
+ * 
+ * 1. **Request**: the Request object 
+ * 2. **Response**: the Response object
+ * 
+ * #### BOOT_CLEANUP
+ * BOOT_CLEANUP should be used by components to perform any actions that need to be done before the output is sent to the client.
+ *
+ * **Args**:
+ * 
+ * 1. **Request**: the Request object 
+ * 2. **Response**: the Response object
+ *
+ * #### BOOT_SHUTDOWN
+ * BOOT_SHUTDOWN signals that the output has been dispatched to the client.  This should be used to save settings or do any 
+ * cleanup before the entire system is shutdown.
+ *
+ * **Args**:
+ * 
+ * 1. **Request**: the Request object 
+ * 2. **Response**: the Response object
  *
  * @package		Cumula
  * @subpackage	Core

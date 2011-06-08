@@ -16,7 +16,21 @@
  * EventDispatcher Class
  *
  * The base class that handles event registration and dispatching.  This serves as the base class for most classes
- * in the Cumula Framework.
+ * in the Cumula Framework
+ *
+ * ### Events
+ * The EventDispatcher defines the following events:
+ *
+ * #### EVENTDISPATCHER_EVENT_DISPATCHED
+ * This is a type of meta-event, dispatched whenever another event is dispatched to a particular listener.  If there are 
+ * multiple listeners for an event, this event will be dispatched multiple times.
+ *
+ * **Args**:
+ * 
+ * 1. **Event**: the event dispatched.
+ * 2. **Dispatcher**: the original dispatcher.
+ * 3. **Event Listener**: the listener the event was dispatched to.
+ * 4. **Level**: the event stack level
  *
  * @package		Cumula
  * @subpackage	Core
@@ -28,9 +42,7 @@ abstract class EventDispatcher {
 	protected $_eventTable = array();
 	
 	/**
-	 * Constructor
-	 * 
-	 * @return unknown_type
+	 * Constructor.  Sets the default global $level to 0.
 	 */
 	public function __construct() {
 		self::setInstance($this);
@@ -45,8 +57,7 @@ abstract class EventDispatcher {
 	 * Registers an event in the internal registry.  Raises an exception if trying to re-register an existing event.  This ensures
 	 * that components don't unwittingly use the same event title.
 	 * 
-	 * @param $event
-	 * @return unknown_type
+	 * @param	string	The event to add to the registry.
 	 */
 	public function addEvent($event) {
 		if ($this->eventExists($event))
@@ -58,8 +69,7 @@ abstract class EventDispatcher {
 	/**
 	 * Removes an event from the registry table.
 	 * 
-	 * @param $event
-	 * @return unknown_type
+	 * @param	string	The event to remove from the registry.
 	 */
 	public function removeEvent($event) {
 		if ($this->eventExists($event)) {
@@ -70,9 +80,8 @@ abstract class EventDispatcher {
 	/**
 	 * Adds a handler to be called when a specific event is dispatched.  This function accepts two parameters.
 	 * 
-	 * @param $event	string	The event to bind to
-	 * @param $handler	a function, or a class/method or an anonymous function.  Uses the same syntax as call_user_func_array.
-	 * @return unknown_type
+	 * @param	string	The event to bind to
+	 * @param	function	a function, or an array containing the class and method, or a closure.  Uses the same syntax as call_user_func_array.
 	 */
 	public function addEventListener($event, $handler) {
 		if ($this->eventExists($event)) {
@@ -80,6 +89,13 @@ abstract class EventDispatcher {
 		}
 	}
 	
+	/**
+	 * Adds a handler to be called when a specific event is dispatched.  This function accepts two parameters.
+	 * 
+	 * @param	string	The class to bind to
+	 * @param	string	The event to bind to
+	 * @param	function|string	A string or closure.  If a string, must be a publicly accessible function in the EventDispatcher instance.
+	 */
 	public function addEventListenerTo($class, $event, $function) {
 		if(!class_exists($class))
 			trigger_error('Tried to bind to an event for a class that does not exist.', E_USER_WARNING);
@@ -98,9 +114,8 @@ abstract class EventDispatcher {
 	/**
 	 * Given an event and handler, removes any matching entry in the event registry
 	 * 
-	 * @param $event
-	 * @param $handler
-	 * @return unknown_type
+	 * @param	string The event to remove handler from.
+	 * @param	function	a function, or an array containing the class and method, or a closure to remove.
 	 */
 	public function removeEventHandler($event, $handler) {
 		//TODO: Implement using an array slice type function
@@ -109,9 +124,8 @@ abstract class EventDispatcher {
 	/**
 	 * Dispatches an event.  Data must be an array of variables that will be passed to any registered event handler.
 	 * 
-	 * @param $event
-	 * @param $data
-	 * @return unknown_type
+	 * @param	string	The event to dispatch
+	 * @param	array 	An optional array or arguments to pass to the Event Listeners
 	 */
 	public function dispatch($event, $data = array()) {
 		if ($this->eventExists($event)) {
@@ -138,17 +152,27 @@ abstract class EventDispatcher {
 	/**
 	 * Verifies that an event exists in the internal registry.
 	 * 
-	 * @param $event
-	 * @return unknown_type
+	 * @param	string	The event to check
+	 * @return bool	True or false depending on whether the event exists.
 	 */
 	public function eventExists($event) {
 		return array_key_exists($event, $this->_eventTable);
 	}	
 
+	/**
+	 * Returns the instance of the static class.
+	 * 
+	 * @return BaseComponent|bool	The instance, if it exists, otherwise false
+	 */
 	protected static function getInstance() {
 		return isset(self::$_instances[get_called_class()]) ? self::$_instances[get_called_class()] : false;
 	}
 	
+	/**
+	 * Sets the instance of a class
+	 * 
+	 * @param	BaseComponent	The instance to set.
+	 */
 	public static function setInstance($instance) {
 		self::$_instances[get_class($instance)] = $instance;
 	}
