@@ -1,17 +1,25 @@
 <?php
 /**
- *  @package Cumula
- *  @subpackage Core
- *  @version    $Id$
+ * Cumula
+ *
+ * Cumula — framework for the cloud.
+ *
+ * @package    Cumula
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2011 Seabourne Consulting
+ * @link       http://cumula.org
  */
 
 /**
- * The base class representing the response.
- * 
- * @author Mike Reich
- * @package Cumula
- * @subpackage Core
+ * Response Class
  *
+ * The base class representing the HTTP response.
+ *
+ * @package		Cumula
+ * @subpackage	Core
+ * @author     Seabourne Consulting
  */
 class Response extends EventDispatcher {
 	/**

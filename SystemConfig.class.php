@@ -1,14 +1,25 @@
 <?php
 /**
- *  @package Cumula
- *  @subpackage SystemConfig
- *  @version    $Id$
- */
-/**
- * The main storage for system wide configuration settings.
- * 
- * @author mike
+ * Cumula
  *
+ * Cumula — framework for the cloud.
+ *
+ * @package    Cumula
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2011 Seabourne Consulting
+ * @link       http://cumula.org
+ */
+
+/**
+ * SystemConfig Class
+ *
+ * The main storage for system wide configuration settings.
+ *
+ * @package		Cumula
+ * @subpackage	Core
+ * @author     Seabourne Consulting
  */
 class SystemConfig extends BaseComponent {
 	public function __construct() {

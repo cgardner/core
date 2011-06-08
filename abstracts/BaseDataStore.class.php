@@ -1,18 +1,28 @@
 <?php
 /**
- *  @package Cumula
- *  @subpackage Core
- *  @version    $Id$
+ * Cumula
+ *
+ * Cumula — framework for the cloud.
+ *
+ * @package    Cumula
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2011 Seabourne Consulting
+ * @link       http://cumula.org
  */
 
 /**
+ * BaseDataStore Class
+ *
  * Abstract base class for all DataStores.  This class handles the datastore schema installation.
  * 
  * Each datastore must have a schema that describes the fields used by the data object.  Most 
  * importantly, the schema describes the field used as the id for each record in the datastore.
- * 
- * @author Mike Reich
  *
+ * @package		Cumula
+ * @subpackage	Core
+ * @author     Seabourne Consulting
  */
 abstract class BaseDataStore extends EventDispatcher {
 	protected $_schema;

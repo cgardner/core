@@ -1,16 +1,25 @@
 <?php
 /**
- *  @package Cumula
- *  @subpackage Core
- *  @version    $Id$
+ * Cumula
+ *
+ * Cumula — framework for the cloud.
+ *
+ * @package    Cumula
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2011 Seabourne Consulting
+ * @link       http://cumula.org
  */
 
-
 /**
- * The StandardConfig represents the standard configuration storage and access mechanism for components.
- * 
- * @author mike
+ * StandardConfig Class
  *
+ * The StandardConfig represents the standard configuration storage and access mechanism for components.
+ *
+ * @package		Cumula
+ * @subpackage	Core
+ * @author     Seabourne Consulting
  */
 class StandardConfig implements CumulaConfig {
 	private $_dataStore;

@@ -1,11 +1,20 @@
 <?php
 /**
- *  @package Cumula
- *  @subpackage Core
- *  @version    $Id$
+ * Cumula
+ *
+ * Cumula — framework for the cloud.
+ *
+ * @package    Cumula
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2011 Seabourne Consulting
+ * @link       http://cumula.org
  */
 
 /**
+ * ComponentManager Class
+ *
  * The base class that handles loading components.
  *
  * This class hooks into the two initial phases of the boot process, BOOT_INIT and BOOT_STARTUP.
@@ -15,10 +24,9 @@
  *
  * BOOT_STARTUP is used to actually instantiate the components.
  *
- * @author Mike Reich
- * @package Cumula
- * @subpackage Core
- *
+ * @package		Cumula
+ * @subpackage	Core
+ * @author     Seabourne Consulting
  */
 final class ComponentManager extends BaseComponent {
 	private $_components = array();

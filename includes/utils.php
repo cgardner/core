@@ -1,8 +1,16 @@
 <?php
 /**
- *  @package Cumula
- *  @subpackage Utils
- *  @version    $Id$
+ * Cumula
+ *
+ * Cumula — framework for the cloud.
+ *
+ * @package    Cumula
+ * @subpackage Utils
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2011 Seabourne Consulting
+ * @link       http://cumula.org
  */
 
 //Utility function to format a string using camelcase

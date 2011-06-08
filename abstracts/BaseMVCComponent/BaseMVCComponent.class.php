@@ -1,18 +1,27 @@
 <?php
 /**
- *  @package Cumula
- *  @subpackage Core
- *  @version    $Id$
+ * Cumula
+ *
+ * Cumula — framework for the cloud.
+ *
+ * @package    Cumula
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2011 Seabourne Consulting
+ * @link       http://cumula.org
  */
-
 
 require_once dirname(__FILE__) . '/BaseMVCController.php';
 
 /**
- * Base class for components that want to implement an MVC design pattern.
- * 
- * @author Mike Reich
+ * BaseMVCComponent Class
  *
+ * The core class for the MVC component architecture.
+ *
+ * @package		Cumula
+ * @subpackage	Core
+ * @author     Seabourne Consulting
  */
 abstract class BaseMVCComponent extends BaseComponent {
 	protected $_routes;

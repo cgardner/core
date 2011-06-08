@@ -1,7 +1,16 @@
 <?php
 /**
- *  @package Inflect
- *  @version    $Id$
+ * Cumula
+ *
+ * Cumula — framework for the cloud.
+ *
+ * @package    Cumula
+ * @subpackage Utils
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2011 Seabourne Consulting
+ * @link       http://cumula.org
  */
 
 // Thanks to http://www.eval.ca/articles/php-pluralize (MIT license)
@@ -31,6 +40,15 @@
 //   Added rule for potato -> potatoes
 //   Added rule for *us -> *uses
 
+/**
+ * Inflect Class
+ *
+ * Handles inflection.
+ *
+ * @package		Cumula
+ * @subpackage	Utils
+ * @author     Seabourne Consulting
+ */
 class Inflect
 {
 	static $plural = array(

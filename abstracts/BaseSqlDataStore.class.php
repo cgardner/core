@@ -1,4 +1,26 @@
 <?php
+/**
+ * Cumula
+ *
+ * Cumula — framework for the cloud.
+ *
+ * @package    Cumula
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2011 Seabourne Consulting
+ * @link       http://cumula.org
+ */
+
+/**
+ * BaseSQLDataStore Class
+ *
+ * Abstract Class for all SQL derived Data Stores.  Takes care of some of the common code, like creating tables and CRUD operations.
+ *
+ * @package		Cumula
+ * @subpackage	Core
+ * @author     Seabourne Consulting
+ */
 
 abstract class BaseSqlDataStore extends BaseDataStore implements CumulaDataStore {
 	protected $_db;

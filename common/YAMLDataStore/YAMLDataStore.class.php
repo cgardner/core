@@ -1,20 +1,30 @@
 <?php
 /**
- *  @package Cumula
- *  @subpackage Core
- *  @version    $Id$
+ * Cumula
+ *
+ * Cumula — framework for the cloud.
+ *
+ * @package    Cumula
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2011 Seabourne Consulting
+ * @link       http://cumula.org
  */
 
 require_once dirname(__FILE__) . '/includes/sfYamlDumper.php';
 require_once dirname(__FILE__) . '/includes/sfYamlParser.php';
 
+
 /**
- * A basic data store using YAML.  A source directory and filename are passed in the config values and is used to save the
- * information in YAML format.
- * 
- * @author Mike Reich
- * @package Cumula
+ * YAMLDataStore Class
  *
+ * An implementation of DataStore using YAML.  A source directory and filename are passed in the config values and is used to save the
+ * information in YAML format.
+ *
+ * @package		Cumula
+ * @subpackage	Core
+ * @author     Seabourne Consulting
  */
 class YAMLDataStore extends BaseDataStore implements CumulaDataStore {
 	private $_storage;
