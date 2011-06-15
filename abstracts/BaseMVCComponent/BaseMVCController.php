@@ -21,7 +21,7 @@
  * @subpackage	Core
  * @author     Seabourne Consulting
  */
-abstract class BaseMVCController extends EventDispatcher {
+abstract class BaseMVCController {
 	public $component;
 	
 	protected $_before_filters = array();
@@ -37,7 +37,6 @@ abstract class BaseMVCController extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function __construct($component) {
-		parent::__construct();
 		$this->component = &$component;
 		$this->startup();
 		$this->_beforeFilter('_setTemplate');
@@ -249,5 +248,9 @@ abstract class BaseMVCController extends EventDispatcher {
 	
 	protected function addMessage($message) {
 		$this->_alerts['messages'][] = $message;
+	}
+	
+	public function dispatch($event, $args) {
+		$this->component->dispatch($event, $args);
 	}
 }
