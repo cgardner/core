@@ -164,7 +164,7 @@ abstract class EventDispatcher {
 	 * 
 	 * @return BaseComponent|bool	The instance, if it exists, otherwise false
 	 */
-	protected static function getInstance() {
+	public static function getInstance() {
 		return isset(self::$_instances[get_called_class()]) ? self::$_instances[get_called_class()] : false;
 	}
 	
