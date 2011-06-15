@@ -44,9 +44,11 @@ abstract class BaseSqlDataStore extends BaseDataStore implements CumulaDataStore
 		$sql = "INSERT INTO {$this->_schema->name} ";
 		$keys = array();
 		$values = array();
-		foreach($obj as $key => $value) {
-			$keys[] = $key;
-			$values[] = is_numeric($value) ? "$value" : "'".$this->_db->escapeString($value)."'";
+		foreach($this->_schema->getFields() as $field => $args) {
+			if(!isset($obj->$field))
+				continue;
+			$keys[] = $field;
+			$values[] = is_numeric($obj->$field) ? $obj->$field : "'".$this->_db->escapeString($obj->$field)."'";
 		}
 		$sql .= "(".implode(',', $keys).")";
 		$sql .= "VALUES (".implode(',', $values).");";
@@ -83,8 +85,8 @@ abstract class BaseSqlDataStore extends BaseDataStore implements CumulaDataStore
 		if(!$this->recordExists($obj->$idField))
 			return false;
 		$sql = "UPDATE {$this->_schema->name} SET ";
-		foreach($obj as $key => $value) {
-			$sql .= " $key=" . is_numeric($value) ? "$value" : "'".$this->_db->escapeString($value)."'";
+		foreach($this->_schema->getFields() as $field => $args) {
+			$sql .= " $field=" . is_numeric($obj->$field) ? $obj->$field : "'".$this->_db->escapeString($obj->$field)."'";
 		}
 		$sql .= " WHERE {$idField}=".$obj->$idField.";";
 		return $this->doExec($sql);
@@ -126,9 +128,11 @@ abstract class BaseSqlDataStore extends BaseDataStore implements CumulaDataStore
 		if (is_numeric($args)) {
 			$sql .= "{$this->_schema->getIdField()}=$args";
 		} else if (is_array($args)) {
-			foreach($args as $key => $value) {
-				$sql .= "$key=".(is_numeric($value) ? $value : "'{$this->_db->escapeString($value)}'");
+			$conditions = array();
+			foreach($args as $key => $val) {
+				$conditions[] = " ".$key."=" . (is_numeric($val) ? $val : "'".$this->_db->escapeString($val)."'");
 			}
+			$sql .= implode(' AND ', $conditions);
 		} else {
 			//no parsible arguments found
 			return false;

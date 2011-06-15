@@ -39,6 +39,7 @@ class SqliteDataStore extends BaseSqlDataStore implements CumulaDataStore {
 	}
 	
 	protected function doExec($sql) {
+		print_r($sql);
 		return $this->_db->exec($sql);
 	}
 	
@@ -67,6 +68,8 @@ class SqliteDataStore extends BaseSqlDataStore implements CumulaDataStore {
 	public function query($args, $order = null, $sort = null) {
 		$result = parent::query($args, $order, $sort);
 		$arr = array();
+		if(!$result)
+			return false;
 		while($res = $result->fetchArray(SQLITE3_ASSOC)) {
 			$arr[] = $res;
 		}

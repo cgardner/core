@@ -231,7 +231,7 @@ abstract class BaseComponent extends EventDispatcher {
 			$file_name = dirname($this->_getThisFile()).'/views/'.$caller.'.tpl.php';
 		}
 		$contents = $this->renderPartial($file_name);
-		$this->_send_render($contents, $var_name);
+		$this->renderContent($contents, $var_name);
 	}
 	
 	/**
@@ -257,7 +257,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * Adds a block to the render queue for dispatching to the templater.
 	 * 
 	 */
-	protected function _send_render($content, $var_name = 'content') {
+	public function renderContent($content, $var_name = 'content') {
 		$block = new ContentBlock();
 		$block->content = $content;
 		$block->data['variable_name'] = $var_name;
@@ -330,7 +330,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @param $url
 	 * @return unknown_type
 	 */
-	public function linkTo($url) {
+	public function completeUrl($url) {
 		$session = Application::getSystemConfig();
 		$base = $session->getValue(SETTING_DEFAULT_BASE_PATH);
 		return ($base == '/') ? $url : $base.$url;

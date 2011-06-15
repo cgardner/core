@@ -28,6 +28,7 @@ abstract class BaseMVCController extends EventDispatcher {
 	protected $_after_filters = array();
 	protected $_template = false;
 	protected $_data;
+	protected $_alerts;
 	
 	/**
 	 * The constructor.  Initializes the MVCContentBlock
@@ -41,12 +42,21 @@ abstract class BaseMVCController extends EventDispatcher {
 		$this->startup();
 		$this->_beforeFilter('_setTemplate');
 		$this->_data = array();
+		$this->_alerts = array('messages' => array(), 'warnings' => array());
+		$this->_afterFilter('_doAlerts');
 	}
 	
 	protected function _setTemplate() {
 		if ($this->_template) {
 			Application::getTemplater()->setTemplateDir($App->rootDirectory.'/../templates/'.$this->_template.'/');
 		}	
+	}
+	
+	protected function _doAlerts() {
+		$messages = "<div class='message'>".implode("</div><div class='message'>", $this->_alerts['messages'])."</div>";
+		$warnings = "<div class='message'>".implode("</div><div class='warning'>", $this->_alerts['warnings'])."</div>";
+		$this->renderContent($messages, 'messages');
+		$this->renderContent($warnings, 'warnings');
 	}
 	
 	public function useTemplate($template) {
@@ -117,6 +127,15 @@ abstract class BaseMVCController extends EventDispatcher {
 		return $output;
 	}
 	
+	public function linkTo($title, $url, $args = array()) {
+		$output = '<a href="'.$this->component->completeUrl($url).'" ';
+		foreach($args as $key => $value) {
+			$output .= $key.'="'.$value.'" ';
+		}
+		$output .= ">$title</a>";
+		return $output;
+	}
+	
 	/**
 	 * Parses the passed magic method function into the final call.
 	 * 
@@ -133,18 +152,23 @@ abstract class BaseMVCController extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function render() {
-		$bt = debug_backtrace(false); //TODO: See if there's a better way to do this than debug backtrace.
-		$caller = $bt[1];
-		$view_dir = $this->component->config->getConfigValue('views_directory', static::_getThis()->component->rootDirectory().'/views/'.lcfirst(str_replace('Controller', '', get_called_class())));
-		$file_name = $view_dir.'/'.$caller['function'].'.tpl.php';
 		$args = func_get_args();
-		if(count($args))	
-			extract($args[0], EXTR_OVERWRITE);
+		$view_dir = $this->component->config->getConfigValue('views_directory', static::_getThis()->component->rootDirectory().'/views/'.lcfirst(str_replace('Controller', '', get_called_class())));
+		if(count($args) && is_string($args[0])) {
+			$file_name = $view_dir.'/'.$args[0].'.tpl.php';
+	 	} else {
+			$bt = debug_backtrace(false); //TODO: See if there's a better way to do this than debug backtrace.
+			$caller = $bt[1];
+			$file_name = $view_dir.'/'.$caller['function'].'.tpl.php';
+
+			if(count($args) && count($args[0]))	
+				extract($args[0], EXTR_OVERWRITE);
+		}
 		ob_start();
 		include $file_name;
 		$contents = ob_get_contents();
 		ob_end_clean();
-		$this->_send_render($contents);
+		$this->renderContent($contents);
 	}
 	
 	/**
@@ -153,10 +177,10 @@ abstract class BaseMVCController extends EventDispatcher {
 	 * @param $content
 	 * @return unknown_type
 	 */
-	protected function _send_render($content) {
+	protected function renderContent($content, $name = 'content') {
 		$block = new ContentBlock();
 		$block->content = $content;
-		$block->data['variable_name'] = 'content';
+		$block->data['variable_name'] = $name;
 		
 		$this->component->addOutputBlock($block);
 	}
@@ -182,7 +206,7 @@ abstract class BaseMVCController extends EventDispatcher {
 	 * @param $url
 	 * @return unknown_type
 	 */
-	public function linkTo($url) {
+	public function completeUrl($url) {
 		$session = Application::getSystemConfig();
 		$base = $session->getValue(SETTING_DEFAULT_BASE_PATH);
 		return ($base == '/') ? $url : $base.$url;
@@ -217,5 +241,13 @@ abstract class BaseMVCController extends EventDispatcher {
 
 	public function getInstanceVars() {
 		return $this->_data;
+	}
+	
+	protected function addWarning($warning) {
+		$this->_alerts['warnings'][] = $warning;
+	}
+	
+	protected function addMessage($message) {
+		$this->_alerts['messages'][] = $message;
 	}
 }

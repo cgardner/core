@@ -13,6 +13,7 @@
  */
 
 require_once dirname(__FILE__) . '/BaseMVCController.php';
+require_once dirname(__FILE__) . '/BaseMVCModel.php';
 
 /**
  * BaseMVCComponent Class
@@ -85,10 +86,13 @@ abstract class BaseMVCComponent extends BaseComponent {
 		while (false !== ($comp = $dir->read())) {
 			if(substr($comp, 0, 1) != '.') {
 				$comp_dir = $dir->path.'/'.$comp;
-				$class_name = str_replace('.class.php', '', $comp);
+				$class_name = $comp;
+				$class_name = str_replace('.class', '', $class_name);
+				$class_name = str_replace('.php', '', $class_name);
 				if (is_file($comp_dir)) {
 					require_once $comp_dir;
-					new $class_name($this);					
+					if(strpos($class_name, 'Controller'))
+						new $class_name($this);					
 				}
 			}
 		}
