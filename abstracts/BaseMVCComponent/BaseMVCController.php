@@ -29,6 +29,7 @@ abstract class BaseMVCController {
 	protected $_template = false;
 	protected $_data;
 	protected $_alerts;
+	protected $_renderCalled;
 	
 	/**
 	 * The constructor.  Initializes the MVCContentBlock
@@ -106,17 +107,19 @@ abstract class BaseMVCController {
 	 * @return unknown_type
 	 */
 	public function __call($name, $arguments) {
+		$this->_renderCalled = false;
 		$func = $this->_parseFunc($name);
 		
 		foreach($this->_before_filters as $filter) {
 			call_user_func_array(array(&$this, $filter), $arguments);
 		}
 		
-		if(method_exists(static::_getThis(), $func))
+		$output = null;
+		if(method_exists(static::_getThis(), $func)) {
 			$output = call_user_func_array(array(static::_getThis(), $func), $arguments);
-		else {
-			trigger_error("Call to undefined method ".$func, E_USER_ERROR);
 		}
+		if(file_exists($this->getRenderFileName($func)) && !$this->_renderCalled)
+			$this->render($func);
 		
 		
 		foreach($this->_after_filters as $filter) {
@@ -124,6 +127,12 @@ abstract class BaseMVCController {
 		}
 		
 		return $output;
+	}
+	
+	
+	public function getRenderFileName($func) {
+		$view_dir = $this->component->config->getConfigValue('views_directory', static::_getThis()->component->rootDirectory().'/views/'.lcfirst(str_replace('Controller', '', get_called_class())));
+		return $view_dir.'/'.$func.'.tpl.php';
 	}
 	
 	public function linkTo($title, $url, $args = array()) {
@@ -152,13 +161,13 @@ abstract class BaseMVCController {
 	 */
 	public function render() {
 		$args = func_get_args();
-		$view_dir = $this->component->config->getConfigValue('views_directory', static::_getThis()->component->rootDirectory().'/views/'.lcfirst(str_replace('Controller', '', get_called_class())));
+		$this->_renderCalled = true;
 		if(count($args) && is_string($args[0])) {
-			$file_name = $view_dir.'/'.$args[0].'.tpl.php';
+			$file_name = $this->getRenderFileName($args[0]);
 	 	} else {
 			$bt = debug_backtrace(false); //TODO: See if there's a better way to do this than debug backtrace.
 			$caller = $bt[1];
-			$file_name = $view_dir.'/'.$caller['function'].'.tpl.php';
+			$file_name = $this->getRenderFileName($caller['function']);
 
 			if(count($args) && count($args[0]))	
 				extract($args[0], EXTR_OVERWRITE);
