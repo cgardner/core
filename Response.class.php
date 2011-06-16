@@ -67,6 +67,12 @@ class Response extends EventDispatcher {
 	}
 	
 	public function send302($url) {
+    if (FALSE === stripos($url, 'http')) {
+      $protocol = ($_SERVER['SERVER_PORT'] == 443 || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'))
+        ? 'https' : 'http';
+      if ($url{0} != '/') $url = '/'.$url;
+      $url = $protocol.'://'.$_SERVER['HTTP_HOST'].$url;
+    }
 		$this->response['headers']['Location'] = $url;
 		$this->response['status_code'] = 302;
 	}
