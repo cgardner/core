@@ -131,8 +131,8 @@ final class Application extends EventDispatcher {
 		$this->boot();
 	}
 	
-	private function _setupConstants($paths = null) {
-		if(!$paths) {
+	private function _setupConstants($paths = array()) {
+		if(count($paths) < 1) {
 			$core_path	= 'core';
 			$component_path = 'components';
 			$config_path = 'config';
@@ -145,20 +145,28 @@ final class Application extends EventDispatcher {
 
 		define('ROOT', realpath(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR));
 
-		if(!is_dir($core_path) and is_dir(ROOT.$core_path))
-			$core_path = ROOT.$core_path;
+		if(isset($core_path) && !is_dir($core_path))
+			$core_path = ROOT.DIRECTORY_SEPARATOR.$core_path;
 
-		if(!is_dir($component_path) and is_dir(ROOT.$component_path))
-			$component_path = ROOT.$component_path;
+		if(isset($component_path) && !is_dir($component_path))
+			$component_path = ROOT.DIRECTORY_SEPARATOR.$component_path;
 
-		if(!is_dir($config_path) and is_dir(ROOT.$config_path))
-			$config_path = ROOT.$config_path;
+		if(isset($config_path) && !is_dir($config_path)) {
+			$config_path = ROOT.DIRECTORY_SEPARATOR.$config_path;
+			if(!file_exists($config_path)) {
+				mkdir($config_path, 0777, true);
+			}
+		}
 			
-		if(!is_dir($data_path) and is_dir(ROOT.$data_path))
-			$data_path = ROOT.$data_path;
+		if(isset($data_path) && !is_dir($data_path)) {
+			$data_path = ROOT.DIRECTORY_SEPARATOR.$data_path;
+			if(!file_exists($data_path)) {
+				mkdir($data_path, 0777, true);
+			}
+		}
 			
-		if(!is_dir($template_path) and is_dir(ROOT.$template_path))
-			$template_path = ROOT.$template_path;	
+		if(isset($template_path) && !is_dir($template_path))
+			$template_path = ROOT.DIRECTORY_SEPARATOR.$template_path;	
 
 		define('APPROOT', realpath($core_path).DIRECTORY_SEPARATOR);
 		define('COMPROOT', realpath($component_path).DIRECTORY_SEPARATOR);

@@ -42,10 +42,7 @@ class YAMLDataStore extends BaseDataStore implements CumulaDataStore {
 	public function __construct($config_values) {
 		$this->_storage = array();
 		$this->_sourceDirectory = $config_values['source_directory'];
-		if(!file_exists($this->_sourceDirectory))
-			mkdir($this->_sourceDirectory);
 		$this->_filename = $config_values['filename'];
-		
 	}
 	
 	/* (non-PHPdoc)
@@ -142,7 +139,6 @@ class YAMLDataStore extends BaseDataStore implements CumulaDataStore {
 			$yaml = $dumper->dump($this->_storage, 2);
 			file_put_contents($this->_dataStoreFile(), $yaml);
 		}
-//			file_put_contents($this->_dataStoreFile(), Spyc::YAMLDump($this->_storage));
 	}
 	
 	private function _dataStoreFile() {
