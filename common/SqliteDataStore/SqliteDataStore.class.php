@@ -39,7 +39,6 @@ class SqliteDataStore extends BaseSqlDataStore implements CumulaDataStore {
 	}
 	
 	protected function doExec($sql) {
-		print_r($sql);
 		return $this->_db->exec($sql);
 	}
 	
