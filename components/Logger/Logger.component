@@ -1,0 +1,61 @@
+<?php
+/**
+ * Cumula
+ *
+ * Cumula — framework for the cloud.
+ *
+ * @package    Cumula
+ * @version    0.1.0
+ * @author     Seabourne Consulting
+ * @license    MIT License
+ * @copyright  2011 Seabourne Consulting
+ * @link       http://cumula.org
+ */
+
+require_once dirname(__FILE__).'/includes/WriteOnlyTextDataStore.class.php';
+
+/**
+ * Logger Component
+ *
+ * Logs messages to the specified output file/service.
+ *
+ * @package		Cumula
+ * @subpackage	Logger
+ * @author     Seabourne Consulting
+ */
+class Logger extends BaseComponent {
+	/**
+	 * @return unknown_type
+	 */
+	public function __construct() {
+		parent::__construct();
+		$log_dir = Application::getSystemConfig()->getValue('log_directory', ROOT.'/log');
+		$log_file = Application::getSystemConfig()->getValue('environment', ENV_DEVELOPMENT).'.log';
+		if(!file_exists($log_dir))
+			mkdir($log_dir);
+		$this->dataStore = new WriteOnlyTextDataStore(array('logfile' => $log_dir .'/'.$log_file));
+		
+	}
+	
+	public function startup() {
+		$cm = ComponentManager::getInstance();
+		if($cm) {
+			$comps = $cm->getEnabledComponentList();
+			foreach($comps as $comp) {
+				$this->addEventListenerTo($comp, EVENT_LOGGED, 'logMessage');
+			}
+		}
+	}
+	
+	/**
+	 * @param $level
+	 * @param $message
+	 * @param $other_info
+	 * @return unknown_type
+	 */
+	public function logMessage($event, $dispatcher, $level, $message, $other_info = null) {
+		if($other_info)
+			$other_info = "\nArgs:\n ".var_export($other_info, true);
+		$this->dataStore->create(array($level, $message, $other_info));
+	}
+}
