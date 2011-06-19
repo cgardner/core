@@ -151,21 +151,25 @@ final class Application extends EventDispatcher {
 
 		if(isset($core_component_path) && !is_dir($core_component_path))
 			$core_component_path = ROOT.DIRECTORY_SEPARATOR.$core_component_path;
-		
-		if(isset($contrib_component_path) && !is_dir($contrib_component_path))
-			$contrib_component_path = ROOT.DIRECTORY_SEPARATOR.$contrib_component_path;	
 
 		if(isset($config_path) && !is_dir($config_path)) {
 			$config_path = ROOT.DIRECTORY_SEPARATOR.$config_path;
 			if(!file_exists($config_path)) {
-				mkdir($config_path, 0777, true);
+				mkdir($config_path, 0775, true);
 			}
 		}
 			
 		if(isset($data_path) && !is_dir($data_path)) {
 			$data_path = ROOT.DIRECTORY_SEPARATOR.$data_path;
 			if(!file_exists($data_path)) {
-				mkdir($data_path, 0777, true);
+				mkdir($data_path, 0775, true);
+			}
+		}
+		
+		if(isset($contrib_component_path) && !is_dir($contrib_component_path)) {
+			$contrib_component_path = ROOT.DIRECTORY_SEPARATOR.$contrib_component_path;
+			if(!file_exists($contrib_component_path)) {
+				mkdir($contrib_component_path, 0775, true);
 			}
 		}
 			
