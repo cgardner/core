@@ -57,6 +57,8 @@ class Response extends EventDispatcher {
 	
 	public function send404() {
 		$this->response['status_code'] = 404;
+		$this->sendRawResponse($this->response['headers'], $this->response['content'], $this->response['status_code']);
+		exit;
 	}
 	
 	public function send405() {
