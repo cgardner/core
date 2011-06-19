@@ -268,13 +268,13 @@ class AdminInterface extends BaseComponent {
 	protected function checkUser($request) {
     // if session & user modules don't exist, we'll assume this admininterface
     // isn't auth controlled
-    if (class_exists('Session') && class_exists('UserManager')) {
-      $session = Session::getInstance();
-      if(!$session->getValue('user', false)) {
-        $this->redirectTo($this->completeUrl('/user/login?ref='.$request->path));
-        return false;
-      }
-    }
+    //if (class_exists('Session') && class_exists('UserManager')) {
+     // $session = Session::getInstance();
+      //if(!$session->getValue('user', false)) {
+      //  $this->redirectTo($this->completeUrl('/user/login?ref='.$request->path));
+       // return false;
+     // }
+    //}
 		return true;
 	}
 }
