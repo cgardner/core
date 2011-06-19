@@ -184,6 +184,14 @@ final class ComponentManager extends BaseComponent {
 				$ret[] = $class_name;
 			}
 		}
+		$dir = dir(CONTRIBCOMPROOT);
+		while (false !== ($comp = $dir->read())) {
+			if(!strstr($comp, '.')) {
+				$comp_dir = $dir->path.'/'.$comp;
+				$class_name = ucfirst(basename($comp));
+				$ret[] = $class_name;
+			}
+		}
 		return $ret;
 	}
 
@@ -201,11 +209,21 @@ final class ComponentManager extends BaseComponent {
 	 * 
 	 */
 	public function installComponent($component) {
+		$found = false;
 		//TODO: replace the hard-coded components directory with a system config
 		$dir = dir(COMPROOT);
 		$comp_dir = $dir->path.'/'.$component;
 		$class_file = $comp_dir.'/'.$component.'.component';
 		if (is_file($class_file)) {
+			$found = true;
+		} else {
+			$dir = dir(CONTRIBCOMPROOT);
+			$comp_dir = $dir->path.'/'.$component;
+			$class_file = $comp_dir.'/'.$component.'.component';
+			if(is_file($class_file))
+				$found = true;
+		}
+		if($found) {
 			require_once $class_file;
 			if(!in_array($component, $this->_installedClasses))
 			$this->_installedClasses[] = $component;
@@ -231,7 +249,14 @@ final class ComponentManager extends BaseComponent {
 		}
 		
 		//TODO: replace the hard-coded components directory with a system config
-		$dir = dir(COMPROOT);
+		$this->parseComponentDir(COMPROOT);
+		$this->parseComponentDir(CONTRIBCOMPROOT);
+
+		$this->dispatch(COMPONENT_INIT_COMPLETE);
+	}
+	
+	protected function parseComponentDir($path) {
+		$dir = dir($path);
 		while (false !== ($comp = $dir->read())) {
 			if(!strstr($comp, '.')) {
 				$comp_dir = $dir->path.'/'.$comp;
@@ -242,7 +267,6 @@ final class ComponentManager extends BaseComponent {
 				}
 			}
 		}
-		$this->dispatch(COMPONENT_INIT_COMPLETE);
 	}
 
 	/**
