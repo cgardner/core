@@ -12,7 +12,7 @@
  * @link       http://cumula.org
  */
 
-require_once(__DIR__.DIRECTORY_SEPARATOR."includes".DIRECTORY_SEPARATOR."core.inc");
+require_once(__DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."includes".DIRECTORY_SEPARATOR."core.inc");
 
 /**
  * Application Class
@@ -134,7 +134,8 @@ final class Application extends EventDispatcher {
 	private function _setupConstants($paths = array()) {
 		if(count($paths) < 1) {
 			$core_path	= 'core';
-			$component_path = 'components';
+			$core_component_path = 'core/components';
+			$contrib_component_path = 'components';
 			$config_path = 'config';
 			$data_path = 'data';
 			$template_path = 'templates';
@@ -143,13 +144,16 @@ final class Application extends EventDispatcher {
 		}
 
 
-		define('ROOT', realpath(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR));
+		define('ROOT', realpath(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR));
 
 		if(isset($core_path) && !is_dir($core_path))
 			$core_path = ROOT.DIRECTORY_SEPARATOR.$core_path;
 
-		if(isset($component_path) && !is_dir($component_path))
-			$component_path = ROOT.DIRECTORY_SEPARATOR.$component_path;
+		if(isset($core_component_path) && !is_dir($core_component_path))
+			$core_component_path = ROOT.DIRECTORY_SEPARATOR.$core_component_path;
+		
+		if(isset($contrib_component_path) && !is_dir($contrib_component_path))
+			$contrib_component_path = ROOT.DIRECTORY_SEPARATOR.$contrib_component_path;	
 
 		if(isset($config_path) && !is_dir($config_path)) {
 			$config_path = ROOT.DIRECTORY_SEPARATOR.$config_path;
@@ -169,7 +173,8 @@ final class Application extends EventDispatcher {
 			$template_path = ROOT.DIRECTORY_SEPARATOR.$template_path;	
 
 		define('APPROOT', realpath($core_path).DIRECTORY_SEPARATOR);
-		define('COMPROOT', realpath($component_path).DIRECTORY_SEPARATOR);
+		define('COMPROOT', realpath($core_component_path).DIRECTORY_SEPARATOR);
+		define('CONTRIBCOMPROOT', realpath($contrib_component_path).DIRECTORY_SEPARATOR);
 		define('CONFIGROOT', realpath($config_path).DIRECTORY_SEPARATOR);
 		define('DATAROOT', realpath($data_path).DIRECTORY_SEPARATOR);
 		define('TEMPLATEROOT', realpath($template_path).DIRECTORY_SEPARATOR);

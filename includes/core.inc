@@ -24,23 +24,24 @@ require_once dirname(__FILE__) . '/../interfaces/CumulaConfig.interface.php';
 require_once dirname(__FILE__) . '/../interfaces/CumulaTemplater.interface.php';
 
 //Load abstract classes
-require_once dirname(__FILE__) . '/../abstracts/EventDispatcher.class.php';
-require_once dirname(__FILE__) . '/../abstracts/BaseDataStore.class.php';
-require_once dirname(__FILE__) . '/../abstracts/BaseComponent.class.php';
-require_once dirname(__FILE__) . '/../abstracts/BaseMVCComponent/BaseMVCComponent.class.php';
-require_once dirname(__FILE__) . '/../abstracts/BaseSqlDataStore.class.php';
-require_once dirname(__FILE__) . '/../abstracts/BaseSchema.class.php';
+require_once dirname(__FILE__) . '/../classes/EventDispatcher.class.php';
+require_once dirname(__FILE__) . '/../classes/BaseDataStore.class.php';
+require_once dirname(__FILE__) . '/../classes/BaseComponent.class.php';
+require_once dirname(__FILE__) . '/../classes/BaseMVCComponent/BaseMVCComponent.class.php';
+require_once dirname(__FILE__) . '/../classes/BaseSqlDataStore.class.php';
+require_once dirname(__FILE__) . '/../classes/BaseSchema.class.php';
 
 //Load Core Classes
-require_once dirname(__FILE__) . '/../ComponentManager.class.php';
-require_once dirname(__FILE__) . '/../Response.class.php' ;
-require_once dirname(__FILE__) . '/../Request.class.php' ;
-require_once dirname(__FILE__) . '/../SystemConfig.class.php' ;
+require_once dirname(__FILE__) . '/../classes/ComponentManager.class.php';
+require_once dirname(__FILE__) . '/../classes/Router.class.php';
+require_once dirname(__FILE__) . '/../classes/Response.class.php' ;
+require_once dirname(__FILE__) . '/../classes/Request.class.php' ;
+require_once dirname(__FILE__) . '/../classes/SystemConfig.class.php' ;
 
-require_once dirname(__FILE__) . '/../common/ContentBlock/ContentBlock.class.php';
-require_once dirname(__FILE__) . '/../common/SqliteDataStore/SqliteDataStore.class.php';
-require_once dirname(__FILE__) . '/../common/StandardConfig/StandardConfig.class.php';
-require_once dirname(__FILE__) . '/../common/YAMLDataStore/YAMLDataStore.class.php';
+require_once dirname(__FILE__) . '/../libraries/ContentBlock/ContentBlock.class.php';
+require_once dirname(__FILE__) . '/../libraries/SqliteDataStore/SqliteDataStore.class.php';
+require_once dirname(__FILE__) . '/../libraries/StandardConfig/StandardConfig.class.php';
+require_once dirname(__FILE__) . '/../libraries/YAMLDataStore/YAMLDataStore.class.php';
 
 
 

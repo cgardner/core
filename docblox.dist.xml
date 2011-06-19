@@ -1,0 +1,20 @@
+<docblox>
+  <parser>
+    <target>../docs/api</target>
+    <extensions>
+      <extension>php</extension>
+      <extension>php3</extension>
+      <extension>phtml</extension>
+      <extension>component</extension>
+    </extensions>
+  </parser>
+  <transformer>
+    <target>../docs/api</target>
+  </transformer>
+  <transformations>
+    <template name="../docs/themes/cumula" />
+  </transformations>
+  <files>
+    <directory>.</directory>
+  </files>
+</docblox>

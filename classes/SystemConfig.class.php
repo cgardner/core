@@ -24,7 +24,7 @@
 class SystemConfig extends BaseComponent {
 	public function __construct() {
 		parent::__construct();
-		$this->config = new StandardConfig($this->rootDirectory().'/../config', 'system.yaml');
+		$this->config = new StandardConfig(CONFIGROOT, 'system.yaml');
 		
 		$this->addEvent(SYSTEMCONFIG_SET_VALUE);
 		$this->addEvent(SYSTEMCONFIG_GET_VALUE);
