@@ -182,7 +182,7 @@ final class Application extends EventDispatcher {
 		define('CONFIGROOT', realpath($config_path).DIRECTORY_SEPARATOR);
 		define('DATAROOT', realpath($data_path).DIRECTORY_SEPARATOR);
 		define('TEMPLATEROOT', realpath($template_path).DIRECTORY_SEPARATOR);
-		define('CUMULAVERSION', "0.01");
+		define('CUMULAVERSION', "0.2.0");
 	}
 	
 	/**
