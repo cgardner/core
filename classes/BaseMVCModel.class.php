@@ -5,18 +5,23 @@ abstract class BaseMVCModel extends EventDispatcher {
 	protected $_data;
 	protected static $_dataStore = array();
 	protected $_fieldsToSerialize = array();
+	protected $exists = false;
 	
 	abstract public static function setupDataStore();
 	
 	abstract public static function setupFields();
 	
-	public function __construct($args = array()) {
+	public function __construct($args = array(), $exists = false) {
 		parent::__construct();
+		if(!is_array($args)) {
+			$args = (array)$args;
+		}
 		$fields = static::getFields();
 		foreach($fields as $field => $data) {
 			if(isset($args[$field]))
 				$this->$field = $args[$field];
 		}
+		$this->exists = $exists;
 	}
 	
 	public function serialize($fields) {
@@ -29,17 +34,21 @@ abstract class BaseMVCModel extends EventDispatcher {
 	public static function find($args) {
 		$res = static::getDataStore()->query($args);
 		$class = get_called_class();
-		for($i = 0; $i < count($res); $i++) {
-			$res[$i] = new $class($res[$i]);
-		}
-		if(count($res) == 1)
-			return $res[0];
-		else
+		if($res && is_array($res)) {
+			for($i = 0; $i < count($res); $i++) {
+				$res[$i] = new $class($res[$i], true);
+			}
 			return $res;
+		} else {
+			return array();
+		}	
 	}
 	
 	public static function findAll() {
-		return static::getDataStore()->query(array());
+		$res = static::find(array());
+		if(!is_array($res))
+			$res = array($res);
+		return $res;
 	}
 	
 	public static function getDataStore() {
@@ -65,19 +74,28 @@ abstract class BaseMVCModel extends EventDispatcher {
 	}
 	
 	public function save() {
-		$this->update();
+		return $this->update();
 	}
 	
 	public function destroy() {
-		static::getDataStore()->destroy($this->rawObject());
+		$res = static::getDataStore()->destroy($this->rawObject());
+		if($res)
+			$this->exists = false;
+		return $res;
 	}
 	
 	public function create() {
-		static::getDataStore()->create($this->rawObject());
+		$res = static::getDataStore()->create($this->rawObject());
+		if($res) {
+			$id = $this->_schema->getIdField();
+			$this->$id = $this->_dataStore->lastRowId();
+			$this->exists = true;
+		}
+		return $res;
 	}
 	
 	public function update() {
-		static::getDataStore()->createOrUpdate($this->rawObject());
+		return static::getDataStore()->createOrUpdate($this->rawObject());
 	}
 	
 	public function getSchema() {
@@ -90,7 +108,7 @@ abstract class BaseMVCModel extends EventDispatcher {
 			if(in_array($name, $this->_fieldsToSerialize)) {
 				return unserialize($val);
 			}
-			return $var;
+			return $val;
 		}
 	}
 	

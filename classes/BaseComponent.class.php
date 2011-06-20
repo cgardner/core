@@ -345,6 +345,14 @@ abstract class BaseComponent extends EventDispatcher {
 		return Application::getSystemConfig()->getValue(SETTING_DEFAULT_DATASTORE);
 	}
 	
+	public function linkTo($title, $url, $args = array()) {
+		$output = '<a href="'.$this->completeUrl($url).'" ';
+		foreach($args as $key => $value) {
+			$output .= $key.'="'.$value.'" ';
+		}
+		$output .= ">$title</a>";
+		return $output;
+	}
 	
 	/**
 	 * Returns the root directory for the component.

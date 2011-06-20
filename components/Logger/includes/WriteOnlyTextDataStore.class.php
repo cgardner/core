@@ -75,4 +75,8 @@ class WriteOnlyTextDataStore extends BaseDataStore {
 	public function recordExists($id) {
 		return false;
 	}
+	
+	public function lastRowId() {
+		return false;
+	}
 }

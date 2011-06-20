@@ -117,8 +117,15 @@ abstract class EventDispatcher {
 	 * @param	string The event to remove handler from.
 	 * @param	function	a function, or an array containing the class and method, or a closure to remove.
 	 */
-	public function removeEventHandler($event, $handler) {
-		//TODO: Implement using an array slice type function
+	public function removeEventListener($event, $handler) {
+		if($this->eventExists($event)) {
+			for($i = 0; $i < count($this->_eventTable[$event]); $i++) {
+				$h = $this->_eventTable[$event][$i];
+				if($h === $handler) {
+					unset($this->_eventTable[$event][$i]);
+				}
+			}
+		}
 	}
 	
 	/**

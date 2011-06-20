@@ -158,6 +158,10 @@ class YAMLDataStore extends BaseDataStore {
 		return false;
 	}
 	
+	public function lastRowId() {
+		return count($this->_storage);
+	}
+	
 	/**
 	 * Loads the data in the external YAML file into the internal storage var.
 	 * 

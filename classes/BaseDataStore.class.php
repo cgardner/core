@@ -62,6 +62,8 @@ abstract class BaseDataStore extends EventDispatcher {
 	
 	abstract public function disconnect();
 	
+	abstract public function lastRowId();
+	
 	/**
 	 * Sets the schema for use by the datastore.
 	 * 
@@ -85,7 +87,7 @@ abstract class BaseDataStore extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	protected function _getId() {
-		return $this->_schema->idField();
+		return $this->_schema->getIdField();
 	}
 	
 	/**

@@ -77,6 +77,10 @@ class SqliteDataStore extends BaseSqlDataStore {
 		return $this->query($id);
 	}
 	
+	public function lastRowId() {
+		return $this->_db->lastInsertRowID();
+	}
+	
 	public function translateFields($fields) {
 		$return = array();
 		foreach($fields as $field => $args) {

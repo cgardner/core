@@ -206,8 +206,15 @@ abstract class BaseMVCController extends EventDispatcher {
 		$block = new ContentBlock();
 		$block->content = $content;
 		$block->data['variable_name'] = $name;
-		
 		$this->component->addOutputBlock($block);
+	}
+	
+	protected function renderPlain($output, $useTemplate = false, $contentType = 'text/plain') {
+		if(($response = Response::getInstance()) && ($app = Application::getInstance())) {
+			$response->response['content'] = $output;
+			$response->response['headers']['Content-Type'] = $contentType;
+			$app->removeEventListener(BOOT_POSTPROCESS, array(Templater::getInstance(), 'render'));
+		}
 	}
 	
 	/**
