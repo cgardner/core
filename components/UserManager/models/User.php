@@ -5,15 +5,9 @@ class User extends BaseMVCModel {
 		parent::__construct($args);
 	}
 	
-	public static function getDataStore() {
-		$fields = self::getFields();
-		$schema = new BaseSchema();
-		$schema->setFields($fields);
-		$schema->setIdField('id');
-		$schema->name = 'user_table';
-		$dataStore = new SqliteDataStore(array('source_directory' => DATAROOT, 'filename' => 'users_db', 'schema' => $schema));
-		$dataStore->connect();
-		return $dataStore;
+	public static function setupDataStore() {
+		$schema = new SimpleSchema('user_table', 'id', self::getFields());
+		return new SqliteDataStore($schema, array('source_directory' => DATAROOT, 'filename' => 'users_db'));
 	}
 	
 	public static function setupFields() {

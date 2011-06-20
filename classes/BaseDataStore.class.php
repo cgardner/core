@@ -26,15 +26,41 @@
  */
 abstract class BaseDataStore extends EventDispatcher {
 	protected $_schema;
+	protected $_connected = false;
 	
 	/**
 	 * Constructor
 	 * 
 	 * @return unknown_type
 	 */
-	public function __construct() {
-		
+	public function __construct(CumulaSchema $schema, $configValues = array()) {
+		parent::__construct();
+		$this->setSchema($schema);
 	}
+	
+	public function isConnected() {
+		return $this->_connected;
+	}
+	
+	abstract public function create($obj);
+	
+	abstract public function update($obj);
+	
+	abstract public function destroy($obj);
+	
+	abstract public function query($args, $sort = null, $order = null);
+	
+	abstract public function install();
+	
+	abstract public function uninstall();
+	
+	abstract public function translateFields($fields);
+	
+	abstract public function recordExists($id);
+	
+	abstract public function connect();
+	
+	abstract public function disconnect();
 	
 	/**
 	 * Sets the schema for use by the datastore.
@@ -75,6 +101,10 @@ abstract class BaseDataStore extends EventDispatcher {
 			return (array)$obj;
 	}	
 	
+	protected function _arrayToObj($array) {
+		return (object)$array;
+	}
+	
 	/**
 	 * Converts an array to a string.
 	 * 
@@ -83,33 +113,5 @@ abstract class BaseDataStore extends EventDispatcher {
 	 */
 	protected function _arrayToString(array $arr) {
 		return implode(" ", $arr);
-	}
-	
-	/**
-	 * Function to translate the fields definition into the implementation specific representation.
-	 * 
-	 * @param $fields
-	 * @return unknown_type
-	 */
-	public function translateFields($fields) {
-		return $fields;
-	}
-	
-	/**
-	 * Callback run when the data store is installed
-	 * 
-	 * @return unknown_type
-	 */
-	public function install() {
-		
-	}
-	
-	/**
-	 * Callback run when the data store is uninstalled
-	 * 
-	 * @return unknown_type
-	 */
-	public function uninstall() {
-		
 	}
 }

@@ -29,7 +29,8 @@ class FormHelper extends BaseComponent {
 	public function __construct() {
 		parent::__construct();
 		$ds = $this->defaultDataStore();
-		$this->_dataStore = new $ds(array('source_directory' => DATAROOT, 'filename' => 'data.yaml'));
+		$schema = new SimpleSchema('form_ids');
+		$this->_dataStore = new $ds($schema, array('source_directory' => DATAROOT, 'filename' => 'data.yaml'));
 		self::$_formId = '';
 	}
 	
@@ -49,7 +50,7 @@ class FormHelper extends BaseComponent {
 			if($key != $check_key) {
 				$response->send405();
 			} else {
-				$this->_dataStore->delete($key);
+				$this->_dataStore->destroy($key);
 			}
 		}
 	}

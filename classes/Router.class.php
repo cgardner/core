@@ -41,7 +41,7 @@ class Router extends BaseComponent {
 		Application::getInstance()->addEventListener(BOOT_PROCESS, array(&$this, 'processRoute'));
 		$this->addEventListener(ROUTER_FILE_NOT_FOUND, array(&$this, 'filenotfound'));
 
-		$this->_routeStorage = new YAMLDataStore(array('source_directory' => dirname(__FILE__), 'filename' => 'routes.yml'));
+		//$this->_routeStorage = new YAMLDataStore(array('source_directory' => dirname(__FILE__), 'filename' => 'routes.yml'));
 	}
 
 	public function filenotfound($event, $dispatcher, $request, $response) {

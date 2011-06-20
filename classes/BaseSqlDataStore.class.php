@@ -22,11 +22,11 @@
  * @author     Seabourne Consulting
  */
 
-abstract class BaseSqlDataStore extends BaseDataStore implements CumulaDataStore {
+abstract class BaseSqlDataStore extends BaseDataStore {
 	protected $_db;
 	
-	public function __construct($config_values) {
-		parent::__construct($config_values);
+	public function __construct($schema, $config_values) {
+		parent::__construct($schema, $config_values);
 	}
 	
 	protected function doExec($sql) {
@@ -100,7 +100,7 @@ abstract class BaseSqlDataStore extends BaseDataStore implements CumulaDataStore
 	 */
 	public function createOrUpdate($obj) {
 		$idField = $this->_schema->getIdField();
-		if($this->query($obj->$idField))
+		if(isset($obj->$idField) && $this->query($obj->$idField))
 			return $this->update($obj);
 		else
 			return $this->create($obj);
@@ -109,7 +109,7 @@ abstract class BaseSqlDataStore extends BaseDataStore implements CumulaDataStore
 	/* (non-PHPdoc)
 	 * @see core/interfaces/DataStore#delete($obj)
 	 */
-	public function delete($obj) {
+	public function destroy($obj) {
 		$idField = $this->_schema->getIdField();
 		$sql = "DELETE FROM {$this->_schema->name} WHERE ";
 		if(is_numeric($obj))

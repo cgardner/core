@@ -21,21 +21,15 @@
  * @subpackage	Core
  * @author     Seabourne Consulting
  */
-class SqliteDataStore extends BaseSqlDataStore implements CumulaDataStore {
+class SqliteDataStore extends BaseSqlDataStore {
 	protected $_db;
 	
-	public function __construct($config_values) {
-		parent::__construct($config_values);
-		if(!array_key_exists('schema', $config_values) || !is_a($config_values['schema'], 'CumulaSchema'))
-			throw new Exception('Must pass a CumularSchema');
-		$this->_storage = array();
+	public function __construct($schema, $config_values) {
+		parent::__construct($schema, $config_values);
 		$this->_sourceDirectory = $config_values['source_directory'];
-		if(!file_exists($this->_sourceDirectory))
-			mkdir($this->_sourceDirectory);
 		$this->_filename = $config_values['filename'];
-		
-		$this->_schema = $config_values['schema'];
 		$this->_db = new SQLite3($this->_sourceDirectory.'/'.$this->_filename);
+		$this->connect();
 	}
 	
 	protected function doExec($sql) {
@@ -50,7 +44,6 @@ class SqliteDataStore extends BaseSqlDataStore implements CumulaDataStore {
 	 * @see core/interfaces/DataStore#connect()
 	 */
 	public function connect() {
-		//$this->_db->open($this->_sourceDirectory.'/'.$this->_filename);
 		$this->_db->exec($this->install());
 	}
 
@@ -69,13 +62,12 @@ class SqliteDataStore extends BaseSqlDataStore implements CumulaDataStore {
 		$arr = array();
 		if(!$result)
 			return false;
+		
 		while($res = $result->fetchArray(SQLITE3_ASSOC)) {
 			$arr[] = $res;
 		}
 		
-		if (count($arr) == 1)
-			return $arr[0];
-		else if(count($arr) == 0)
+		if(count($arr) == 0)
 			return false;
 		else
 			return $arr;

@@ -21,7 +21,7 @@
  * @subpackage	Core
  * @author     Seabourne Consulting
  */
-abstract class BaseMVCController {
+abstract class BaseMVCController extends EventDispatcher {
 	public $component;
 	
 	protected $_before_filters = array();
@@ -44,6 +44,13 @@ abstract class BaseMVCController {
 		$this->_data = array();
 		$this->_alerts = array('messages' => array(), 'warnings' => array());
 		$this->_afterFilter('_doAlerts');
+	}
+	
+	protected function setTemplateFile($file) {
+		$this->_beforeFilter(function() {
+			if($templater = Application::getTemplater())
+				$templater->setTemplateFile('dashboard.tpl.php');
+		});
 	}
 	
 	protected function _setTemplate() {
@@ -109,9 +116,18 @@ abstract class BaseMVCController {
 	public function __call($name, $arguments) {
 		$this->_renderCalled = false;
 		$func = $this->_parseFunc($name);
-		
-		foreach($this->_before_filters as $filter) {
-			call_user_func_array(array(&$this, $filter), $arguments);
+
+		if($arguments[1] instanceof Router) {
+			foreach($this->_before_filters as $filter) {
+				//stop processing if the before filter returns false
+				if($filter instanceof Closure) {
+					if(call_user_func_array($filter, $arguments) === false)
+						return;
+				} else {
+					if(method_exists($this, $filter) && is_callable(array(&$this, $filter)) && call_user_func_array(array(&$this, $filter), $arguments) === false)
+						return;
+				}
+			}
 		}
 		
 		$output = null;
@@ -123,7 +139,8 @@ abstract class BaseMVCController {
 		
 		
 		foreach($this->_after_filters as $filter) {
-			call_user_func_array(array(&$this, $filter), $arguments);
+			if(method_exists($this, $filter) && is_callable(array(&$this, $filter))) 
+				call_user_func_array(array(&$this, $filter), $arguments);
 		}
 		
 		return $output;

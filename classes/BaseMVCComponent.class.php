@@ -12,9 +12,6 @@
  * @link       http://cumula.org
  */
 
-require_once dirname(__FILE__) . '/BaseMVCController.php';
-require_once dirname(__FILE__) . '/BaseMVCModel.php';
-
 /**
  * BaseMVCComponent Class
  *

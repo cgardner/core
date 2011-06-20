@@ -22,7 +22,7 @@
  * @author     Seabourne Consulting
  */
 
-class TextFileDataStore implements CumulaDataStore {
+class TextFileDataStore extends BaseDataStore {
 	
 	private $_logFile;
 	

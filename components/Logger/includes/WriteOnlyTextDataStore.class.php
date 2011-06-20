@@ -22,12 +22,13 @@
  * @subpackage	Logger
  * @author     Seabourne Consulting
  */
-class WriteOnlyTextDataStore extends BaseDataStore implements CumulaDataStore {
+class WriteOnlyTextDataStore extends BaseDataStore {
 	private $_logFile;
 
-	public function __construct($config_values) {
+	public function __construct($schema, $configValues) {
+		parent::__construct($schema, $configValues);
 		$this->_storage = array();
-		$this->_logFile = $config_values['logfile'];
+		$this->_logFile = $configValues['logfile'];
 	}
 
 	public function connect() {
@@ -51,8 +52,20 @@ class WriteOnlyTextDataStore extends BaseDataStore implements CumulaDataStore {
 		$this->create($obj);
 	}
 
-	public function delete($obj) {
+	public function destroy($obj) {
 		return false;
+	}
+	
+	public function install() {
+		return false;
+	}
+	
+	public function uninstall() {
+		return false;
+	}
+	
+	public function translateFields($fields) {
+		return $fields;
 	}
 
 	public function query($args, $order = null, $sort = null) {

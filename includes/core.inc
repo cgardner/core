@@ -18,7 +18,6 @@ require_once dirname(__FILE__) . '/inflect.php';
 require_once dirname(__FILE__) . '/utils.php';
 
 //Load interfaces
-require_once dirname(__FILE__) . '/../interfaces/CumulaDataStore.interface.php';
 require_once dirname(__FILE__) . '/../interfaces/CumulaSchema.interface.php';
 require_once dirname(__FILE__) . '/../interfaces/CumulaConfig.interface.php';
 require_once dirname(__FILE__) . '/../interfaces/CumulaTemplater.interface.php';
@@ -27,9 +26,11 @@ require_once dirname(__FILE__) . '/../interfaces/CumulaTemplater.interface.php';
 require_once dirname(__FILE__) . '/../classes/EventDispatcher.class.php';
 require_once dirname(__FILE__) . '/../classes/BaseDataStore.class.php';
 require_once dirname(__FILE__) . '/../classes/BaseComponent.class.php';
-require_once dirname(__FILE__) . '/../classes/BaseMVCComponent/BaseMVCComponent.class.php';
+require_once dirname(__FILE__) . '/../classes/BaseMVCComponent.class.php';
+require_once dirname(__FILE__) . '/../classes/BaseMVCController.class.php';
+require_once dirname(__FILE__) . '/../classes/BaseMVCModel.class.php';
 require_once dirname(__FILE__) . '/../classes/BaseSqlDataStore.class.php';
-require_once dirname(__FILE__) . '/../classes/BaseSchema.class.php';
+require_once dirname(__FILE__) . '/../classes/SimpleSchema.class.php';
 
 //Load Core Classes
 require_once dirname(__FILE__) . '/../classes/ComponentManager.class.php';

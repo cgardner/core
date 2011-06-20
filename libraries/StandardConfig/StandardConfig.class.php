@@ -33,11 +33,9 @@ class StandardConfig implements CumulaConfig {
 	 */
 	public function __construct($source_directory, $source_file) {
 		global $App;
-		$this->_dataStore = new YAMLDataStore(array('source_directory' => $source_directory, 'filename' => $source_file));
-		$schema = new BaseSchema();
-		$schema->setFields(array('id' => 'integer',
+		$schema = new SimpleSchema('id', array('id' => 'integer',
 					 'value' => 'string'));
-		$this->_dataStore->setSchema($schema);
+		$this->_dataStore = new YAMLDataStore($schema, array('source_directory' => $source_directory, 'filename' => $source_file));
 		$this->_dataStore->connect();
 	}
 	

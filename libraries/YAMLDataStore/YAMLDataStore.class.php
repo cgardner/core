@@ -26,7 +26,7 @@ require_once dirname(__FILE__) . '/includes/sfYamlParser.php';
  * @subpackage	Core
  * @author     Seabourne Consulting
  */
-class YAMLDataStore extends BaseDataStore implements CumulaDataStore {
+class YAMLDataStore extends BaseDataStore {
 	private $_storage;
 	private $_sourceDirectory;
 	private $_filename;
@@ -39,10 +39,11 @@ class YAMLDataStore extends BaseDataStore implements CumulaDataStore {
 	 * @param $config_values
 	 * @return unknown_type
 	 */
-	public function __construct($config_values) {
+	public function __construct(CumulaSchema $schema, $configValues) {
+		parent::__construct($schema, $configValues);
 		$this->_storage = array();
-		$this->_sourceDirectory = $config_values['source_directory'];
-		$this->_filename = $config_values['filename'];
+		$this->_sourceDirectory = $configValues['source_directory'];
+		$this->_filename = $configValues['filename'];
 	}
 	
 	/* (non-PHPdoc)
@@ -98,7 +99,7 @@ class YAMLDataStore extends BaseDataStore implements CumulaDataStore {
 	/* (non-PHPdoc)
 	 * @see core/interfaces/DataStore#delete($obj)
 	 */
-	public function delete($obj) {
+	public function destroy($obj) {
 		if(is_string($obj)) {
 			if ($this->recordExists($obj)) {
 				unset($this->_storage[$obj]);
@@ -143,6 +144,18 @@ class YAMLDataStore extends BaseDataStore implements CumulaDataStore {
 	
 	private function _dataStoreFile() {
 		return $this->_sourceDirectory.'/'.$this->_filename;
+	}
+	
+	public function translateFields($fields) {
+		return $fields;
+	}
+	
+	public function install() {
+		return false;
+	}
+	
+	public function uninstall() {
+		return false;
 	}
 	
 	/**
