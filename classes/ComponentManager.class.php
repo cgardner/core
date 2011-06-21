@@ -66,7 +66,20 @@ final class ComponentManager extends BaseComponent {
 		$this->addEventListenerTo('AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
 	}
 	
-	
+
+    /**
+     * Implementation of getInfo method
+     * @return array
+     **/
+    public static function getInfo() {
+        return array(
+            'name' => 'Component Manager',
+            'description' => 'Manages components used by the Cumula Framework',
+            'dependencies' => array(),
+            'version' => CUMULA_VERSION,
+        );
+    } // end function getInfo
+
 	/**
 	 * Defines and adds the admin pages to the admin interface, exposing the installed/enabled class lists.
 	 * 
@@ -175,24 +188,27 @@ final class ComponentManager extends BaseComponent {
 	 */
 	protected function _getAvailableComponents() {
 		$ret = array();
-		//TODO: replace the hard-coded components directory with a system config
-		$dir = dir(COMPROOT);
-		while (false !== ($comp = $dir->read())) {
-			if(!strstr($comp, '.')) {
-				$comp_dir = $dir->path.'/'.$comp;
-				$class_name = ucfirst(basename($comp));
-				$ret[] = $class_name;
-			}
-		}
-		$dir = dir(CONTRIBCOMPROOT);
-		while (false !== ($comp = $dir->read())) {
-			if(!strstr($comp, '.')) {
-				$comp_dir = $dir->path.'/'.$comp;
-				$class_name = ucfirst(basename($comp));
-				$ret[] = $class_name;
-			}
-		}
-		return $ret;
+        /**
+         * Get an array of all of the directories in the component paths
+         * @TODO: replace the hard-coded components directory with a system configuration variable
+         * @TODO: Document this function better
+         */
+        $paths = glob(sprintf('{%s/*,%s/*}', COMP_PATH, CONTRIB_COMP_PATH), GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE);
+        $comp_prefix = '.component';
+        $components = glob('{'. implode("/*$comp_prefix,", $paths) ."/*$comp_prefix}", GLOB_NOSORT|GLOB_BRACE);
+        foreach ($components as $component) {
+            $comp_base = basename($component, $comp_prefix);
+            $comp = ucfirst($comp_base);
+            if (!class_exists($comp_base)) {
+                $events_file = realpath(dirname($component) .'/events.inc');
+                if ($events_file !== FALSE) {
+                    require_once($events_file);
+                }
+                require_once $component;
+            }
+            $ret[$comp] = $comp_base::getInfo();
+        }
+        return $ret;
 	}
 
 	/**

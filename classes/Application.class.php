@@ -177,6 +177,8 @@ final class Application extends EventDispatcher {
 			$template_path = ROOT.DIRECTORY_SEPARATOR.$template_path;	
 
 		define('APPROOT', realpath($core_path).DIRECTORY_SEPARATOR);
+        define('COMP_PATH', $core_component_path);
+        define('CONTRIB_COMP_PATH', $contrib_component_path);
 		define('COMPROOT', realpath($core_component_path).DIRECTORY_SEPARATOR);
 		define('CONTRIBCOMPROOT', realpath($contrib_component_path).DIRECTORY_SEPARATOR);
 		define('CONFIGROOT', realpath($config_path).DIRECTORY_SEPARATOR);
