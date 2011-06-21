@@ -40,7 +40,7 @@ abstract class BaseMVCModel extends EventDispatcher {
 			}
 			return $res;
 		} else {
-			return array();
+			return false;
 		}	
 	}
 	
@@ -105,7 +105,7 @@ abstract class BaseMVCModel extends EventDispatcher {
 	public function __get($name) {
 		if(isset($this->_data[$name])) {
 			$val = $this->_data[$name];
-			if(in_array($name, $this->_fieldsToSerialize)) {
+			if(in_array($name, $this->_fieldsToSerialize) && is_string($val)) {
 				return unserialize($val);
 			}
 			return $val;

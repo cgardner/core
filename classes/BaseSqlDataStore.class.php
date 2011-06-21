@@ -85,9 +85,13 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 		if(!$this->recordExists($obj->$idField))
 			return false;
 		$sql = "UPDATE {$this->_schema->name} SET ";
+		$fields = array();
 		foreach($this->_schema->getFields() as $field => $args) {
-			$sql .= " $field=" . is_numeric($obj->$field) ? $obj->$field : "'".$this->_db->escapeString($obj->$field)."'";
+			if(property_exists($obj, $field)) {
+				$fields[] = " $field=" . (is_numeric($obj->$field) ? $obj->$field : "'".$this->_db->escapeString($obj->$field)."'");
+			}
 		}
+		$sql .= implode(", ", $fields);
 		$sql .= " WHERE {$idField}=".$obj->$idField.";";
 		return $this->doExec($sql);
 	}

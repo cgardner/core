@@ -217,6 +217,13 @@ abstract class BaseMVCController extends EventDispatcher {
 		}
 	}
 	
+	protected function renderNothing() {
+		if($app = Application::getInstance()) {
+			$response->response['content'] = '';
+			$app->removeEventListener(BOOT_POSTPROCESS, array(Templater::getInstance(), 'render'));
+		}
+	}
+	
 	/**
 	 * Helper function for redirecting client to a new location.
 	 * 

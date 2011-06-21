@@ -63,7 +63,8 @@ final class ComponentManager extends BaseComponent {
 	 * 
 	 */
 	public function startup() {
-		$this->addEventListenerTo('AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
+		if(Application::getAdminInterface())
+			$this->addEventListenerTo('AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
 	}
 	
 	
