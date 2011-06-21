@@ -216,7 +216,7 @@ final class ComponentManager extends BaseComponent {
 	 * Installs an array of components.
 	 */
 	public function installComponents($components) {
-		foreach($components as $component) {
+		foreach ($components as $component => $info) {
 			$this->installComponent($component);
 		}
 	}
