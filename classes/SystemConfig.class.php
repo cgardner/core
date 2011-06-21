@@ -34,6 +34,18 @@ class SystemConfig extends BaseComponent {
 		$this->_output = array();
 	}
 	
+    /**
+     * Implementation of the getInfo method
+     * @return array
+     **/
+    public static function getInfo() {
+        return array(
+            'name' => 'System Configuration',
+            'description' => 'Handle System Configurations',
+            'dependencies' => array(),
+            'version' => CUMULAVERSION,
+        );
+    } // end function getInfo
 	public function setupListeners() {
 		$this->addEventListenerTo('ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
 	}

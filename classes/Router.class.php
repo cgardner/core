@@ -44,6 +44,19 @@ class Router extends BaseComponent {
 		//$this->_routeStorage = new YAMLDataStore(array('source_directory' => dirname(__FILE__), 'filename' => 'routes.yml'));
 	}
 
+    /**
+     * Implementation of the getInfo method
+     * @return array
+     **/
+    public static function getInfo() {
+        return array(
+            'name' => 'Cumula Router',
+            'description' => 'Cumula URL Router',
+            'dependencies' => array(),
+            'version' => CUMULAVERSION,
+        );    
+    } // end function getInfo
+
 	public function filenotfound($event, $dispatcher, $request, $response) {
 		//TODO: do something more smart here
 		$fileName = Application::getTemplater()->config->getConfigValue('template_directory', TEMPLATEROOT).'404.tpl.php';
