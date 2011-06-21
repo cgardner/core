@@ -148,9 +148,10 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function loadSettings() {
 		$this->_availableClasses = $this->_getAvailableComponents();
-		$this->_installedClasses = array_merge(array_intersect($this->_availableClasses, $this->config->getConfigValue('installed_components', array())));
-		$this->_enabledClasses = array_merge(array_intersect($this->_availableClasses, $this->config->getConfigValue('enabled_components', array())));
-		$this->_startupClasses = array_merge(array_intersect($this->_availableClasses, $this->config->getConfigValue('startup_components', array())));	
+        $availableClasses = array_keys($this->_availableClasses);
+		$this->_installedClasses = array_merge(array_intersect($availableClasses, $this->config->getConfigValue('installed_components', array())));
+		$this->_enabledClasses = array_merge(array_intersect($availableClasses, $this->config->getConfigValue('enabled_components', array())));
+		$this->_startupClasses = array_merge(array_intersect($availableClasses, $this->config->getConfigValue('startup_components', array())));	
 	}
 
 	/**
