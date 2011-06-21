@@ -12,8 +12,8 @@
  * @link       http://cumula.org
  */
 
-require 'lib/MenuMenu.class.php';
-require 'lib/MenuItem.class.php';
+require_once 'lib/MenuMenu.class.php';
+require_once 'lib/MenuItem.class.php';
 
 /**
  * MenuManager Component
