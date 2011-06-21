@@ -42,6 +42,18 @@ class Devel extends BaseComponent {
 		$this->_logEventStack = '';
 	}
 	
+    /**
+     * Implementation of the getInfo method
+     * @return array
+     **/
+    public static function getInfo() {
+        return array(
+            'name' => 'Cumula Development Component',
+            'description' => 'Display Debugging information on the pages during development',
+            'dependencies' => array(),
+            'version' => CUMULAVERSION,
+        );
+    } // end function getInfo
 	
 	/**
 	 * Starts the application response timer, used as an event callback

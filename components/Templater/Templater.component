@@ -40,6 +40,18 @@ class Templater extends BaseComponent implements CumulaTemplater {
 		$this->_title = Application::getSystemConfig()->getValue(SETTING_SITE_TITLE);
 	}
 	
+    /**
+     * Implementation of the getInfo method
+     * @return array
+     **/
+    public static function getInfo() {
+        return array(
+            'name' => 'Cumula Templater',
+            'description' => 'Default Cumula Template component',
+            'dependencies' => array(),
+            'version' => CUMULAVERSION,
+        );
+    } // end function getInfo
 	public function setOutput($output) {
 		$this->_output .= (string)$output;
 	}

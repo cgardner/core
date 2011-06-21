@@ -8,6 +8,18 @@ class Session extends BaseComponent {
 		Application::getInstance()->addEventListener(BOOT_INIT, array($this, 'startSession'));
 	}
 	
+    /**
+     * Implementation of getInfo method
+     * @return array
+     **/
+    public static function getInfo() {
+        return array(
+            'name' => 'Session Handler',
+            'description' => 'Default Session Handler in Cumula',
+            'dependencies' => array(),
+            'version' => CUMULAVERSION,
+        );
+    } // end function getInfo
 	public function startSession() {
 		//session_name($this->_composeName());
 		session_start();

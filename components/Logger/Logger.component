@@ -37,6 +37,18 @@ class Logger extends BaseComponent {
 		
 	}
 	
+    /**
+     * Implementation of the getInfo method
+     * @return array
+     **/
+    public static function getInfo() {
+        return array(
+            'name' => 'Cumula Logger',
+            'description' => 'Logging Component',
+            'dependencies' => array(),
+            'version' => CUMULAVERSION,
+        );
+    } // end function getInfo
 	public function startup() {
 		$cm = ComponentManager::getInstance();
 		if($cm) {

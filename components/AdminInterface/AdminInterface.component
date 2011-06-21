@@ -51,6 +51,21 @@ class AdminInterface extends BaseComponent {
 		$this->stats = array();
 	}
 	
+    /**
+     * Implementation of getInfo method
+     * @return array
+     **/
+    public static function getInfo() {
+        return array(
+            'name' => 'Administrative Interface',
+            'description' => 'Default Cumula Administrative Interface',
+            'dependencies' => array(
+                'Router',
+            ),
+            'version' => CUMULAVERSION,
+
+        );
+    } // end function getInfo
 	/**
 	 * Startup function.  Called on COMPONENTMANAGER_STARTUP_COMPLETE.
 	 *

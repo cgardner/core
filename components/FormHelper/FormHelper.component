@@ -34,6 +34,18 @@ class FormHelper extends BaseComponent {
 		self::$_formId = '';
 	}
 	
+    /**
+     * Implementation of getInfo method
+     * @return array
+     **/
+    public static function getInfo() {
+        return array(
+            'name' => 'Form Builder Component',
+            'description' => 'Helper Component for building Forms',
+            'dependencies' => array(),
+            'version' => CUMULAVERSION,
+        );
+    } // end function getInfo
 	public function startup() {
 		$this->_dataStore->connect();
 		//Is a form submission

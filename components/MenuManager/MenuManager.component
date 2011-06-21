@@ -35,6 +35,18 @@ class MenuManager extends BaseComponent {
 		Application::getInstance()->addEventListener(BOOT_POSTPROCESS, array(&$this, 'renderMenus'));
 	}
 
+    /**
+     * Implementation of the getInfo method
+     * @return array
+     **/
+    public static function getInfo() {
+        return array(
+            'name' => 'Menu Manager',
+            'description' => 'Manage Menus',
+            'dependencies' => array(),
+            'version' => CUMULAVERSION,
+        );
+    } // end function getInfo
 	//Item should be an array defining an itemTitle and itemPath
 	public function addMenuItem($menuId, $item) {
 		if(isset($this->_menus[$menuId])) {
