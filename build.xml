@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="Cumula Web Framework" default="test">
+    <property file="build.properties" />
+
+    <!-- Clean the repository -->
+    <target name="test.clean">
+        <delete dir="${project.coveragedir}" />
+    </target>
+
+    <!-- Prepare the directory for the tests -->
+    <target name="test.prepare" depends="test.clean">
+        <mkdir dir="${project.coveragedir}" />
+        <mkdir dir="${tests.reportdir}" />
+        <mkdir dir="${coverage.reportdir}" />
+    </target>
+
+    <!-- Perform Automated Tests -->
+    <target name="test" depends="test.prepare">
+        <!-- Prepare the coverage report -->
+        <coverage-setup database="${coverage.db}">
+            <fileset dir="${project.basedir}">
+                <include name="**/*.php" />
+                <include name="**/*.inc" />
+                <include name="**/*.component" />
+                <exclude name="**/events.inc" />
+                <exclude name="interfaces/*" />
+                <exclude name="**/templates/*" />
+                <exclude name="test/*" />
+                <exclude name="**/views/*" />
+                <exclude name="**/template/*" />
+            </fileset>
+        </coverage-setup>
+
+        <!-- Run the automated tests -->
+        <phpunit haltonerror="false" haltonfailure="false" codecoverage="true"
+            haltonskipped="false">
+            <formatter type="xml" usefile="true" todir="${tests.reportdir}" />
+            <formatter type="plain" usefile="false" />
+            <batchtest name="Cumula Automated Tests">
+                <fileset dir="${project.basedir}/test">
+                    <include name="**/*.php" />
+                </fileset>
+            </batchtest>
+        </phpunit>
+
+        <!-- Build the report -->
+        <phpunitreport infile="${tests.reportdir}/testsuites.xml" todir="${tests.reportdir}" />
+        <coverage-report>
+            <report todir="${coverage.reportdir}" />
+        </coverage-report>
+    </target>
+</project>
