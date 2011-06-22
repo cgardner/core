@@ -1,0 +1,28 @@
+<?php
+
+class BugTracker extends BaseMVCComponent 
+{
+  
+  protected $evm;
+  protected $em;
+  
+	public function __construct() 
+  {
+		parent::__construct();
+    
+    require_once('doctrine_init.php');
+    
+    $this->evm = $evm;
+    $this->em = $em;
+	}
+  
+  
+  public function get_em() {
+    return $this->em;
+  }
+  
+  
+  public function get_evm() {
+    return $this->evm;
+  }
+}
