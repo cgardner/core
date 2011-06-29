@@ -29,13 +29,22 @@ class Test_BaseTest extends PHPUnit_Framework_TestCase {
     protected $files = array();
 
     /**
+     * setUp
+     * @param void
+     * @return void
+     **/
+    public function setUp() {
+      
+    } // end function setUp
+
+    /**
      * tearDown
      * @param void
      * @return void
      **/
     public function tearDown() {
         if (is_array($this->files) && count($this->files) > 0) {
-            foreach ($this->files as $file) {
+            foreach ($this->files as $key => $file) {
                 $file = realpath($file);
                 if ($file !== FALSE && file_exists($file)) {
                     if (is_dir($file)) {
@@ -45,7 +54,7 @@ class Test_BaseTest extends PHPUnit_Framework_TestCase {
                         unlink($file);
                     }
                     if (file_exists($file)) {
-                        printf('Houston, We have a problem.  %s wasn\'t deleted', $file);
+                        printf("Houston, We have a problem.  %s wasn\'t deleted\n", $file);
                     }
                 }
             }

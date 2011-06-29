@@ -38,9 +38,10 @@ class Test_Application extends Test_BaseTest {
 
         if (!is_null($paths)) {
             // The following paths don't get created in the Application class
-            mkdir($paths['core_path']);
-            mkdir($paths['core_component_path']);
-            mkdir($paths['template_path']);
+            if (!file_exists($paths['core_path'])) mkdir($paths['core_path']);
+            if (!file_exists($paths['core_component_path'])) mkdir($paths['core_component_path']);
+            if (!file_exists($paths['template_path'])) mkdir($paths['template_path']);
+            $this->files += $paths;
         }
         
         global $callbackExecuted;
@@ -69,9 +70,12 @@ class Test_Application extends Test_BaseTest {
             // Make sure the constant is longer than "/" and a file that exists
             $this->assertGreaterThan(2, strlen($constVal), sprintf('Make sure the value of %s is greater than 2', $const));
             $this->assertFileExists($constVal);
+        }
 
-            // Make sure the file is deleted after the tests are run
-            $this->files[] = $constVal;
+        if (!is_null($paths)) {
+            foreach ($paths as $name => $path) {
+                $this->files[$name] = ROOT . DIRECTORY_SEPARATOR . $path;
+            }
         }
     } // end function testConstructor
 

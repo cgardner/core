@@ -8,3 +8,7 @@ set_include_path(implode(PATH_SEPARATOR, array(
     BASE_DIR,
     BASE_DIR .'/test',
 )));
+
+if (ini_get('date.timezone') == '') {
+    date_default_timezone_set('America/Los_Angeles');
+}
