@@ -62,4 +62,49 @@ class TextFileDataStore extends BaseDataStore {
 	public function recordExists($id) {
 		
 	}
+
+    /**
+     * Implementation of abstract destroy method
+     * @param mixed $obj
+     * @return void
+     **/
+    public function destroy($obj) {
+        
+    } // end function destroy
+
+    /**
+     * Implementation of abstract install method
+     * @param void
+     * @return void
+     **/
+    public function install() {
+        
+    } // end function install
+
+    /**
+     * Implementation of the abstract uninstall method
+     * @param void
+     * @return void
+     **/
+    public function uninstall() {
+        
+    } // end function uninstall
+
+    /**
+     * Implementation of the abstract translateFields method
+     * @param mixed $fields
+     * @return void
+     **/
+    public function translateFields($fields) {
+        
+    } // end function translateFields
+
+    /**
+     * Implementation of the abstract lastRowId method
+     * @param void
+     * @return void
+     **/
+    public function lastRowId() {
+        
+    } // end function lastRowId
 }
