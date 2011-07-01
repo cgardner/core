@@ -23,6 +23,8 @@ require_once 'classes/Application.class.php';
  **/
 class Test_Application extends Test_BaseTest {
 
+    private $calls = 0;
+
     /**
      * Test the Constructor
      * @param void
@@ -79,6 +81,40 @@ class Test_Application extends Test_BaseTest {
         }
     } // end function testConstructor
 
+    /**
+     * Test the boot method
+     * @param void
+     * @return void
+     * @group all
+     * @covers Application::boot
+     **/
+    public function testBoot() {
+        $application = new Application(); 
+
+        foreach ($application->bootProcess as $bootEvent) {
+            $application->addEventListener($bootEvent, array($this, 'applicationCallback'));
+        }
+
+        $application->boot();
+        $this->assertEquals(count($application->bootProcess), $this->calls);
+    } // end function testBoot
+
+    /**
+     * Testing the magic __callStatic method
+     * @param void
+     * @return void
+     * @group all
+     * @covers Application::__callStatic
+     **/
+    public function testCallStatic() {
+        // Need to instantiate the class before we can use the magic method
+        // @TODO Make Application::__callStatic instantiate an object if it's not instantiated already
+        $null = new ApplicationTestEvent();
+
+        $this->assertInstanceOf('ApplicationTestEvent', Application::getApplicationTestEvent());
+
+        $this->assertFalse(Application::getClassDoesNotExist());
+    } // end function testCallStatic
 
     public function constructorDataProvider() {
         return array(
@@ -93,4 +129,15 @@ class Test_Application extends Test_BaseTest {
             'No Paths' => array(NULL),
         );
     }
+
+    /**
+     * Application Callback method
+     * @param void
+     * @return void
+     **/
+    public function applicationCallback() {
+        $this->calls++;
+    } // end function applicationCallback
 } // end class Test_Application extends Test_BaseTest
+
+class ApplicationTestEvent extends EventDispatcher {}
