@@ -2,8 +2,8 @@
 
 class googleAuthentication extends Authentication implements CumulaAuth
 {
-  protected $success = FALSE;
-  protected $response = array();
+  public $success = FALSE;
+  public $response = array();
 
   public function __construct() {
     parent::__construct();
@@ -31,6 +31,7 @@ class googleAuthentication extends Authentication implements CumulaAuth
         $this->response['msg'] = 'User has canceled authentication!';
       } else {
         $this->response['msg'] = 'User ' . ($openid->validate() ? $openid->identity . ' has ' : 'has not ') . 'logged in.';
+        $this->response['id'] = $openid->identity;
         $this->success = $openid->validate();
       }
     } 
