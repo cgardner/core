@@ -26,7 +26,7 @@ abstract class BaseMVCController extends EventDispatcher {
 	
 	protected $_before_filters = array();
 	protected $_after_filters = array();
-	protected $_template = false;
+	protected $_template = 'template.tpl.php';
 	protected $_data;
 	protected $_alerts;
 	protected $_renderCalled;
@@ -46,16 +46,19 @@ abstract class BaseMVCController extends EventDispatcher {
 		$this->_afterFilter('_doAlerts');
 	}
 	
+  
 	protected function setTemplateFile($file) {
-		$this->_beforeFilter(function() {
+    $this->_beforeFilter(function() {
 			if($templater = Application::getTemplater())
-				$templater->setTemplateFile('dashboard.tpl.php');
+				$templater->setTemplateFile('template.tpl.php');
 		});
 	}
 	
+  
 	protected function _setTemplate() {
 		if ($this->_template) {
-			Application::getTemplater()->setTemplateDir($App->rootDirectory.'/../templates/'.$this->_template.'/');
+			Application::getTemplater()->setTemplateDir(APPROOT.'/../templates/');
+			Application::getTemplater()->setTemplateFile($this->_template);
 		}	
 	}
 	
