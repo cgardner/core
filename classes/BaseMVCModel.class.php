@@ -43,6 +43,21 @@ abstract class BaseMVCModel extends EventDispatcher {
 			return false;
 		}	
 	}
+  
+  
+  public static function findOne($args) {
+		$res = static::getDataStore()->query($args, null, null, 1);
+		$class = get_called_class();
+		if($res && is_array($res)) {
+			for($i = 0; $i < count($res); $i++) {
+				$res[$i] = new $class($res[$i], true);
+			}
+			return $res[0];
+		} else {
+			return false;
+		}	
+	}
+  
 	
 	public static function findAll() {
 		$res = static::find(array());

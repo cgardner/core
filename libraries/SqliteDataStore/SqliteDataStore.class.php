@@ -57,8 +57,8 @@ class SqliteDataStore extends BaseSqlDataStore {
 	/* (non-PHPdoc)
 	 * @see core/interfaces/DataStore#query($args, $order, $sort)
 	 */
-	public function query($args, $order = null, $sort = null) {
-		$result = parent::query($args, $order, $sort);
+	public function query($args, $order = null, $sort = null, $limit = null) {
+		$result = parent::query($args, $order, $sort, $limit);
 		$arr = array();
 		if(!$result)
 			return false;
