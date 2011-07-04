@@ -111,13 +111,14 @@ class Test_BaseComponent extends Test_BaseTest {
      * @covers BaseComponent::renderContent
      **/
     public function testRenderContent() {
+        $this->markTestSkipped('Unable to test this method. It relies on Application::getResponse which is not able to be mocked or overloaded.');
         $value = uniqid('value_');
 
         $templateFile = $this->createTemplate($value);
         $this->component->render($templateFile);
 
         $mockResponse = $this->getMock('Response');
-        var_dump(($mockResponse instanceOf Response) === TRUE);
+        $this->assertTrue(($mockResponse instanceOf Response) === TRUE);
         $response = Application::getResponse();
     } // end function testRenderContent
 
