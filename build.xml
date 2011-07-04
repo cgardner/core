@@ -3,19 +3,19 @@
     <property file="build.properties" />
 
     <!-- Clean the repository -->
-    <target name="test.clean">
+    <target name="test.clean" description="clean up after the automated tests">
         <delete dir="${project.coveragedir}" />
     </target>
 
     <!-- Prepare the directory for the tests -->
-    <target name="test.prepare" depends="test.clean">
+    <target name="test.prepare" depends="test.clean" description="Prepare to run the Automated Testss">
         <mkdir dir="${project.coveragedir}" />
         <mkdir dir="${tests.reportdir}" />
         <mkdir dir="${coverage.reportdir}" />
     </target>
 
     <!-- Perform Automated Tests -->
-    <target name="test" depends="test.prepare">
+    <target name="test" depends="test.prepare" description="Run the Automated Tests">
         <!-- Prepare the coverage report -->
         <coverage-setup database="${coverage.db}">
             <fileset dir="${project.basedir}">
@@ -25,7 +25,7 @@
                 <exclude name="**/events.inc" />
                 <exclude name="interfaces/*" />
                 <exclude name="**/templates/*" />
-                <exclude name="test/*" />
+                <exclude name="test/**/*" />
                 <exclude name="**/views/**/*.php" />
                 <exclude name="**/template/*" />
             </fileset>
@@ -39,13 +39,15 @@
             <batchtest name="Cumula Automated Tests">
                 <fileset dir="${project.basedir}/test">
                     <include name="**/*.php" />
+                    <exclude name="base/*.php" />
+                    <exclude name="bootstrap.php" />
                 </fileset>
             </batchtest>
         </phpunit>
 
         <!-- Build the report -->
         <phpunitreport infile="${tests.reportdir}/testsuites.xml" todir="${tests.reportdir}" />
-        <coverage-report>
+        <coverage-report outfile="${coverage.reportdir}/coverage.xml">
             <report todir="${coverage.reportdir}" />
         </coverage-report>
     </target>
