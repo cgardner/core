@@ -23,6 +23,11 @@ require_once 'classes/BaseComponent.class.php';
  * @author Seabourne Consulting
  */
 class Test_BaseComponent extends Test_BaseTest {
+    /**
+     * Store the component variable
+     * @var BaseComponent
+     */
+    private $component;
 
     /**
      * setUp
@@ -33,6 +38,8 @@ class Test_BaseComponent extends Test_BaseTest {
         defined('ROOT') || 
             define('ROOT', dirname(BASE_DIR));
         vfsStream::setup('componentTest');
+
+        $this->component = new TestBaseComponent();
     } // end function setUp
 
     /**
@@ -44,10 +51,8 @@ class Test_BaseComponent extends Test_BaseTest {
      * @covers BaseComponent::__construct
      **/
     public function testConstructor() {
-        $mock = new TestBaseComponent();
-
-        $this->assertObjectHasAttribute('config', $mock);
-        $this->assertObjectNotHasAttribute(uniqid(), $mock);
+        $this->assertObjectHasAttribute('config', $this->component);
+        $this->assertObjectNotHasAttribute(uniqid(), $this->component);
     } // end function testConstructor
 
     /**
@@ -67,6 +72,7 @@ class Test_BaseComponent extends Test_BaseTest {
         $prevConsts = get_defined_constants(TRUE);
         $prevConsts = $prevConsts['user'];
 
+        // Must re-instantiate this class for this test
         $baseComponent = new TestBaseComponent();
 
         $newConsts = get_defined_constants(TRUE);
@@ -79,6 +85,61 @@ class Test_BaseComponent extends Test_BaseTest {
         // Let's not forget why we did all of this work.
         $this->assertTrue($baseComponent->eventExists($constValue));
     } // end function testRegisterEvents
+
+    /**
+     * Test the renderPartial
+     * @param void
+     * @return void
+     * @group all
+     * @covers BaseComponent::renderPartial
+     **/
+    public function testRenderPartial() {
+        $value = uniqid('value_');
+
+        $templateFile = $this->createTemplate($value);
+        
+        $output = $this->component->renderPartial($templateFile);
+
+        $this->assertEquals($output, $value);
+    } // end function testRenderPartial
+
+    /**
+     * Test the renderContent method
+     * @param void
+     * @return void
+     * @group all
+     * @covers BaseComponent::renderContent
+     **/
+    public function testRenderContent() {
+        $value = uniqid('value_');
+
+        $templateFile = $this->createTemplate($value);
+        $this->component->render($templateFile);
+
+        $mockResponse = $this->getMock('Response');
+        var_dump(($mockResponse instanceOf Response) === TRUE);
+        $response = Application::getResponse();
+    } // end function testRenderContent
+
+    /**
+     * Create a template and store the contents
+     * @param string $contents
+     * @return string
+     * @author Craig Gardner <craig@seabourneconsulting.com>
+     **/
+    public function createTemplate($contents, $fileName = NULL) {
+        if (is_null($fileName)) {
+            $fileName = 'componentTest/view.tpl.php';
+        }
+
+        $fileUrl = vfsStream::url($fileName);
+
+        if (file_put_contents($fileUrl, $contents) === FALSE) {
+            $this->fail(sprintf('Failed to write to %s', $fileName));
+        }
+        return $fileUrl;
+    } // end function createTemplate
+    
 }
 
 class TestBaseComponent extends BaseComponent {
