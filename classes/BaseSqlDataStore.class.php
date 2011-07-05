@@ -117,16 +117,16 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 		$idField = $this->_schema->getIdField();
 		$sql = "DELETE FROM {$this->_schema->name} WHERE ";
 		if(is_numeric($obj))
-			$sql .= "$idField=$obj;";
+			$sql .= $idField.' = '.$obj.';';
 		else
-			$sql .= "$idField={$obj->$idField};";
+			$sql .= $idField.' = "'.$obj->$idField.'";';
 		return $this->doExec($sql);
 	}
 
 	/* (non-PHPdoc)
 	 * @see core/interfaces/DataStore#query($args, $order, $sort)
 	 */
-	public function query($args, $order = null, $sort = null) {
+	public function query($args, $order = null, $sort = null, $limit = null) {
 		$sql = "SELECT * FROM {$this->_schema->name} WHERE ";
 		//Args is an id
 		if (is_numeric($args)) {
@@ -141,6 +141,11 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 			//no parsible arguments found
 			return false;
 		}
+    
+    if ($limit) {
+      $sql .= ' LIMIT '.$limit;
+    }
+    
 		$sql .= ';';
 		return $this->doQuery($sql);
 	}

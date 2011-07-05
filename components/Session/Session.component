@@ -12,6 +12,11 @@ class Session extends BaseComponent {
 		//session_name($this->_composeName());
 		session_start();
 	}
+  
+  public function endSession() {
+    session_unset();
+    session_destroy();
+  }
 	
 	protected function _composeName() {
 		$name = $_SERVER['REMOTE_ADDR'];
