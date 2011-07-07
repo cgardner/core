@@ -11,6 +11,7 @@
  * @copyright  2011 Seabourne Consulting
  * @link       http://cumula.org
  */
+require_once './classes/Exception/EventException.class.php';
 
 /**
  * EventDispatcher Class
@@ -98,7 +99,7 @@ abstract class EventDispatcher {
 	 */
 	public function addEventListenerTo($class, $event, $function) {
 		if(!class_exists($class))
-			trigger_error('Tried to bind to an event for a class that does not exist.', E_USER_WARNING);
+			throw new EventException('Tried to bind to an event for a class that does not exist.');
 		if(is_string($function)) {
 			$callback = array($this, $function);
 		} else if (is_callable($function)) {
@@ -108,7 +109,7 @@ abstract class EventDispatcher {
 		if($instance)
 			return $instance->addEventListener($event, $callback);
 		else
-			trigger_error("Tried to bind event to class $class which has not yet been instantiated");
+			throw new EventException("Tried to bind event to class $class which has not yet been instantiated");
 	}
 	
 	/**

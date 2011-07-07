@@ -50,8 +50,11 @@ abstract class BaseComponent extends EventDispatcher {
 		$this->_output = array();
 		$this->config = new StandardConfig(ROOT.'/config', get_class($this).'.yaml');
 		
-		@$this->addEventListenerTo('ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
-		$this->addEventListenerTo('Application', BOOT_SHUTDOWN, 'shutdown');
+        try {
+            $this->addEventListenerTo('ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
+            $this->addEventListenerTo('Application', BOOT_SHUTDOWN, 'shutdown');
+        }
+        catch (EventException $e) {}
 
 		$this->addEvent(EVENT_LOGGED);
 	}

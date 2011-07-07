@@ -23,7 +23,7 @@
  */
 class ContentBlock extends EventDispatcher {
 	public $data;
-	public $content;
+	public $content = '';
 	
 	public function __construct() {
 		parent::__construct();
