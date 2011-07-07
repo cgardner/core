@@ -12,6 +12,8 @@
  * @link        http://cumula.org
  */
 
+require_once('vfsStream/vfsStream.php');
+
 /**
  * BaseTest Class
  *
