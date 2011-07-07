@@ -156,16 +156,11 @@ final class ComponentManager extends BaseComponent {
 	 * @return unknown_type
 	 */
 	public function startStartupComponents() {
-		foreach($this->_startupClasses as $component) {
-			if (!class_exists($component) && in_array($component, $this->_enabledClasses)) {
-				$root = dirname(__FILE__).'/../components';
-				$class_file = $root.'/'.$component.'/'.$component.'.component';
-				if (is_file($class_file) && !class_exists($component)) {
-					require $class_file;
-				}
-			}
-			$this->startupComponent($component);
-		}
+        $files = $this->getComponentFiles();
+        foreach ($files as $component) {
+            require_once($component);
+            $this->startUpComponent(basename($component, '.component'));
+        }
 	}
 
 	/**
@@ -176,24 +171,11 @@ final class ComponentManager extends BaseComponent {
 	 */
 	protected function _getAvailableComponents() {
 		$ret = array();
-		//TODO: replace the hard-coded components directory with a system config
-		$dir = dir(COMPROOT);
-		while (false !== ($comp = $dir->read())) {
-			if(!strstr($comp, '.')) {
-				$comp_dir = $dir->path.'/'.$comp;
-				$class_name = ucfirst(basename($comp));
-				$ret[] = $class_name;
-			}
-		}
-		$dir = dir(CONTRIBCOMPROOT);
-		while (false !== ($comp = $dir->read())) {
-			if(!strstr($comp, '.')) {
-				$comp_dir = $dir->path.'/'.$comp;
-				$class_name = ucfirst(basename($comp));
-				$ret[] = $class_name;
-			}
-		}
-		return $ret;
+        $files = $this->getComponentFiles();
+        foreach ($files as $component) {
+            $ret[] = basename($component, '.component');
+        }
+        return $ret;
 	}
 
 	/**
@@ -389,4 +371,15 @@ final class ComponentManager extends BaseComponent {
 	public function getStartupComponentList() {
 		return $this->_startupClasses;
 	}
+
+    /**
+     * Get the Files that should contain components
+     * @param void
+     * @return array
+     * @author Craig Gardner <craig@seabourneconsulting.com>
+     **/
+    public function getComponentFiles() {
+        return glob(sprintf('{%s*/*.component,%s*/*.component}', COMPROOT, CONTRIBCOMPROOT), GLOB_BRACE);
+        
+    } // end function getComponentFiles
 }
