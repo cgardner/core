@@ -28,6 +28,7 @@
                 <exclude name="test/**/*" />
                 <exclude name="**/views/**/*.php" />
                 <exclude name="**/template/*" />
+                <exclude name="components/**/libraries/**" />
             </fileset>
         </coverage-setup>
 
