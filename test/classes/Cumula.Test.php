@@ -17,9 +17,9 @@ class Test_Cumula extends Test_BaseTest {
      * @covers Cumula::setInstance
      **/
     public function testSetInstance() {
-        $application = $this->getMock('Application');
+        $application = $this->getMock('EventDispatcher');
 
-        $this->assertTrue(Cumula::setInstance('Application', $application)); 
+        $this->assertTrue(Cumula::setInstance('EventDispatcher', $application)); 
         $this->assertFalse(Cumula::setInstance('SomeOtherClass', $application));
     } // end function testSetInstance
 
@@ -31,16 +31,16 @@ class Test_Cumula extends Test_BaseTest {
      * @covers Cumula::getInstance
      **/
     public function testGetInstance() {
-        $application = $this->getMock('Application');
-        Cumula::setInstance('Application', $application);
+        $application = $this->getMock('EventDispatcher');
+        Cumula::setInstance('EventDispatcher', $application);
 
         // Make sure the method returns what we expect
-        $this->assertEquals($application, Cumula::getInstance('Application'));
+        $this->assertEquals($application, Cumula::getInstance('EventDispatcher'));
         $this->assertFalse(Cumula::getInstance('SomeOtherClass'));
 
         // Make sure a reference to the instance is stored rather than just a copy
         $application->myNewVariable = uniqid();
-        $app2 = Cumula::getInstance('Application');
+        $app2 = Cumula::getInstance('EventDispatcher');
         $this->assertEquals($application->myNewVariable, $app2->myNewVariable);
     } // end function testGetInstance
 } // end class Test_Cumula extends Test_BaseTest
