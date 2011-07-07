@@ -11,7 +11,7 @@
  * @copyright  2011 Seabourne Consulting
  * @link       http://cumula.org
  */
-require_once './classes/Exception/EventException.class.php';
+require_once 'Exception/EventException.class.php';
 
 /**
  * EventDispatcher Class
