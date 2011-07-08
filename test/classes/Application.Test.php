@@ -19,11 +19,23 @@ require_once 'classes/Application.class.php';
 /**
  * Tests for the Application Class
  * @package Cumula
- * @author Seabourne Consulting
+ * @subpackage Core
+ * @runTestsInSeparateProcesses
  **/
 class Test_Application extends Test_BaseTest {
 
     private $calls = 0;
+
+    /**
+     * setUp
+     * @param void
+     * @return void
+     **/
+    public function setUp() {
+        vfsStream::setup('ApplicationRoot');
+        defined('ROOT') ||
+            define('ROOT', vfsStream::url('ApplicationRoot'));
+    } // end function setUp
 
     /**
      * Test the Constructor
@@ -37,13 +49,17 @@ class Test_Application extends Test_BaseTest {
      * @dataProvider constructorDataProvider
      **/
     public function testConstructor($paths = NULL) {
-
         if (!is_null($paths)) {
             // The following paths don't get created in the Application class
-            if (!file_exists($paths['core_path'])) mkdir($paths['core_path']);
-            if (!file_exists($paths['core_component_path'])) mkdir($paths['core_component_path']);
-            if (!file_exists($paths['template_path'])) mkdir($paths['template_path']);
-            $this->files += $paths;
+            foreach ($paths as $path) {
+                if (!file_exists($path)) {
+                    mkdir ($path, 0777, TRUE);
+                }
+            }
+        }
+        else {
+            mkdir(ROOT .'/core/components', 0777, TRUE);
+            mkdir(ROOT .'/templates', 0777, TRUE);
         }
         
         global $callbackExecuted;
@@ -57,7 +73,6 @@ class Test_Application extends Test_BaseTest {
         $this->assertTrue($callbackExecuted, 'Callback was not executed during Application constructor');
 
         $checkConstants = array(
-            'ROOT',
             'APPROOT',
             'COMPROOT',
             'CONTRIBCOMPROOT',
@@ -70,14 +85,8 @@ class Test_Application extends Test_BaseTest {
         foreach ($checkConstants as $const) {
             $constVal = constant($const);
             // Make sure the constant is longer than "/" and a file that exists
-            $this->assertGreaterThan(2, strlen($constVal), sprintf('Make sure the value of %s is greater than 2', $const));
+            $this->assertGreaterThan(2, strlen($constVal), sprintf('Make sure the the length of "%s" is greater than 2', $constVal));
             $this->assertFileExists($constVal);
-        }
-
-        if (!is_null($paths)) {
-            foreach ($paths as $name => $path) {
-                $this->files[$name] = ROOT . DIRECTORY_SEPARATOR . $path;
-            }
         }
     } // end function testConstructor
 
@@ -117,14 +126,18 @@ class Test_Application extends Test_BaseTest {
     } // end function testCallStatic
 
     public function constructorDataProvider() {
+        if (defined('ROOT') === FALSE) {
+            vfsStream::setup('ApplicationRoot');
+            define('ROOT', vfsStream::url('ApplicationRoot'));
+        }
         return array(
             'Custom Paths' => array(array(
-                'core_path' => '/tmp/core',
-                'core_component_path' => '/tmp/core_component_path',
-                'contrib_component_path' => '/tmp/contrib_component_path',
-                'config_path' => '/tmp/config_path',
-                'data_path' => '/tmp/data_path',
-                'template_path' => '/tmp/template_path',
+                'core_path' => ROOT .'/core',
+                'core_component_path' => ROOT .'/core_component_path',
+                'contrib_component_path' => ROOT .'/contrib_component_path',
+                'config_path' => ROOT .'/config_path',
+                'data_path' => ROOT .'/data_path',
+                'template_path' => ROOT .'/template_path',
             )),
             'No Paths' => array(NULL),
         );
