@@ -38,6 +38,7 @@ require_once dirname(__FILE__) . '/../classes/Router.class.php';
 require_once dirname(__FILE__) . '/../classes/Response.class.php' ;
 require_once dirname(__FILE__) . '/../classes/Request.class.php' ;
 require_once dirname(__FILE__) . '/../classes/SystemConfig.class.php' ;
+require_once dirname(__FILE__) . '/../classes/Cumula.class.php';
 
 require_once dirname(__FILE__) . '/../libraries/ContentBlock/ContentBlock.class.php';
 require_once dirname(__FILE__) . '/../libraries/SqliteDataStore/SqliteDataStore.class.php';
