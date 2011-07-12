@@ -36,7 +36,7 @@ class twitterAuthentication extends Authentication implements CumulaAuth
   
   
   /**
-   * @param $params array of auth params NOTE: this is unused in the Google auth
+   * @param $params array of auth params NOTE: this is unused in the Twitter auth
    *   component but must be here to adhere to the interface.  Just ignore.
    * @return array response from auth service
    */
@@ -45,16 +45,16 @@ class twitterAuthentication extends Authentication implements CumulaAuth
     $this->response['msg'] = 'No response.';
     try 
     {
-      if (empty($_GET['oauth_token']))
+      if (!empty($_GET['denied'])) {
+        //user has clicked NO or Cancel
+        $this->redirectTo('/');
+      }
+      elseif (empty($_GET['oauth_token']))
       {
         $url = $this->twitterObjUnAuth->getAuthenticateUrl(NULL, array('oauth_callback' => 'http://'.$_SERVER["HTTP_HOST"].'/auth_twitter'));
         //$url = $this->twitterObj->getAuthenticateUrl(NULL, array('oauth_callback' => 'http://'.$_SERVER["HTTP_HOST"].'/auth_twitter'));
         //print_r($url);
         header('Location:'.$url);
-      }
-      elseif (!empty($_GET['denied'])) {
-        //user has clicked NO or Cancel
-        // do nothing;
       }
       else 
       {
