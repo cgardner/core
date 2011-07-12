@@ -37,7 +37,7 @@ class localAuthentication extends Authentication implements CumulaAuth
         $this->success = TRUE;
         $this->response = array(
           'msg' => 'User authenticated.',
-          'id' => $user->id,
+          'id' => $user->id_str,
         );
       }
     } 
