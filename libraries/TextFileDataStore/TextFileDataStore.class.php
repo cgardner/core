@@ -55,7 +55,7 @@ class TextFileDataStore extends BaseDataStore {
 		
 	}
 	
-	public function query($args, $order = null, $sort = null) {
+	public function query($args, $order = null, $limit = null) {
 
 	}
 	

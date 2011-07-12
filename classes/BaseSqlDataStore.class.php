@@ -124,9 +124,9 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	}
 
 	/* (non-PHPdoc)
-	 * @see core/interfaces/DataStore#query($args, $order, $sort)
+	 * @see core/interfaces/DataStore#query($args, $order, $limit)
 	 */
-	public function query($args, $order = null, $sort = null, $limit = null) {
+	public function query($args, $order = array(), $limit = array()) {
 		$sql = "SELECT * FROM {$this->_schema->name} WHERE ";
 		//Args is an id
 		if (is_numeric($args)) {
@@ -142,8 +142,24 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 			return false;
 		}
     
-    if ($limit) {
-      $sql .= ' LIMIT '.$limit;
+    if (!empty($order) && is_array($order)) {
+      $order_clause = array();
+      foreach ($order as $fieldname => $direction) {
+        $order_clause[] = $fieldname.' '.$direction;
+      }
+      $sql .= ' ORDER BY '.implode(',', $order_clause);
+    }
+    
+    if ($limit && !empty($limit)) {
+      if (is_int($limit)) 
+        $sql .= ' LIMIT '.$limit;
+      elseif (is_array($limit) && count($limit) == 1)
+        $sql .= ' LIMIT '.$limit[0];
+      elseif (is_array($limit) && count($limit) == 2)
+        $sql .= ' LIMIT '.implode (',', $limit);
+      else {
+        // something invalid.  do nothing.
+      }
     }
     
 		$sql .= ';';

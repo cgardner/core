@@ -48,7 +48,7 @@ abstract class BaseDataStore extends EventDispatcher {
 	
 	abstract public function destroy($obj);
 	
-	abstract public function query($args, $sort = null, $order = null);
+	abstract public function query($args, $order, $limit);
 	
 	abstract public function install();
 	

@@ -113,9 +113,9 @@ class YAMLDataStore extends BaseDataStore {
 	}
 	
 	/* (non-PHPdoc)
-	 * @see core/interfaces/DataStore#query($args, $order, $sort)
+	 * @see core/interfaces/DataStore#query($args, $order, $limit)
 	 */
-	public function query($args, $order = null, $sort = null) {
+	public function query($args, $order = null, $limit = null) {
 		if ($this->recordExists($args)) {
 			$obj = $this->_storage[$args];
 		} else {

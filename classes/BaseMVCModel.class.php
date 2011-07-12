@@ -31,8 +31,8 @@ abstract class BaseMVCModel extends EventDispatcher {
 			$this->_fieldsToSerialize[] = $fields;
 	}
 	
-	public static function find($args) {
-		$res = static::getDataStore()->query($args);
+	public static function find($args, $order = array(), $limit = null) {
+		$res = static::getDataStore()->query($args, $order, $limit);
 		$class = get_called_class();
 		if($res && is_array($res)) {
 			for($i = 0; $i < count($res); $i++) {
@@ -46,7 +46,7 @@ abstract class BaseMVCModel extends EventDispatcher {
   
   
   public static function findOne($args) {
-		$res = static::getDataStore()->query($args, null, null, 1);
+		$res = static::getDataStore()->query($args, null, 1);
 		$class = get_called_class();
 		if($res && is_array($res)) {
 			for($i = 0; $i < count($res); $i++) {
