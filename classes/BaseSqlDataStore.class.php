@@ -102,12 +102,19 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	 * @param $obj
 	 * @return unknown_type
 	 */
-	public function createOrUpdate($obj) {
+    public function createOrUpdate($obj) {
 		$idField = $this->_schema->getIdField();
-		if(isset($obj->$idField) && $this->query($obj->$idField))
+		if(isset($obj->$idField) && $this->query($obj->$idField)) {
 			return $this->update($obj);
-		else
-			return $this->create($obj);
+        } else {
+            $create = $this->create($obj);
+            if($create) {
+                $id = $this->lastRowId();
+                return $id;
+            } else {
+                return FALSE;
+            }
+        }
 	}
 
 	/* (non-PHPdoc)
