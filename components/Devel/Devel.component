@@ -146,6 +146,20 @@ class Devel extends BaseComponent {
 		else
 			return false;
 	}
+
+  /**
+   * Implementnation of the getInfo method
+   * @param void
+   * @return array
+   **/
+  public static function getInfo() {
+    return array(
+      'name' => 'Development Helper',
+      'description' => 'Output Development information for each event trigger',
+      'version' => '0.1.0',
+      'dependencies' => array(),
+    );
+  } // end function getInfo
 }
 
 function jslog($obj) {
