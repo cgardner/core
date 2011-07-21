@@ -229,6 +229,7 @@ final class ComponentManager extends BaseComponent {
 			$this->_components[$component] = new $component;
 			$instance = $this->_components[$component];
 			$instance->install();
+			$instance->installAssets();
 		}
 	}
 
@@ -371,8 +372,9 @@ final class ComponentManager extends BaseComponent {
 		foreach($enabled_list as $class_name) {
 			$this->startupComponent($class_name);
 			$instance = $this->getComponentInstance($class_name);
-			if($instance)
+			if($instance) {
 				$instance->enable();
+			}
 		}
 		$this->config->setConfigValue('enabled_components', $this->_enabledClasses);
 	}
