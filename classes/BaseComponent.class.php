@@ -238,7 +238,7 @@ abstract class BaseComponent extends EventDispatcher {
 			mkdir($componentPublicAssetDir);
 		}
 
-		$files = glob(sprintf('{%s/%s/assets,%s/%s/assets}', COMPROOT, $class, CONTRIBCOMPROOT, $class), GLOB_BRACE);
+		$files = glob(sprintf('{%s/%s/assets,%s/%s/assets}', COMPROOT, $class, CONTRIBCOMPROOT, $class), GLOB_BRACE | GLOB_NOSORT);
 		foreach ($files as $componentAssetDir) {
 			$this->copyAssetFiles($componentAssetDir, $componentPublicAssetDir);
 		}
@@ -400,7 +400,7 @@ abstract class BaseComponent extends EventDispatcher {
 		if (is_dir($source)) {
 			// Find all of the files in the directory and create directories
 			// for the subdirectories
-			foreach(glob($source .'/*') as $file) {
+			foreach(glob($source .'/*', GLOB_NOSORT) as $file) {
 				$dirname = basename($file);
 				$newDestination = $destination . DIRECTORY_SEPARATOR . $dirname;
 				if (is_dir($file) && is_dir($newDestination) === FALSE) {
