@@ -48,7 +48,7 @@ abstract class BaseComponent extends EventDispatcher {
 		$this->_registerEvents();
 		parent::__construct();
 		$this->_output = array();
-		$this->config = new StandardConfig(ROOT.'/config', get_class($this).'.yaml');
+		$this->config = new StandardConfig(CONFIGROOT, get_class($this).'.yaml');
 		
         try {
             $this->addEventListenerTo('ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');

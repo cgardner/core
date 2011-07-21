@@ -104,7 +104,7 @@ final class Application extends EventDispatcher {
 	 */
 	public $bootProcess = array(BOOT_INIT, 
 						  	 	   BOOT_STARTUP, 
-								   BOOT_PREPARE,
+										 BOOT_PREPARE,
 						   		   BOOT_PREPROCESS, 
 						   		   BOOT_PROCESS, 
 						   		   BOOT_POSTPROCESS, 
@@ -134,22 +134,22 @@ final class Application extends EventDispatcher {
 	private function _setupConstants($paths = array()) {
         // Only define ROOT if it isn't already defined
         defined('ROOT') ||
-            define('ROOT', realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR));
+            define('ROOT', realpath(implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', '..'))));
 
 		if(count($paths) < 1) {
-			$core_path	= ROOT . DIRECTORY_SEPARATOR . 'core';
-			$core_component_path = ROOT . DIRECTORY_SEPARATOR . 'core/components';
-			$contrib_component_path = ROOT . DIRECTORY_SEPARATOR . 'components';
-			$config_path = ROOT . DIRECTORY_SEPARATOR . 'config';
-			$data_path = ROOT . DIRECTORY_SEPARATOR . 'data';
-			$template_path = ROOT . DIRECTORY_SEPARATOR . 'templates';
+			$core_path	= ROOT . DIRECTORY_SEPARATOR . 'cumula';
+			$core_component_path = $core_path . DIRECTORY_SEPARATOR . 'components';
+			$contrib_component_path = APPROOT . DIRECTORY_SEPARATOR . 'components';
+			$config_path = APPROOT . DIRECTORY_SEPARATOR . 'config';
+			$data_path = APPROOT . DIRECTORY_SEPARATOR . 'data';
+			$template_path = APPROOT . DIRECTORY_SEPARATOR . 'templates';
 		} else {
 			extract($paths);
 		}
 
 		//TODO: rewrite the part to support passing in arbitrary paths
         defined('APPROOT') ||
-            define('APPROOT', $core_path . DIRECTORY_SEPARATOR);
+            define('APPROOT', ROOT . DIRECTORY_SEPARATOR . 'app');
 
         defined('COMPROOT') ||
             define('COMPROOT', $core_component_path . DIRECTORY_SEPARATOR);

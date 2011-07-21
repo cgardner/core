@@ -50,7 +50,7 @@ final class ComponentManager extends BaseComponent {
 		$this->addEvent(COMPONENT_STARTUP_COMPLETE);
 		Application::getInstance()->addEventListener(BOOT_SHUTDOWN, array(&$this, 'shutdown'));
 
-		$this->config = new StandardConfig(ROOT.'/config', 'components.yaml');
+		$this->config = new StandardConfig(CONFIGROOT, 'components.yaml');
 
 		$this->loadSettings();
 		$this->_output = array();
