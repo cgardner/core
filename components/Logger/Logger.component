@@ -58,4 +58,17 @@ class Logger extends BaseComponent {
 			$other_info = "\nArgs:\n ".var_export($other_info, true);
 		$this->dataStore->create(array($level, $message, $other_info));
 	}
+  /**
+   * Implementation of the getInfo method
+   * @param void
+   * @return array
+   **/
+  public static function getInfo() {
+    return array(
+      'name' => 'Cumula Logger',
+      'description' => 'Default Logger Class for Cumula',
+      'version' => '0.1.0',
+      'dependencies' => array(),
+    );
+  } // end function getInfo
 }

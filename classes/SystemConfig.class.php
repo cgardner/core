@@ -162,4 +162,12 @@ class SystemConfig extends BaseComponent {
 		$this->dispatch(SYSTEMCONFIG_GET_VALUE, array($config, $value));
 		return $value;
 	}
+    /**
+     * Implementation of getInfo
+     * @param void
+     * @return array
+     **/
+    public static function getInfo() {
+        
+    } // end function getInfo
 }

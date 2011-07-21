@@ -163,4 +163,17 @@ class Router extends BaseComponent {
 			$this->addEvent($route);
 		$this->addEventListener($route, $handler);
 	}
+  /**
+   * Implmentation of getInfo method
+   * @param void
+   * @return array
+   **/
+  public static function getInfo() {
+    return array(
+      'name' => 'Path Router',
+      'description' => 'Used to manage the URL Paths that are passed to the Cumula Framework',
+      'dependencies' => array(),
+      'version' => '0.1.0',
+    );
+  } // end function getInfo
 }

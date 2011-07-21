@@ -153,4 +153,17 @@ class FormHelper extends BaseComponent {
 		$output .= ">";
 		return $output;
 	}
+  /**
+   * Implementation of the getInfo method
+   * @param void
+   * @return array
+   **/
+  public static function getInfo() {
+    return array(
+      'name' => 'Cumula Form Helper',
+      'description' => 'Helper Component for creating, protecting, and sanitizing forms',
+      'version' => '0.1.0',
+      'dependencies' => array(),
+    );
+  } // end function getInfo
 }

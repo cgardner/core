@@ -134,4 +134,18 @@ class Templater extends BaseComponent implements CumulaTemplater {
 	public function setTitle($title) {
 		$this->_title = $title;
 	}
+
+  /**
+   * Implementation of the getInfo method
+   * @param void
+   * @return array
+   **/
+  public static function getInfo() {
+    return array(
+      'name' => 'Cumula Templater',
+      'description' => 'Default Template Class',
+      'version' => '0.1.0',
+      'dependencies' => array(),
+    );
+  } // end function getInfo
 }

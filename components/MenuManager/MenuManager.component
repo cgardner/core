@@ -87,4 +87,17 @@ class MenuManager extends BaseComponent {
 		$this->_menus[] =& $menu;
 		return $menu;
 	}	
+  /**
+   * Implementation of the getInfo method
+   * @param void
+   * @return array
+   **/
+  public static function getInfo() {
+    return array(
+      'name' => 'Menu Manager Component',
+      'description' => 'Cumula Component that manages menus',
+      'version' => '0.1.0',
+      'dependencies' => array(),
+    );
+  } // end function getInfo
 }

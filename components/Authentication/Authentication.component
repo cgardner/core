@@ -23,5 +23,18 @@ class Authentication extends BaseComponent
   }
   
 
+  /**
+   * Implementation of the getInfo method
+   * @param void
+   * @return array
+   **/
+  public static function getInfo() {
+    return array(
+      'name' => 'Authentication Comiponent',
+      'description' => 'Handle Authentication within Cumula',
+      'version' => '0.1.0',
+      'dependencies' => array(),
+    );
+  } // end function getInfo
 }
   

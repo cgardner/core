@@ -47,4 +47,17 @@ class Session extends BaseComponent {
 		$cm = Application::getComponentManager();
 		$cm->registerStartupComponent($this);
 	}
+  /**
+   * Implementation of the getInfo method
+   * @param void
+   * @return array
+   **/
+  public static function getInfo() {
+    return array(
+      'name' => 'Cumula Session Handler',
+      'description' => 'Default Session Handler',
+      'version' => '0.1.0',
+      'dependencies' => array(),
+    );
+  } // end function getInfo
 }

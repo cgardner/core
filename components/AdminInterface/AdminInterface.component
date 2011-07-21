@@ -277,4 +277,18 @@ class AdminInterface extends BaseComponent {
     //}
 		return true;
 	}
+
+  /**
+   * Implementation of the getInfo method
+   * @param void
+   * @return array
+   **/
+  public static function getInfo() {
+    return array(
+      'name' => 'Administration Interface',
+      'description' => 'Default Administrative interface for Cumula',
+      'version' => '0.1.0',
+      'dependencies' => array(),
+    );
+  } // end function getInfo
 }

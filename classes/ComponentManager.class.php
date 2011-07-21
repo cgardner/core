@@ -58,6 +58,19 @@ final class ComponentManager extends BaseComponent {
 		$this->addEventListener(COMPONENT_STARTUP_COMPLETE, array(&$this, 'startup'));
 	}
 	
+    /**
+     * Implementation of the getInfo method
+     * @param void
+     * @return array
+     **/
+    public static function getInfo() {
+        return array(
+            'name' => 'Component Manager',
+            'description' => 'Componenet to manage other components',
+            'version' => '0.1.0',
+            'dependencies' => array(),
+        );
+    } // end function getInfo
 	/**
 	 * Implementation of the basecomponent startup function.
 	 * 

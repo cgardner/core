@@ -218,6 +218,7 @@ abstract class BaseComponent extends EventDispatcher {
 		
 	}
 	
+  abstract public static function getInfo();
 	/**********************************************
 	* Rendering Functions
 	***********************************************/
