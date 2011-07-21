@@ -59,7 +59,6 @@ abstract class BaseComponent extends EventDispatcher {
 		$this->addEvent(EVENT_LOGGED);
 	}
 
-	
 	/**
 	 * Registers any constant defined in an 'events.inc' file in the component directory.
 	 * 
@@ -88,10 +87,10 @@ abstract class BaseComponent extends EventDispatcher {
 		}
 	}
 	
+
 	/**********************************************
 	* Logging Functions
 	***********************************************/
-	
 	/**
 	 * @param $message
 	 * @param $args
@@ -151,10 +150,10 @@ abstract class BaseComponent extends EventDispatcher {
 		$this->dispatch(EVENT_LOGGED, $args);
 	}
 	
+
 	/**********************************************
 	* Component Callback Functions
 	***********************************************/
-	
 	/**
 	 * Run once when the module is first installed.
 	 * 
@@ -199,7 +198,6 @@ abstract class BaseComponent extends EventDispatcher {
 		
 	}
 	
-	
 	/**
 	 * Placeholder function.  Should be overridden in client implementations to do anything.
 	 * 
@@ -219,10 +217,36 @@ abstract class BaseComponent extends EventDispatcher {
 	}
 	
   abstract public static function getInfo();
+
+	/**********************************************
+	* Miscellaneous Installation Functions
+	***********************************************/
+	/**
+	 * Install the assets for the module in the public directory
+	 * @param void
+	 * @return void
+	 **/
+	public function installAssets() {
+		$class = get_class($this);
+		$assetDir = implode(DIRECTORY_SEPARATOR, array(APPROOT, 'public', 'assets'));
+		if (is_dir($assetDir) === FALSE) {
+			mkdir($assetDir);
+		}
+
+		$componentPublicAssetDir = $assetDir . DIRECTORY_SEPARATOR . $class;
+		if (is_dir($componentPublicAssetDir) === FALSE) {
+			mkdir($componentPublicAssetDir);
+		}
+
+		$files = glob(sprintf('{%s/%s/assets,%s/%s/assets}', COMPROOT, $class, CONTRIBCOMPROOT, $class), GLOB_BRACE | GLOB_NOSORT);
+		foreach ($files as $componentAssetDir) {
+			$this->copyAssetFiles($componentAssetDir, $componentPublicAssetDir);
+		}
+	} // end function installAssets
+
 	/**********************************************
 	* Rendering Functions
 	***********************************************/
-	
 	/**
 	 * Renders a specific filename, or a view with the filename matching the original function.  The 
 	 * rendered content is sent to the templater as a block using the $var_name param.
@@ -268,7 +292,6 @@ abstract class BaseComponent extends EventDispatcher {
 		$this->addOutputBlock($block);
 	}
 	
-	
 	/**
 	 * @param $event
 	 * @param $args
@@ -295,10 +318,10 @@ abstract class BaseComponent extends EventDispatcher {
 		}
 	}
 	
+
 	/**********************************************
 	* Utility Functions
 	***********************************************/
-	
 	/**
 	 * Convenience function to return the LSB instance.
 	 * 
@@ -307,7 +330,6 @@ abstract class BaseComponent extends EventDispatcher {
 	protected function _getThis() {
 		return $this;
 	}
-	
 	
 	/**
 	 * Returns the filepath of the basecomponent instance.
@@ -367,4 +389,30 @@ abstract class BaseComponent extends EventDispatcher {
 		$class = new ReflectionClass(get_class($this));
 		return dirname($class->getFileName());	
 	}
+	/**
+	 * Recursive function to re-create the filestructure in the
+	 * component's asset directory in the public asset directory
+	 * @param string $source
+	 * @param string $destination
+	 * @return void
+	 **/
+	private function copyAssetFiles($source, $destination) {
+		if (is_dir($source)) {
+			// Find all of the files in the directory and create directories
+			// for the subdirectories
+			foreach(glob($source .'/*', GLOB_NOSORT) as $file) {
+				$dirname = basename($file);
+				$newDestination = $destination . DIRECTORY_SEPARATOR . $dirname;
+				if (is_dir($file) && is_dir($newDestination) === FALSE) {
+					mkdir($newDestination, 0777, TRUE);
+				}
+				$this->copyAssetFiles($file, $newDestination);
+			}
+
+		}
+		else {
+			// Copy the file to the public assets directory
+			copy($source, $destination);
+		}
+	} // end function copyAssetFiles
 }
