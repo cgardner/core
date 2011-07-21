@@ -172,7 +172,20 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 		$sql .= ';';
 		return $this->doQuery($sql);
 	}
+  
+  
+  /**
+   * Execute raw SQL.  CAUTION: this function does zero escaping or other work.
+   * You MUST make sure your query is sanitized before you use this function.
+   * @param str $sql
+   * @return result 
+   */
+  public function queryRaw($sql)
+  {
+    return $this->doQuery($sql);
+  }
 
+  
 	public function recordExists($id) {
 	}
 }
