@@ -136,6 +136,10 @@ final class Application extends EventDispatcher {
         defined('ROOT') ||
             define('ROOT', realpath(implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', '..'))));
 
+        //TODO: rewrite the part to support passing in arbitrary paths
+        defined('APPROOT') ||
+            define('APPROOT', ROOT . DIRECTORY_SEPARATOR . 'app');
+
 		if(count($paths) < 1) {
 			$core_path	= ROOT . DIRECTORY_SEPARATOR . 'cumula';
 			$core_component_path = $core_path . DIRECTORY_SEPARATOR . 'components';
@@ -146,10 +150,6 @@ final class Application extends EventDispatcher {
 		} else {
 			extract($paths);
 		}
-
-		//TODO: rewrite the part to support passing in arbitrary paths
-        defined('APPROOT') ||
-            define('APPROOT', ROOT . DIRECTORY_SEPARATOR . 'app');
 
         defined('COMPROOT') ||
             define('COMPROOT', $core_component_path . DIRECTORY_SEPARATOR);

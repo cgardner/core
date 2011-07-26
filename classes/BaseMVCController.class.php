@@ -57,7 +57,7 @@ abstract class BaseMVCController extends EventDispatcher {
   
 	protected function _setTemplate() {
 		if ($this->_template) {
-			Application::getTemplater()->setTemplateDir(APPROOT.'/../templates/');
+			Application::getTemplater()->setTemplateDir(APPROOT.DIRECTORY_SEPARATOR.'templates');
 			Application::getTemplater()->setTemplateFile($this->_template);
 		}	
 	}
@@ -137,8 +137,9 @@ abstract class BaseMVCController extends EventDispatcher {
 		if(method_exists(static::_getThis(), $func)) {
 			$output = call_user_func_array(array(static::_getThis(), $func), $arguments);
 		}
-		if(file_exists($this->getRenderFileName($func)) && !$this->_renderCalled)
+		if(file_exists($this->getRenderFileName($func)) && !$this->_renderCalled) {
 			$this->render($func);
+        }
 		
 		
 		foreach($this->_after_filters as $filter) {
