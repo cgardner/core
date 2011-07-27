@@ -77,8 +77,9 @@ class FormHelper extends BaseComponent {
 		foreach($attrs as $key => $val) {
 			$attributes .= $key.'="'.$val.'" ';
 		}
-		$for = self::$_formId.'-'.strtolower($for);
-		return $output = '<label for="'. $for .'" '. $attributes .'>'.$label.'</label>';
+
+		$for = (self::$_formId ? self::$_formId .'-' : '') . strtolower($for);
+		return sprintf('<label for="%s" %s>%s</label>', $for, $attributes, $label);
 	}
 	
 	public function textFieldTag($name, $value = null, $options = array()) {
@@ -143,7 +144,12 @@ class FormHelper extends BaseComponent {
 	}
 	
 	protected function _buildTag($type, $name, $value, $attrs) {
-		$id = self::$_formId.'-'.str_ireplace('[]', '', $name);
+		if (!isset($attrs['id'])) {
+			$id = (self::$_formId ? self::$_formId .'-' : '') . str_ireplace('[]', '', $name);
+		}
+		else {
+			$id = $attrs['id'];
+		}
 		//if($value)
 		//	$id .= "-".strtolower($value);
 		$output = "<input id=\"$id\" type=\"$type\" name=\"$name\" value=\"$value\" ";
