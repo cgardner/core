@@ -32,6 +32,10 @@ class facebookAuthentication extends Authentication implements CumulaAuth
 
 		$this->fbClientId = Application::getSystemConfig()->getValue('facebook_client_id', FALSE);
 		$this->fbClientSecret = Application::getSystemConfig()->getValue('facebook_client_secret', FALSE);
+		if ($this->fbClientId == FALSE || $this->fbClientSecret == FALSE) 
+		{
+			throw new Exception('Facebook Authentication is not configured');
+		}
 		$this->redirectUri = sprintf('http://%s/auth_facebook', $_SERVER['HTTP_HOST']);
 	} // end function __construct
 
