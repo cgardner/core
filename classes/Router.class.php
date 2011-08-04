@@ -23,11 +23,9 @@
  * @author     Seabourne Consulting
  */
 class Router extends BaseComponent {
-	private $_routes;
 
+    // Stores all routes registered with the application
 	protected $_collectedRoutes = array();
-
-	private $_routeStorage;
 
 	public function __construct() {
 		parent::__construct();
@@ -40,8 +38,6 @@ class Router extends BaseComponent {
 		Application::getInstance()->addEventListener(BOOT_PREPROCESS, array(&$this, 'collectRoutes'));
 		Application::getInstance()->addEventListener(BOOT_PROCESS, array(&$this, 'processRoute'));
 		$this->addEventListener(ROUTER_FILE_NOT_FOUND, array(&$this, 'filenotfound'));
-
-		//$this->_routeStorage = new YAMLDataStore(array('source_directory' => dirname(__FILE__), 'filename' => 'routes.yml'));
 	}
 
 	public function filenotfound($event, $dispatcher, $request, $response) {
