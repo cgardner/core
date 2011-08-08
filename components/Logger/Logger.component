@@ -30,8 +30,8 @@ class Logger extends BaseComponent {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$log_dir = Application::getSystemConfig()->getValue('log_directory', APPROOT.'/log');
-		$log_file = Application::getSystemConfig()->getValue('environment', ENV_DEVELOPMENT).'.log';
+		$log_dir = SystemConfig::getInstance()->getValue('log_directory', APPROOT.'/log');
+		$log_file = SystemConfig::getInstance()->getValue('environment', ENV_DEVELOPMENT).'.log';
 		if(!file_exists($log_dir))
 			mkdir($log_dir);
 		$this->dataStore = new WriteOnlyTextDataStore(new SimpleSchema('log'), array('logfile' => $log_dir .'/'.$log_file));

@@ -45,7 +45,7 @@ class Session extends BaseComponent {
 	}
 	
 	public function install() {
-		$cm = Application::getComponentManager();
+		$cm = ComponentManager::getInstance();
 		$cm->registerStartupComponent($this);
 	}
   /**

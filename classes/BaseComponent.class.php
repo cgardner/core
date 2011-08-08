@@ -369,7 +369,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function defaultDataStore() {
-		return Application::getSystemConfig()->getValue(SETTING_DEFAULT_DATASTORE);
+		return SystemConfig::getInstance()->getValue(SETTING_DEFAULT_DATASTORE);
 	}
 	
 	public function linkTo($title, $url, $args = array()) {

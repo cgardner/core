@@ -38,7 +38,7 @@ class Templater extends BaseComponent implements CumulaTemplater {
 		$this->_template_dir = $this->config->getConfigValue('template_directory', ROOT.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'templates');
 		$this->_template_file = $this->config->getConfigValue('template_file', 'template.tpl.php');
 		$this->_output = '';
-		$this->_title = Application::getSystemConfig()->getValue(SETTING_SITE_TITLE);
+		$this->_title = SystemConfig::getInstance()->getValue(SETTING_SITE_TITLE);
 	}
 	
 	public function setOutput($output) {
