@@ -1,5 +1,8 @@
 <?php
 namespace Cumula;
+
+use \ReflectionClass as ReflectionClass;
+
 /**
  * Cumula
  *
@@ -172,8 +175,8 @@ final class ComponentManager extends BaseComponent {
 	public function startStartupComponents() {
         $files = $this->getComponentFiles();
         foreach ($files as $component) {
-            require_once($component);
-            $this->startUpComponent(basename($component, '.component'));
+					$this->requireFile($component);
+					$this->startUpComponent(basename($component, '.component'));
         }
 	}
 
@@ -187,7 +190,16 @@ final class ComponentManager extends BaseComponent {
 		$ret = array();
         $files = $this->getComponentFiles();
         foreach ($files as $component) {
-            $ret[] = basename($component, '.component');
+					$classesBefore = get_declared_classes();
+					$this->requireFile($component);
+					foreach(array_diff(get_declared_classes(), $classesBefore) as $class) 
+					{
+						$reflection = new ReflectionClass($class);
+						if ($reflection->isSubclassOf('Cumula\\BaseComponent'))
+						{
+							$ret[] = $reflection->getName();
+						}
+					}
         }
         return $ret;
 	}
@@ -221,13 +233,19 @@ final class ComponentManager extends BaseComponent {
 				$found = true;
 		}
 		if($found) {
-			require_once $class_file;
+			$this->requireFile($class_file);
 			if(!in_array($component, $this->_installedClasses))
-			$this->_installedClasses[] = $component;
+			{
+				$this->_installedClasses[] = $component;
+			}
 			if(!in_array($component, $this->_enabledClasses))
-			$this->_enabledClasses[] = $component;
+			{
+				$this->_enabledClasses[] = $component;
+			}
 			if(!array_key_exists($component, $this->_components))
-			$this->_components[$component] = new $component;
+			{
+				$this->_components[$component] = new $component;
+			}
 			$instance = $this->_components[$component];
 			$instance->install();
 			$instance->installAssets();
@@ -261,7 +279,7 @@ final class ComponentManager extends BaseComponent {
 				$class_name = ucfirst(basename($comp));
 				$class_file = $comp_dir.'/'.$class_name.'.component';
 				if (is_file($class_file) && (in_array($class_name, $this->_installedClasses)) && !class_exists($class_name)) {
-					require_once $class_file;
+					$this->requireFile($class_file);
 				}
 			}
 		}
@@ -398,4 +416,14 @@ final class ComponentManager extends BaseComponent {
         return glob(sprintf('{%s*/*.component,%s*/*.component}', COMPROOT, CONTRIBCOMPROOT), GLOB_BRACE);
         
     } // end function getComponentFiles
+
+	/**
+	 * Require a file
+	 * @param string $filename
+	 * @return boolean
+	 **/
+	private function requireFile($filename) 
+	{
+		require_once($filename);
+	} // end function requireFile
 }
