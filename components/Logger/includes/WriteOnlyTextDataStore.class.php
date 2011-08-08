@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 //TODO: Figure out what todo with this, whether to keep it.
 /**
  * Cumula

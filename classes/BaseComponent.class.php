@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 /**
  * Cumula
  *
@@ -386,7 +387,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function rootDirectory() {
-		$class = new ReflectionClass(get_class($this));
+		$class = new \ReflectionClass(get_class($this));
 		return dirname($class->getFileName());	
 	}
 	/**

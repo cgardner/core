@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 
 class User extends BaseMVCModel {
 	public function __construct($args = array()) {

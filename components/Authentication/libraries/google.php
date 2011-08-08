@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 
 class googleAuthentication extends Authentication implements CumulaAuth
 {

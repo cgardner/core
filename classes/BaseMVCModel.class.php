@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 
 abstract class BaseMVCModel extends EventDispatcher {
 	protected static $_fields;

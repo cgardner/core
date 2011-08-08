@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 
 class twitterAuthentication extends Authentication implements CumulaAuth
 {

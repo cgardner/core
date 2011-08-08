@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 /**
  * Cumula
  *
@@ -136,7 +137,7 @@ class YAMLDataStore extends BaseDataStore {
 	 */
 	protected function _save() {
 		if(!empty($this->_storage)) {
-			$dumper = new sfYamlDumper();
+			$dumper = new \sfYamlDumper();
 			$yaml = $dumper->dump($this->_storage, 2);
 			file_put_contents($this->_dataStoreFile(), $yaml);
 		}
@@ -169,7 +170,7 @@ class YAMLDataStore extends BaseDataStore {
 	 */
 	protected function _load() {
 		if (file_exists($this->_dataStoreFile())) {
-			$yaml = new sfYamlParser();
+			$yaml = new \sfYamlParser();
 			$this->_storage = $yaml->parse(file_get_contents($this->_dataStoreFile()));
 			//$this->_storage = Spyc::YAMLLoadString(file_get_contents($this->_dataStoreFile()));
 			return true;

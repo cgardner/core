@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 
 class UserController extends BaseMVCController {
 	public function __construct($component) {

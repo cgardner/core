@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 require_once(dirname(__FILE__) .'/facebook-php-sdk/src/facebook.php');
 
 class facebookAuthentication extends Authentication implements CumulaAuth
