@@ -219,18 +219,27 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function installComponent($component) {
 		$found = false;
-		//TODO: replace the hard-coded components directory with a system config
-		$dir = dir(COMPROOT);
-		$comp_dir = $dir->path.'/'.$component;
-		$class_file = $comp_dir.'/'.$component.'.component';
-		if (is_file($class_file)) {
-			$found = true;
-		} else {
-			$dir = dir(CONTRIBCOMPROOT);
+		if (class_exists($component))
+		{
+			$reflection = new ReflectionClass($component);
+			$class_file = $reflection->getFileName();
+			$found = TRUE;
+		}
+		else 
+		{
+			//TODO: replace the hard-coded components directory with a system config
+			$dir = dir(COMPROOT);
 			$comp_dir = $dir->path.'/'.$component;
 			$class_file = $comp_dir.'/'.$component.'.component';
-			if(is_file($class_file))
+			if (is_file($class_file)) {
 				$found = true;
+			} else {
+				$dir = dir(CONTRIBCOMPROOT);
+				$comp_dir = $dir->path.'/'.$component;
+				$class_file = $comp_dir.'/'.$component.'.component';
+				if(is_file($class_file))
+					$found = true;
+			}
 		}
 		if($found) {
 			$this->requireFile($class_file);
