@@ -12,6 +12,8 @@
  * @link       http://cumula.org
  */
 
+require_once realpath(dirname(__FILE__) .'/Exception/DataStoreException.class.php');
+
 /**
  * BaseDataStore Class
  *
@@ -27,6 +29,18 @@
 abstract class BaseDataStore extends EventDispatcher {
 	protected $_schema;
 	protected $_connected = false;
+
+	/**
+	 * Constants
+	 */
+	const FIELD_TYPE_STRING = 'string';
+	const FIELD_TYPE_INTEGER = 'integer';
+	const FIELD_TYPE_FLOAT = 'float';
+	const FIELD_TYPE_BOOL = 'boolean';
+	const FIELD_TYPE_TEXT = 'text';
+	const FIELD_TYPE_DATETIME = 'datetime';
+	const FIELD_TYPE_BLOB = 'blob';
+
 	
 	/**
 	 * Constructor
