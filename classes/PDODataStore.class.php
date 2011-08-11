@@ -1,8 +1,6 @@
 <?php
 
 require_once realpath(dirname(__FILE__) .'/BaseSqlDataStore.class.php');
-require_once realpath(dirname(__FILE__) .'/Exception/DataStoreException.class.php');
-
 /**
  * PDO Data Store
  * @package Cumula
@@ -90,10 +88,39 @@ abstract class PDODataStore extends BaseSqlDataStore
 			$this->getPDO()->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			return $this;
 		}
-		catch (PDOException $e) {
-			throw new DataStoreException(sprintf('PDO Exception: %s', $e->getMessage()), $e->getCode(), $e);
+		catch (Exception $e) {
+			$this->handleException($e);
 		}
 	} // end function connect
+	
+	/**
+	 * Disconnect from the database
+	 * @param void
+	 * @return void
+	 **/
+	public function disconnect() 
+	{
+		// Do nothing
+	} // end function disconnect
+
+	/**
+	 * Get the Last Row ID
+	 * @param void
+	 * @return integer
+	 * @throws DataStoreException
+	 **/
+	public function lastRowId() 
+	{
+		try {
+			return $this->getPDO()->lastInsertId();
+		}
+		catch (PDOException $e) {
+			throw new DataStoreException(sprintf('PDO Exception: %s', $e->getMessage(), $e->getCode(), $e);
+		}
+		catch (Exception $e) {
+			throw new DataStoreException(sprintf('Exception: %s', $e->getMessage(), $e->getCode(), $e);
+		}
+	} // end function lastRowId
 
 	/**
 	 * Configure the DataStore
@@ -115,6 +142,25 @@ abstract class PDODataStore extends BaseSqlDataStore
 		}
 		return $this;
 	} // end function configure
+
+
+	/**
+	 * Protected Methods
+	 */
+	/**
+	 * Handle Exceptions
+	 * @param Excetption $e Exception being handled
+	 * @return void
+	 * @throws DataStoreException
+	 **/
+	protected function handleException(Exception $e) 
+	{
+			$exceptionClass = NULL;
+			if (get_class($e) != 'Exception') {
+				$exceptionClass = get_class($e) .' ';
+			}
+			throw new DataStoreException(sprintf('%sException: %s', $exceptionClass, $e->getMessage()), $e->getCode(), $e);
+	} // end function handleException
 
 	/**
 	 * Getters and Setters
@@ -218,5 +264,4 @@ abstract class PDODataStore extends BaseSqlDataStore
 		$this->user = $arg0;
 		return $this;
 	} // end function setUser()
-	
 } // end class PDODataStore extends BaseSqlDataStore
