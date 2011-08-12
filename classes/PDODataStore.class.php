@@ -24,12 +24,6 @@ abstract class PDODataStore extends BaseSqlDataStore
 	 * Properties
 	 */
 	/**
-	 * Schema Object Used for this DataStore
-	 * @var SimpleSchema
-	 **/
-	private $schema;
-
-	/**
 	 * Driver to use for the Connection
 	 * @var string
 	 **/
@@ -191,33 +185,6 @@ abstract class PDODataStore extends BaseSqlDataStore
 		$this->pdo = $arg0;
 		return $this;
 	} // end function setPDO()
-
-	/**
-	 * Getter for $this->schema
-	 * @param void
-	 * @return SimpleSchema
-	 * @author Craig Gardner <craig@seabourneconsulting.com>
-	 **/
-	public function getSchema() 
-	{
-		return $this->schema;
-	} // end function getSchema()
-	
-	/**
-	 * Setter for $this->schema
-	 * @param SimpleSchema
-	 * @return void
-	 * @author Craig Gardner <craig@seabourneconsulting.com>
-	 **/
-	public function setSchema($arg0) 
-	{
-		if (($arg0 instanceOf SimpleSchema) === FALSE)
-		{
-			throw new DataStoreException('Schema is not an instance of SimpleSchema');
-		}
-		$this->schema = $arg0;
-		return $this;
-	} // end function setSchema()
 
 	/**
 	 * Getter for $this->pass
