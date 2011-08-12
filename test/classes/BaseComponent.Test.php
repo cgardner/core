@@ -147,4 +147,14 @@ class TestBaseComponent extends BaseComponent {
     public function rootDirectory() {
         return vfsStream::url('componentTest');
     }
+
+		/**
+		 * getInfo method
+		 * @param void
+		 * @return array
+		 **/
+		public static function getInfo() 
+		{
+			return array();
+		}
 }

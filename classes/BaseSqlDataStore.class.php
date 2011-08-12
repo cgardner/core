@@ -24,6 +24,13 @@
 
 abstract class BaseSqlDataStore extends BaseDataStore {
 	protected $_db;
+	/**
+	 * Schema Object Used for this DataStore
+	 * @var SimpleSchema
+	 **/
+	private $schema;
+
+	abstract public function escapeString($dirtyString);
 	
 	public function __construct($schema, $config_values) {
 		parent::__construct($schema, $config_values);
@@ -41,14 +48,14 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	 * @see core/interfaces/DataStore#create($obj)
 	 */
 	public function create($obj) {
-		$sql = "INSERT INTO {$this->_schema->name} ";
+		$sql = "INSERT INTO {$this->getSchema()->name} ";
 		$keys = array();
 		$values = array();
-		foreach($this->_schema->getFields() as $field => $args) {
+		foreach($this->getSchema()->getFields() as $field => $args) {
 			if(!isset($obj->$field))
 				continue;
 			$keys[] = $field;
-			$values[] = is_numeric($obj->$field) ? $obj->$field : "'".$this->_db->escapeString($obj->$field)."'";
+			$values[] = is_numeric($obj->$field) ? $obj->$field : $this->escapeString($obj->$field);
 		}
 		$sql .= "(".implode(',', $keys).")";
 		$sql .= "VALUES (".implode(',', $values).");";
@@ -56,9 +63,9 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	}
 	
 	public function install() {
-		$sql_output = "CREATE TABLE IF NOT EXISTS {$this->_schema->name}(";
+		$sql_output = "CREATE TABLE IF NOT EXISTS {$this->getSchema()->name}(";
 		$fields = array();
-		foreach(static::translateFields($this->_schema->getFields()) as $field => $attrs) {
+		foreach(static::translateFields($this->getSchema()->getFields()) as $field => $attrs) {
 			$field = "$field {$attrs['type']}";
 			if(array_key_exists('size', $attrs))
 				$field .= $attrs['size'];
@@ -74,21 +81,21 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	}
 	
 	public function uninstall() {
-		return "DROP TABLE {$this->_schema->name}";
+		return "DROP TABLE {$this->getSchema()->name}";
 	}
 
 	/* (non-PHPdoc)
 	 * @see core/interfaces/DataStore#update($obj)
 	 */
 	public function update($obj) {
-		$idField = $this->_schema->getIdField();
+		$idField = $this->getSchema()->getIdField();
 		if(!$this->recordExists($obj->$idField))
 			return false;
-		$sql = "UPDATE {$this->_schema->name} SET ";
+		$sql = "UPDATE {$this->getSchema()->name} SET ";
 		$fields = array();
-		foreach($this->_schema->getFields() as $field => $args) {
+		foreach($this->getSchema()->getFields() as $field => $args) {
 			if(property_exists($obj, $field)) {
-				$fields[] = " $field=" . (is_numeric($obj->$field) ? $obj->$field : "'".$this->_db->escapeString($obj->$field)."'");
+				$fields[] = " $field=" . (is_numeric($obj->$field) ? $obj->$field : "'".$this->escapeString($obj->$field)."'");
 			}
 		}
 		$sql .= implode(", ", $fields);
@@ -103,7 +110,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	 * @return unknown_type
 	 */
     public function createOrUpdate($obj) {
-		$idField = $this->_schema->getIdField();
+		$idField = $this->getSchema()->getIdField();
 		if(isset($obj->$idField) && $this->query($obj->$idField)) {
 			return $this->update($obj);
         } else {
@@ -121,8 +128,8 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	 * @see core/interfaces/DataStore#delete($obj)
 	 */
 	public function destroy($obj) {
-		$idField = $this->_schema->getIdField();
-		$sql = "DELETE FROM {$this->_schema->name} WHERE ";
+		$idField = $this->getSchema()->getIdField();
+		$sql = "DELETE FROM {$this->getSchema()->name} WHERE ";
 		if(is_numeric($obj))
 			$sql .= $idField.' = '.$obj.';';
 		else
@@ -134,14 +141,14 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	 * @see core/interfaces/DataStore#query($args, $order, $limit)
 	 */
 	public function query($args, $order = array(), $limit = array()) {
-		$sql = "SELECT * FROM {$this->_schema->name} WHERE ";
+		$sql = "SELECT * FROM {$this->getSchema()->name} WHERE ";
 		//Args is an id
 		if (is_numeric($args)) {
-			$sql .= "{$this->_schema->getIdField()}=$args";
+			$sql .= "{$this->getSchema()->getIdField()}=$args";
 		} else if (is_array($args)) {
 			$conditions = array();
 			foreach($args as $key => $val) {
-				$conditions[] = " ".$key."=" . (is_numeric($val) ? $val : "'".$this->_db->escapeString($val)."'");
+				$conditions[] = " ".$key."=" . (is_numeric($val) ? $val : $this->escapeString($val));
 			}
 			$sql .= implode(' AND ', $conditions);
 		} else {
@@ -188,4 +195,31 @@ abstract class BaseSqlDataStore extends BaseDataStore {
   
 	public function recordExists($id) {
 	}
+	/**
+	 * Getter for $this->schema
+	 * @param void
+	 * @return SimpleSchema
+	 * @author Craig Gardner <craig@seabourneconsulting.com>
+	 **/
+	public function getSchema() 
+	{
+		return $this->schema;
+	} // end function getSchema()
+	
+	/**
+	 * Setter for $this->schema
+	 * @param SimpleSchema
+	 * @return void
+	 * @author Craig Gardner <craig@seabourneconsulting.com>
+	 **/
+	public function setSchema($arg0) 
+	{
+		if (($arg0 instanceOf SimpleSchema) === FALSE)
+		{
+			throw new DataStoreException('Schema is not an instance of SimpleSchema');
+		}
+		$this->schema = $arg0;
+		return $this;
+	} // end function setSchema()
+
 }
