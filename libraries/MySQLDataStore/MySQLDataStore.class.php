@@ -50,7 +50,7 @@ class MySQLDataStore extends PDODataStore
 			switch($args['type']) 
 			{
 				case self::FIELD_TYPE_STRING:
-					$type = 'VARCHAR';
+					$type = sprintf('VARCHAR(%u)', isset($args['size']) ? $args['size'] : 255);
 					break;
 
 				case self::FIELD_TYPE_INTEGER:
@@ -87,29 +87,107 @@ class MySQLDataStore extends PDODataStore
 			if (isset($args['default'])) 
 			{
 
-				$new_args['default'] = sprintf('DEFAULT %s', is_numeric($args['default']) ? $args['default'] : "'{$args['default']}'";
+				$new_args['default'] = sprintf(' DEFAULT %s', is_numeric($args['default']) ? $args['default'] : "'{$args['default']}'");
 			}
 
 			if (isset($args['autoincrement'])) 
 			{
-				$new_args['autoincrement'] = 'AUTO_INCREMENT NOT NULL UNIQUE';		
+				$new_args['autoincrement'] = ' AUTO_INCREMENT NOT NULL UNIQUE';		
+			}
+			elseif (isset($args['unique']))
+			{
+				$new_args['autoincrement'] = ' UNIQUE';
 			}
 
 			if (isset($args['primary']))
 			{
-					$new_args['primary'] = 'PRIMARY_KEY';
+					$new_args['primary'] = ' PRIMARY_KEY';
 			}
+
 
 			// If the field is set as autoincrement, it should already be set as NOT NULL
 			if (isset($args['null']) && !isset($new_args['autoincrement']))
 			{
-				$new_args['null'] = 'NOT NULL';
+				$new_args['null'] = ' NOT NULL';
 			}
 
 			$return[$field] = $new_args;
 		}
 		return $return;
 	} // end function translateFields
+	
+	/* (non-PHPdoc)
+	 * @see core/interfaces/DataStore#create($obj)
+	 */
+	public function create($obj) {
+		$schemaName = $this->getSchema()->name;
+		$keys = array();
+		$values = array();
+		foreach ($this->getSchema()->getFields() as $field => $args) 
+		{
+			if (!isset($obj->$field))
+			{
+				continue;
+			}
+			$keys[] = $field;
+			$values[] = is_numeric($obj->$field) ? $obj->$field : $this->escapeString($obj->$field);
+		}
+		$sql = sprintf('INSERT INTO %s (%s) VALUES (%s)', $schemaName, implode(', ', $keys), implode(', ', $values));
+		return $this->doExec($sql);
+	}
+
+	/**
+	 * Update an object in the database
+	 * @param stdClass $obj Object to be updated
+	 * @return MySQLDataStore
+	 **/
+	public function update($obj) 
+	{
+		$schema = $this->getSchema();
+		$schemaId = $schema->getIdField();
+
+		$updates = array();
+
+		foreach ($schema->getFields() as $name => $field) 
+		{
+			if ($name !== $schemaId) {
+				$updates[] = sprintf('%s = %s', $name, $this->escapeString($obj->$name));
+			}
+		}
+		
+		$query = sprintf('UPDATE %s SET %s WHERE %s = %s', $schema->getName(), implode(', ', $updates), $schemaId, $this->escapeString($obj->$schemaId));
+		return $this->doExec($query);
+	} // end function update
+
+
+	/**
+	 * Create or Update an Object
+	 * @param stdClass $obj Object to be saved
+	 * @return MySQLDataStore
+	 **/
+	public function createOrUpdate($obj) 
+	{
+		$schema = $this->getSchema();
+		$schemaId = $schema->getIdField();
+
+		$performUpdate = FALSE;
+
+		if (isset($obj->$schemaId))
+		{
+			$query = sprintf('SELECT COUNT(*) AS cnt FROM %s WHERE %s = %s', $schema->getName(), $schemaId, $this->escapeString($obj->$schemaId));
+			$results = $this->doQuery($query);
+			$performUpdate = $results[0]['cnt']  > 0;
+		}
+
+		if ($performUpdate) 
+		{
+			$this->update($obj);
+		}
+		else 
+		{
+			$this->create($obj);
+		}
+	} // end function createOrUpdate
 
 	/**
 	 * Get the DSN for the PDO Connection

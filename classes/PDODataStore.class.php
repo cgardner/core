@@ -80,6 +80,7 @@ abstract class PDODataStore extends BaseSqlDataStore
 		try {
 			$this->setPDO(new PDO($this->getDsn(), $this->getUser(), $this->getPass()));
 			$this->getPDO()->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->doExec($this->install());
 			return $this;
 		}
 		catch (Exception $e) {
@@ -108,11 +109,8 @@ abstract class PDODataStore extends BaseSqlDataStore
 		try {
 			return $this->getPDO()->lastInsertId();
 		}
-		catch (PDOException $e) {
-			throw new DataStoreException(sprintf('PDO Exception: %s', $e->getMessage(), $e->getCode(), $e);
-		}
 		catch (Exception $e) {
-			throw new DataStoreException(sprintf('Exception: %s', $e->getMessage(), $e->getCode(), $e);
+			$this->handleException($e);
 		}
 	} // end function lastRowId
 
@@ -137,6 +135,76 @@ abstract class PDODataStore extends BaseSqlDataStore
 		return $this;
 	} // end function configure
 
+	/**
+	 * Perform A Query
+	 * @param string $query Query to be performed
+	 * @return mixed results
+	 **/
+	public function doQuery($query) 
+	{
+		if (is_null($query))
+		{
+			return FALSE;
+		}
+
+		try {
+			$results = $this->getPDO()->query($query, PDO::FETCH_ASSOC);
+			$return = array();
+			if ($results->rowCount() > 0) 
+			{
+				foreach($results as $row)
+				{
+					$return[] = $row;
+				}
+			}
+			return $return;
+		}
+		catch (Exception $e)
+		{
+			$this->handlException($e);
+		}
+	} // end function doQuery
+
+	/**
+	 * Execute a Query that does not return a result
+	 * @param string $query Query to be executed
+	 * @return PDODataStore
+	 **/
+	public function doExec($query) 
+	{
+		if (!is_null($query))
+		{
+			try
+			{
+				$this->getPDO()->query($query);
+			}
+			catch (Exception $e)
+			{
+				$this->handleException($e);
+			}
+		}
+		return $this;
+	} // end function doExec
+
+	/**
+	 * Determine Whether a record exists or not
+	 * @param string $id ID of the record being sought
+	 * @return boolean Whether or not the record exists
+	 **/
+	public function recordExists($id) 
+	{
+		return $this->query($id);
+	} // end function recordExists
+
+	/**
+	 * Escape a strin to be used in a database query
+	 * @param string $dirtyString The string to be escaped
+	 * @return string Escaped String
+	 **/
+	public function escapeString($dirtyString) 
+	{
+		return $this->getPDO()->quote($dirtyString);
+	} // end function escapeString
 
 	/**
 	 * Protected Methods
@@ -153,7 +221,8 @@ abstract class PDODataStore extends BaseSqlDataStore
 			if (get_class($e) != 'Exception') {
 				$exceptionClass = get_class($e) .' ';
 			}
-			throw new DataStoreException(sprintf('%sException: %s', $exceptionClass, $e->getMessage()), $e->getCode(), $e);
+			$message = sprintf('%sException: (%s) %s', $exceptionClass, $e->getMessage(), $e->getCode());
+			throw new DataStoreException($message, 1, $e);
 	} // end function handleException
 
 	/**
