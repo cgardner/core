@@ -126,4 +126,13 @@ class SqliteDataStore extends BaseSqlDataStore {
 		}
 		return $return;
 	}
+	/**
+	 * Escape a string
+	 * @param string $dirtyString Dirty string to be escaped
+	 * @return string Clean String
+	 **/
+	public function escapeString($dirtyString) 
+	{
+		return sprintf("'%s'", $this->_db->escapeString($dirtyString));
+	} // end function escapeString
 }

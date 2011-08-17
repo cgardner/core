@@ -46,9 +46,4 @@ require_once dirname(__FILE__) . '/../libraries/SqliteDataStore/SqliteDataStore.
 require_once dirname(__FILE__) . '/../libraries/StandardConfig/StandardConfig.class.php';
 require_once dirname(__FILE__) . '/../libraries/YAMLDataStore/YAMLDataStore.class.php';
 require_once dirname(__FILE__) . '/../libraries/GDocsAPIDataStore/GDocsAPIDataStore.class.php';
-
-
-
-
-
-
+require_once dirname(__FILE__) . '/../libraries/MySQLDataStore/MySQLDataStore.class.php';
