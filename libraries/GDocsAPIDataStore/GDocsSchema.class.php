@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * Simple Schema Class
+ * @package Cumula
+ * @subpackage Core
+ */
+class GDocsSchema extends SimpleSchema implements CumulaSchema {
+	public function __construct() {
+		
+	}
+
+    /**
+     * Get the name of the schema
+     * @return string
+     */
+	public function getName() {
+		return 'docs';
+	}
+
+    /**
+     * Get the Fields for the Schema
+     * @return array
+     */
+	public function getFields() {
+		return array("title" => "string", "id" => "string", "slug" => "string", "content" => "string", "contentType" => "string");
+	}
+	
+    /**
+     * Get the ID Field for the Schema
+     * @param void
+     * @return string
+     */
+	public function getIdField() {
+		return "id";
+	}
+}
+

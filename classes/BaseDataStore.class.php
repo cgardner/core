@@ -64,6 +64,10 @@ abstract class BaseDataStore extends EventDispatcher {
 	
 	abstract public function lastRowId();
 	
+	public function newObj() {
+		return $this->_schema->getObjInstance();
+	}
+	
 	/**
 	 * Sets the schema for use by the datastore.
 	 * 

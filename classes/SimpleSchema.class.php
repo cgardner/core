@@ -90,5 +90,13 @@ class SimpleSchema implements CumulaSchema {
 	public function setIdField($id) {
 		$this->_idField = $id;
 	}
+	
+	public function getObjInstance() {
+		$obj = new stdClass();
+		foreach($this->getFields() as $field => $type) {
+			$obj->$field = null;
+		}
+		return $obj;
+	}
 }
 

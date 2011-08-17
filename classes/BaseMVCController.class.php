@@ -101,10 +101,23 @@ abstract class BaseMVCController extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function registerRoute($route, $method = null) {
-		if(!$method) {
-			$parts = explode('/', $route);
-			$last = $parts[count($parts)-1];
-			$method = $last;
+		$parts = explode('/', $route);
+		$last = $parts[count($parts)-1];
+		$first = $parts[0];
+		if(substr($route, 0, 1) == '/') { 
+			if($method == null)
+				$method = $last;
+		} else {
+			$comp = static::_getThis()->component;
+			$class = strtolower(str_ireplace('Component', '', get_class($comp)));
+			$controller = strtolower(str_ireplace('Controller', '', get_called_class()));
+			if($method == null) 
+				$method = $first;
+			if($route == 'index') {
+				$new_route = '/'.$class.'/'.$controller;
+				$this->component->registerRoute($new_route, &$this, "____".$method);
+			}
+			$route = '/'.$class.'/'.$controller.'/'.$route;
 		}
 		$this->component->registerRoute($route, &$this, "____".$method);
 	}
