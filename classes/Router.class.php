@@ -1,5 +1,6 @@
 <?php
 namespace Cumula;
+use Templater\Templater as Templater;
 /**
  * Cumula
  *

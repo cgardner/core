@@ -36,7 +36,7 @@ class SystemConfig extends BaseComponent {
 	}
 	
 	public function setupListeners() {
-		$this->addEventListenerTo('ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
+		$this->addEventListenerTo('Cumula\\ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
 	}
 	
 	
@@ -76,7 +76,7 @@ class SystemConfig extends BaseComponent {
 	 * 
 	 */
 	public function startup($event) {
-		$this->addEventListenerTo('AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
+		$this->addEventListenerTo('AdminInterface\\AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
 	}
 	
 	/**
