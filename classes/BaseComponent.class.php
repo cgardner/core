@@ -338,7 +338,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * 
 	 */
 	protected function _getThisFile() {
-		$ref = new ReflectionClass(static::_getThis());
+		$ref = new \ReflectionClass(static::_getThis());
 		return $ref->getFileName();
 	}
 	
