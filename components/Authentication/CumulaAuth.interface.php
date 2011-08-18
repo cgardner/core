@@ -1,5 +1,5 @@
 <?php
-namespace Cumula;
+namespace Authentication;
 /**
  * Cumula
  *

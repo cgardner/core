@@ -1,5 +1,6 @@
 <?php
-namespace Cumula;
+namespace Authentication;
+use Cumula\CumulaAuth as CumulaAuth;
 
 class googleAuthentication extends Authentication implements CumulaAuth
 {

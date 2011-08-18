@@ -1,5 +1,6 @@
 <?php
-namespace Cumula;
+namespace Authentication;
+use Cumula\BaseComponent as BaseComponent;
 
 require 'CumulaAuth.interface.php';
 

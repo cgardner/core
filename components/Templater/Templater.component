@@ -1,5 +1,7 @@
 <?php
-namespace Cumula;
+namespace Templater;
+use Cumula\BaseComponent as BaseComponent;
+use Cumula\CumulaTemplater as CumulaTemplater;
 /**
  * Cumula
  *

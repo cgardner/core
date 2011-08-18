@@ -1,5 +1,6 @@
 <?php
-namespace Cumula;
+namespace Authentication;
+use Cumula\CumulaAuth as CumulaAuth;
 require_once(dirname(__FILE__) .'/yahoo-yos-social-php5/lib/OAuth/OAuth.php');
 require_once(dirname(__FILE__) .'/yahoo-yos-social-php5/lib/Yahoo/YahooOAuthApplication.class.php');
 
