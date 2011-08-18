@@ -51,11 +51,8 @@ abstract class BaseComponent extends EventDispatcher {
 		$this->_output = array();
 		$this->config = new StandardConfig(CONFIGROOT, get_class($this).'.yaml');
 		
-        try {
-            $this->addEventListenerTo('ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
-            $this->addEventListenerTo('Application', BOOT_SHUTDOWN, 'shutdown');
-        }
-        catch (EventException $e) {}
+		$this->addEventListenerTo('Cumula\\ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
+		$this->addEventListenerTo('Cumula\\Application', BOOT_SHUTDOWN, 'shutdown');
 
 		$this->addEvent(EVENT_LOGGED);
 	}
@@ -358,8 +355,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function completeUrl($url) {
-		$session = Application::getSystemConfig();
-		$base = $session->getValue(SETTING_DEFAULT_BASE_PATH);
+		$base = SystemConfig::getInstance()->getValue(SETTING_DEFAULT_BASE_PATH);
 		return ($base == '/') ? $url : $base.$url;
 	}
 	

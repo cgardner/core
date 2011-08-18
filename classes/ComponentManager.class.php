@@ -47,7 +47,6 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function __construct() {
 		parent::__construct();
-		//print_r(Application::getInstance());
 		Application::getInstance()->addEventListener(BOOT_INIT, array(&$this, 'loadComponents'));
 		Application::getInstance()->addEventListener(BOOT_STARTUP, array(&$this, 'startupComponents'));
 		$this->addEvent(COMPONENT_INIT_COMPLETE);
@@ -176,7 +175,8 @@ final class ComponentManager extends BaseComponent {
         $files = $this->getComponentFiles();
         foreach ($files as $component) {
 					$this->requireFile($component);
-					$this->startUpComponent(basename($component, '.component'));
+					$basename = basename($component, '.component');
+					$this->startupComponent(sprintf('%s\\%s', $basename, $basename));
         }
 	}
 
@@ -190,16 +190,9 @@ final class ComponentManager extends BaseComponent {
 		$ret = array();
         $files = $this->getComponentFiles();
         foreach ($files as $component) {
-					$classesBefore = get_declared_classes();
 					$this->requireFile($component);
-					foreach(array_diff(get_declared_classes(), $classesBefore) as $class) 
-					{
-						$reflection = new ReflectionClass($class);
-						if ($reflection->isSubclassOf('Cumula\\BaseComponent'))
-						{
-							$ret[] = $reflection->getName();
-						}
-					}
+					$basename = basename($component, '.component');
+					$ret[] = sprintf('%s\\%s', $basename, $basename);
         }
         return $ret;
 	}
@@ -323,8 +316,8 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function startupComponent($component_class) {
 		if(class_exists($component_class) &&
-		!isset($this->_components[$component_class]) &&
-		(in_array($component_class, $this->_enabledClasses))) {
+				!isset($this->_components[$component_class]) &&
+				(in_array($component_class, $this->_enabledClasses))) {
 			$this->_components[$component_class] = new $component_class();
 		} else
 			return false;

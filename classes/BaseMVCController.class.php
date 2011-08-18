@@ -1,5 +1,7 @@
 <?php
 namespace Cumula;
+use Templater\Templater as Templater;
+
 /**
  * Cumula
  *
@@ -58,8 +60,8 @@ abstract class BaseMVCController extends EventDispatcher {
   
 	protected function _setTemplate() {
 		if ($this->_template) {
-			Application::getTemplater()->setTemplateDir(APPROOT.DIRECTORY_SEPARATOR.'templates');
-			Application::getTemplater()->setTemplateFile($this->_template);
+			Templater::getInstance()->setTemplateDir(APPROOT.DIRECTORY_SEPARATOR.'templates');
+			Templater::getInstance()->setTemplateFile($this->_template);
 		}	
 	}
 	
@@ -124,11 +126,11 @@ abstract class BaseMVCController extends EventDispatcher {
 		if($arguments[1] instanceof Router) {
 			foreach($this->_before_filters as $filter) {
 				//stop processing if the before filter returns false
-				if($filter instanceof Closure) {
+				if($filter instanceof \Closure) {
 					if(call_user_func_array($filter, $arguments) === false)
 						return;
 				} else {
-					if(method_exists($this, $filter) && is_callable(array(&$this, $filter)) && call_user_func_array(array(&$this, $filter), $arguments) === false)
+					if (method_exists($this, $filter) && is_callable(array(&$this, $filter)) && call_user_func_array(array(&$this, $filter), $arguments) === false)
 						return;
 				}
 			}

@@ -45,7 +45,7 @@ abstract class BaseMVCComponent extends BaseComponent {
 		$this->_loadFiles($this->config->getConfigValue('controller_dir', '/controllers'));
 		$this->_loadFiles($this->config->getConfigValue('model_dir', '/models'));
 		
-		Application::getRouter()->addEventListener(ROUTER_COLLECT_ROUTES, array(&$this, 'routes'));
+		Router::getinstance()->addEventListener(ROUTER_COLLECT_ROUTES, array(&$this, 'routes'));
 	}
 	
 	/**
@@ -54,7 +54,7 @@ abstract class BaseMVCComponent extends BaseComponent {
 	 * @return unknown_type
 	 */
 	public function routes() {
-		Application::getRouter()->addRoutes($this->_routes);
+		Router::getInstance()->addRoutes($this->_routes);
 	}
 	
 	/**
@@ -78,6 +78,7 @@ abstract class BaseMVCComponent extends BaseComponent {
 	 */
 	protected function _loadFiles($file_dir) {
 		$combined_dir = static::rootDirectory().$file_dir;
+		$namespace = basename(static::rootDirectory());
 		if(!file_exists($combined_dir))
 			return;
 		$dir = dir($combined_dir);
@@ -87,6 +88,7 @@ abstract class BaseMVCComponent extends BaseComponent {
 				$class_name = $comp;
 				$class_name = str_replace('.class', '', $class_name);
 				$class_name = str_replace('.php', '', $class_name);
+				$class_name = sprintf('%s\\%s', $namespace, $class_name);
 				if (is_file($comp_dir)) {
 					require_once $comp_dir;
 					if(strpos($class_name, 'Controller'))
