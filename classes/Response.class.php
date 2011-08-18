@@ -40,9 +40,7 @@ class Response extends EventDispatcher {
 	 */
 	public function __construct() {
 		parent::__construct();
-        try {
-            $this->addEventListenerTo('Application', BOOT_SHUTDOWN, 'send');
-        } catch (EventException $e) {}
+		$this->addEventListenerTo('Cumula\\Application', BOOT_SHUTDOWN, 'send');
 		$this->addEvent(RESPONSE_PREPARE);
 		$this->addEvent(RESPONSE_SEND);
 	}

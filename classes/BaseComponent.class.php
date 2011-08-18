@@ -308,11 +308,15 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function addOutputBlock($block) {
+		$response = Response::getInstance();
 		
-		if(empty(Application::getResponse()->response['data'][$block->data['variable_name']]))
-			Application::getResponse()->response['data'][$block->data['variable_name']] = array($block);
-		else {
-			Application::getResponse()->response['data'][$block->data['variable_name']][] = $block;
+		if(empty($response->response['data'][$block->data['variable_name']]))
+		{
+			$response->response['data'][$block->data['variable_name']] = array($block);
+		}
+		else 
+		{
+			$response->response['data'][$block->data['variable_name']][] = $block;
 		}
 	}
 	
@@ -345,7 +349,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function redirectTo($url) {
-		Application::getResponse()->send302($url);
+		Response::getInstance()->send302($url);
 	}
 	
 	/**

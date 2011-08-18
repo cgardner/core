@@ -149,7 +149,7 @@ class Router extends BaseComponent {
 
 			//The urls match, so we call the passed handler function, passing in the args
 			if($match) {
-				$args = array_merge(Application::getRequest()->params, $args);
+				$args = array_merge(Request::getInstance()->params, $args);
 				$return_handlers[$route] = $args;
 			}
 		}
