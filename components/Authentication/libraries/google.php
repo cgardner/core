@@ -1,6 +1,6 @@
 <?php
 namespace Authentication;
-use Cumula\CumulaAuth as CumulaAuth;
+
 
 class googleAuthentication extends Authentication implements CumulaAuth
 {
@@ -23,7 +23,7 @@ class googleAuthentication extends Authentication implements CumulaAuth
     require 'lightopenid/openid.php';
     try 
     {
-      $openid = new LightOpenID;
+      $openid = new \LightOpenID;
       
       if(!$openid->mode) 
       {

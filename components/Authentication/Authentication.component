@@ -19,7 +19,7 @@ class Authentication extends BaseComponent
     }
     
     require_once($library_path);
-    $class = $service.'Authentication';
+		$class = sprintf('Authentication\\%sAuthentication', $service);
     return new $class();
     
   }

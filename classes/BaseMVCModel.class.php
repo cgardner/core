@@ -141,7 +141,7 @@ abstract class BaseMVCModel extends EventDispatcher {
 	}
 	
 	public function rawObject() {
-		$obj = new stdClass();
+		$obj = new \stdClass();
 		foreach($this->_data as $key => $value) {
 			if(in_array($key, $this->_fieldsToSerialize)){
 				$value = serialize($value);
