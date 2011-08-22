@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 
 /**
  * Cumula
@@ -18,6 +19,6 @@
  * @package Cumula
  * @subpackage Core
  **/
-class EventException extends Exception {
+class EventException extends \Exception {
     
 } // end class EventException extends Exception

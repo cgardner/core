@@ -15,6 +15,7 @@
 
 require_once 'base/Test.php';
 require_once 'vfsStream/vfsStream.php';
+require_once 'classes/EventDispatcher.class.php';
 require_once 'classes/BaseComponent.class.php';
 
 /**
@@ -35,11 +36,15 @@ class Test_BaseComponent extends Test_BaseTest {
      * @return void
      **/
     public function setUp() {
-        defined('ROOT') || 
-            define('ROOT', dirname(BASE_DIR));
-        vfsStream::setup('componentTest');
+			parent::setUp();
+			defined('ROOT') || 
+					define('ROOT', dirname(BASE_DIR));
 
-        $this->component = new TestBaseComponent();
+			vfsStream::setup('componentConfig');
+			defined('CONFIGROOT') ||
+				define('CONFIGROOT', vfsStream::url('componentConfig'));
+
+			$this->component = new TestBaseComponent();
     } // end function setUp
 
     /**
@@ -48,7 +53,7 @@ class Test_BaseComponent extends Test_BaseTest {
      * @return void
      * @author Seabourne Consulting
      * @group all
-     * @covers BaseComponent::__construct
+     * @covers Cumula\BaseComponent::__construct
      **/
     public function testConstructor() {
         $this->assertObjectHasAttribute('config', $this->component);
@@ -60,24 +65,23 @@ class Test_BaseComponent extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers BaseComponent::_registerEvents
+     * @covers Cumula\BaseComponent::_registerEvents
      **/
     public function testRegisterEvents() {
         // Setup a fake events file
         $constName = uniqid('CONSTANT');
         $constValue = uniqid('VALUE');
         $phpString = "<?php\nconst {$constName} = '{$constValue}';";
-        file_put_contents(vfsStream::url('componentTest/events.inc'), $phpString);
+				$file = CONFIGROOT . DIRECTORY_SEPARATOR . 'events.inc';
+        file_put_contents($file, $phpString);
 
         $prevConsts = get_defined_constants(TRUE);
-        $prevConsts = $prevConsts['user'];
 
         // Must re-instantiate this class for this test
         $baseComponent = new TestBaseComponent();
 
         $newConsts = get_defined_constants(TRUE);
-        $constants = array_diff_assoc($newConsts['user'], $prevConsts);
-
+        $constants = array_diff_assoc($newConsts['user'], $prevConsts['user']);
 
         $this->assertArrayHasKey($constName, $constants);
         $this->assertEquals($constValue, $constants[$constName]);
@@ -91,7 +95,7 @@ class Test_BaseComponent extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers BaseComponent::renderPartial
+     * @covers Cumula\BaseComponent::renderPartial
      **/
     public function testRenderPartial() {
         $value = uniqid('value_');
@@ -108,7 +112,7 @@ class Test_BaseComponent extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers BaseComponent::renderContent
+     * @covers Cumula\BaseComponent::renderContent
      **/
     public function testRenderContent() {
         $this->markTestSkipped('Unable to test this method. It relies on Application::getResponse which is not able to be mocked or overloaded.');
@@ -130,31 +134,23 @@ class Test_BaseComponent extends Test_BaseTest {
      **/
     public function createTemplate($contents, $fileName = NULL) {
         if (is_null($fileName)) {
-            $fileName = 'componentTest/view.tpl.php';
+            $fileName = CONFIGROOT . DIRECTORY_SEPARATOR . 'view.tpl.php';
         }
 
-        $fileUrl = vfsStream::url($fileName);
-
-        if (file_put_contents($fileUrl, $contents) === FALSE) {
+        if (file_put_contents($fileName, $contents) === FALSE) {
             $this->fail(sprintf('Failed to write to %s', $fileName));
         }
-        return $fileUrl;
+        return $fileName;
     } // end function createTemplate
     
 }
 
-class TestBaseComponent extends BaseComponent {
-    public function rootDirectory() {
-        return vfsStream::url('componentTest');
-    }
+class TestBaseComponent extends Cumula\BaseComponent {
+	public function rootDirectory() {
+		return CONFIGROOT;
+	}
 
-		/**
-		 * getInfo method
-		 * @param void
-		 * @return array
-		 **/
-		public static function getInfo() 
-		{
-			return array();
-		}
+	public static function getInfo() {
+		return array();
+	}
 }

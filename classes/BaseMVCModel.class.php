@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 
 abstract class BaseMVCModel extends EventDispatcher {
 	protected static $_fields;
@@ -7,9 +8,25 @@ abstract class BaseMVCModel extends EventDispatcher {
 	protected $_fieldsToSerialize = array();
 	protected $exists = false;
 	
-	abstract public static function setupDataStore();
+	/**
+	 * Set Up the Data Store
+	 * @param void
+	 * @return void
+	 **/
+	public static function setupDataStore() 
+	{
+		throw new \Exception(sprintf('%s needs to implement setupDataStore() itself', get_class($this)));
+	} // end function setupDataStore
 	
-	abstract public static function setupFields();
+	/**
+	 * Set up the Fields for the Data Store
+	 * @param void
+	 * @return void
+	 **/
+	public static function setupFields() 
+	{
+		throw new \Exception(sprintf('%s needs to implement setupFields() itself', get_class($this)));
+	} // end function setupFields
 	
 	public function __construct($args = array(), $exists = false) {
 		parent::__construct();
@@ -140,7 +157,7 @@ abstract class BaseMVCModel extends EventDispatcher {
 	}
 	
 	public function rawObject() {
-		$obj = new stdClass();
+		$obj = new \stdClass();
 		foreach($this->_data as $key => $value) {
 			if(in_array($key, $this->_fieldsToSerialize)){
 				$value = serialize($value);

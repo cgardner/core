@@ -34,7 +34,7 @@ class Test_ContentBlock extends Test_BaseTest {
      * @return void
      **/
     public function setUp() {
-        $this->contentBlock = new ContentBlock();
+        $this->contentBlock = new Cumula\ContentBlock();
     } // end function setUp
 
     /**
@@ -43,10 +43,10 @@ class Test_ContentBlock extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers ContentBlock::__construct
+     * @covers Cumula\ContentBlock::__construct
      **/
     public function testConstructor() {
-        $contentBlock = new ContentBlock();
+        $contentBlock = new Cumula\ContentBlock();
         // Test the default values
         $this->assertInternalType('array', $contentBlock->data);
         $this->assertEquals(0, count($contentBlock->data));
@@ -58,7 +58,7 @@ class Test_ContentBlock extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers ContentBlock::render
+     * @covers Cumula\ContentBlock::render
      **/
     public function testRender() {
         $content = uniqid('content_');
@@ -72,7 +72,7 @@ class Test_ContentBlock extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers ContentBlock::__toString
+     * @covers Cumula\ContentBlock::__toString
      **/
     public function testToString() {
         $content = uniqid('content_');

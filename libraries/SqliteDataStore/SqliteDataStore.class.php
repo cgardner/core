@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 /**
  * Cumula
  *
@@ -28,7 +29,7 @@ class SqliteDataStore extends BaseSqlDataStore {
 		parent::__construct($schema, $config_values);
 		$this->_sourceDirectory = $config_values['source_directory'];
 		$this->_filename = $config_values['filename'];
-		$this->_db = new SQLite3($this->_sourceDirectory.'/'.$this->_filename);
+		$this->_db = new \SQLite3($this->_sourceDirectory.'/'.$this->_filename);
 		$this->connect();
 	}
 	

@@ -1,4 +1,6 @@
 <?php
+namespace Authentication;
+use Cumula\CumulaAuth as CumulaAuth;
 class localAuthentication extends Authentication implements CumulaAuth
 {
   public $success = FALSE;

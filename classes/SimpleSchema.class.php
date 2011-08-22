@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 
 /**
  * Simple Schema Class
