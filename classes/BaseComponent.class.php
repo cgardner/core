@@ -236,19 +236,27 @@ abstract class BaseComponent extends EventDispatcher {
 	 **/
 	public function installAssets() {
 		$class = get_class($this);
-		$assetDir = implode(DIRECTORY_SEPARATOR, array(APPROOT, 'public', 'assets'));
-		if (is_dir($assetDir) === FALSE) {
-			mkdir($assetDir);
-		}
-
-		$componentPublicAssetDir = $assetDir . DIRECTORY_SEPARATOR . $class;
-		if (is_dir($componentPublicAssetDir) === FALSE) {
-			mkdir($componentPublicAssetDir);
+		if (stripos($class, '\\'))
+		{
+			$classExploded = explode('\\', $class);
+			$class = $classExploded[1];
 		}
 
 		$files = glob(sprintf('{%s/%s/assets,%s/%s/assets}', COMPROOT, $class, CONTRIBCOMPROOT, $class), GLOB_BRACE | GLOB_NOSORT);
-		foreach ($files as $componentAssetDir) {
-			$this->copyAssetFiles($componentAssetDir, $componentPublicAssetDir);
+		if (is_array($files) && count($files) > 0)
+		{
+			$assetDir = implode(DIRECTORY_SEPARATOR, array(APPROOT, 'public', 'assets'));
+			if (is_dir($assetDir) === FALSE) {
+				mkdir($assetDir);
+			}
+
+			$componentPublicAssetDir = $assetDir . DIRECTORY_SEPARATOR . $class;
+			if (is_dir($componentPublicAssetDir) === FALSE) {
+				mkdir($componentPublicAssetDir);
+			}
+			foreach ($files as $componentAssetDir) {
+				$this->copyAssetFiles($componentAssetDir, $componentPublicAssetDir);
+			}
 		}
 	} // end function installAssets
 
