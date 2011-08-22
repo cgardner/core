@@ -42,7 +42,7 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers EventDispatcher::__construct
+     * @covers Cumula\EventDispatcher::__construct
      **/
     public function testConstructor() {
         $dispatcher  = new EventDispatcherClass();
@@ -57,7 +57,7 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers EventDispatcher::addEvent
+     * @covers Cumula\EventDispatcher::addEvent
      * @expectedException Exception
      **/
     public function testAddEventException() {
@@ -71,9 +71,9 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers EventDispatcher::addEvent
-     * @covers EventDispatcher::removeEvent
-     * @covers EventDispatcher::eventExists
+     * @covers Cumula\EventDispatcher::addEvent
+     * @covers Cumula\EventDispatcher::removeEvent
+     * @covers Cumula\EventDispatcher::eventExists
      **/
     public function testEventCreationAndRemoval() {
         $eventId = uniqid('event_');
@@ -91,8 +91,8 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers EventDispatcher::getInstance
-     * @covers EventDispatcher::setInstance
+     * @covers Cumula\EventDispatcher::getInstance
+     * @covers Cumula\EventDispatcher::setInstance
      **/
     public function testStaticGetInstance() {
         $eventId = uniqid('event_');
@@ -108,8 +108,8 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers EventDispatcher::addEventListener
-     * @covers EventDispatcher::dispatch
+     * @covers Cumula\EventDispatcher::addEventListener
+     * @covers Cumula\EventDispatcher::dispatch
      **/
     public function testEventListenerAndDispatch() {
         $eventId = uniqid('event_');
@@ -129,7 +129,7 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers EventDispatcher::removeEventListener
+     * @covers Cumula\EventDispatcher::removeEventListener
      **/
     public function testRemoveEventListener() {
         $eventId = uniqid('event_');
@@ -153,7 +153,7 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers EventDispatcher::addEventListenerTo
+     * @covers Cumula\EventDispatcher::addEventListenerTo
      **/
     public function testAddEventListenerTo() {
         $eventId = uniqid('event_');
@@ -172,7 +172,7 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers EventDispatcher::addEventListenerTo
+     * @covers Cumula\EventDispatcher::addEventListenerTo
      */
     public function testAddEventListenerToWithStringCallback() {
         $dispatcher = new EventDispatcherClass2();
@@ -189,15 +189,15 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers EventDispatcher::addEventListenerTo
-     * @expectedException EventException
+     * @covers Cumula\EventDispatcher::addEventListenerTo
+     * @expectedException Cumula\EventException
      **/
-    public function testAddEventListenerToUnintsantiatedClass() {
+    public function testAddEventListenerToUninstantiatedClass() {
         $eventId = uniqid('event_');
         
-        $this->eventDispatcher->addEventListenerTo('EventDispatcherClass3', $eventId, array($this, 'eventDispatched'));
+        $this->eventDispatcher->addEventListenerTo('EventDispatcherClass4', $eventId, array($this, 'eventDispatched'));
         $this->fail('Expected an EventException');
-    } // end function testAddEventListenerToUnintsantiatedClass
+    } // end function testAddEventListenerToUninstantiatedClass
 
     /**
      * HELPER METHODS |helpers
@@ -213,9 +213,9 @@ class Test_EventDispatcher extends Test_BaseTest {
     } // end function eventDispatched
 } // end class Test_EventDispatcher extends Test_BaseTest
 
-class EventDispatcherClass extends EventDispatcher {}
+class EventDispatcherClass extends Cumula\EventDispatcher {}
 
-class EventDispatcherClass2 extends EventDispatcher {
+class EventDispatcherClass2 extends Cumula\EventDispatcher {
     public $calls = 0;
     
     public function eventCallback() {
@@ -223,4 +223,4 @@ class EventDispatcherClass2 extends EventDispatcher {
     }
 }
 
-class EventDispatcherClass3 extends EventDispatcher {}
+class EventDispatcherClass3 extends Cumula\EventDispatcher {}

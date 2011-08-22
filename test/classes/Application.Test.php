@@ -32,9 +32,10 @@ class Test_Application extends Test_BaseTest {
      * @return void
      **/
     public function setUp() {
-        vfsStream::setup('ApplicationRoot');
-        defined('ROOT') ||
-            define('ROOT', vfsStream::url('ApplicationRoot'));
+			$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+			vfsStream::setup('ApplicationRoot');
+			defined('ROOT') ||
+				define('ROOT', vfsStream::url('ApplicationRoot'));
     } // end function setUp
 
     /**

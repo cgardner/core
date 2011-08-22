@@ -1,5 +1,7 @@
 <?php
 
+use Cumula\SimpleSchema as SimpleSchema;
+
 require_once 'base/Test.php';
 require_once 'classes/SimpleSchema.class.php';
 
@@ -36,7 +38,7 @@ class Test_SimpleSchema extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers SimpleSchema::__construct
+     * @covers Cumula\SimpleSchema::__construct
      **/
     public function testConstructor() {
         $this->assertEquals($this->schema->getName(), $this->name);
@@ -49,8 +51,8 @@ class Test_SimpleSchema extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers SimpleSchema::getName
-     * @covers SimpleSchema::setName
+     * @covers Cumula\SimpleSchema::getName
+     * @covers Cumula\SimpleSchema::setName
      **/
     public function testGetName() {
         $name = uniqid('name_');
@@ -63,8 +65,8 @@ class Test_SimpleSchema extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers SimpleSchema::getFields
-     * @covers SimpleSchema::setFields
+     * @covers Cumula\SimpleSchema::getFields
+     * @covers Cumula\SimpleSchema::setFields
      **/
     public function testGetFields() {
         $fields = uniqid('fields_');
@@ -77,8 +79,8 @@ class Test_SimpleSchema extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers SimpleSchema::getIdField
-     * @covers SimpleSchema::setIdField
+     * @covers Cumula\SimpleSchema::getIdField
+     * @covers Cumula\SimpleSchema::setIdField
      **/
     public function testGetIdField() {
         $idField = uniqid('id_field_');

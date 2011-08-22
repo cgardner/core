@@ -14,7 +14,7 @@ class Test_Cumula extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula::setInstance
+     * @covers Cumula\Cumula::setInstance
      **/
     public function testSetInstance() {
         $application = $this->getMock('EventDispatcher');
@@ -28,7 +28,7 @@ class Test_Cumula extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula::getInstance
+     * @covers Cumula\Cumula::getInstance
      **/
     public function testGetInstance() {
         $application = $this->getMock('EventDispatcher');

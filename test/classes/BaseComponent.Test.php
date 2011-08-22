@@ -35,9 +35,14 @@ class Test_BaseComponent extends Test_BaseTest {
      * @return void
      **/
     public function setUp() {
+			parent::setUp();
         defined('ROOT') || 
             define('ROOT', dirname(BASE_DIR));
         vfsStream::setup('componentTest');
+
+				vfsStream::setup('componentConfig');
+				defined('CONFIGROOT') ||
+					define('CONFIGROOT', vfsStream::url('componentConfig'));
 
         $this->component = new TestBaseComponent();
     } // end function setUp
@@ -48,7 +53,7 @@ class Test_BaseComponent extends Test_BaseTest {
      * @return void
      * @author Seabourne Consulting
      * @group all
-     * @covers BaseComponent::__construct
+     * @covers Cumula\BaseComponent::__construct
      **/
     public function testConstructor() {
         $this->assertObjectHasAttribute('config', $this->component);
@@ -60,7 +65,7 @@ class Test_BaseComponent extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers BaseComponent::_registerEvents
+     * @covers Cumula\BaseComponent::_registerEvents
      **/
     public function testRegisterEvents() {
         // Setup a fake events file
@@ -91,7 +96,7 @@ class Test_BaseComponent extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers BaseComponent::renderPartial
+     * @covers Cumula\BaseComponent::renderPartial
      **/
     public function testRenderPartial() {
         $value = uniqid('value_');
@@ -108,7 +113,7 @@ class Test_BaseComponent extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers BaseComponent::renderContent
+     * @covers Cumula\BaseComponent::renderContent
      **/
     public function testRenderContent() {
         $this->markTestSkipped('Unable to test this method. It relies on Application::getResponse which is not able to be mocked or overloaded.');
@@ -143,8 +148,12 @@ class Test_BaseComponent extends Test_BaseTest {
     
 }
 
-class TestBaseComponent extends BaseComponent {
-    public function rootDirectory() {
-        return vfsStream::url('componentTest');
-    }
+class TestBaseComponent extends Cumula\BaseComponent {
+	public function rootDirectory() {
+		return vfsStream::url('componentTest');
+	}
+
+	public static function getInfo() {
+		return array();
+	}
 }
