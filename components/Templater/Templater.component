@@ -38,7 +38,7 @@ class Templater extends BaseComponent implements CumulaTemplater {
 	public function __construct() {
 		parent::__construct();
 	
-		Application::getInstance()->addEventListener(BOOT_POSTPROCESS, array(&$this, 'render'));
+		Application::getInstance()->addEventListener(BOOT_POSTPROCESS, array(&$this, 'postProcessRender'));
 		$this->addEventListener(TEMPLATER_RENDER, array(&$this, 'renderTemplate'));
 		$this->_template_dir = $this->config->getConfigValue('template_directory', ROOT.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'templates');
 		$this->_template_file = $this->config->getConfigValue('template_file', 'template.tpl.php');
@@ -70,7 +70,7 @@ class Templater extends BaseComponent implements CumulaTemplater {
 		return $this->_template_file;
 	}
 	
-	public function render($event, $dispatcher, $request, $response) {
+	public function postProcessRender($event, $dispatcher, $request, $response) {
 		//$args = $response->data;
 		$args = array('stylesheets' => array(), 
 					  'javascript' => array(), 

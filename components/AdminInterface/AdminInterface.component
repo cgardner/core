@@ -60,7 +60,7 @@ class AdminInterface extends BaseComponent {
 	 * @param	ComponentManager	The ComponentManager instance.
 	 *
 	 **/
-	public function startup($event, $dispatcher) {
+	public function startup() {
 		$this->addEventListenerTo('Cumula\\Application', BOOT_PREPARE, 'dispatchCollectEvent');
 		
 		//If router is installed, bind to the route collector event
