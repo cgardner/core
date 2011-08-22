@@ -99,8 +99,8 @@ class Devel extends BaseComponent {
 			if($component != get_class($this))
 				$this->addEventListenerTo($component, EVENTDISPATCHER_EVENT_DISPATCHED, 'logEventDispatch');
 		}
-		$this->addEventListenerTo('ComponentManager', EVENTDISPATCHER_EVENT_DISPATCHED, 'logEventDispatch');
-		$this->addEventListenerTo('SystemConfig', EVENTDISPATCHER_EVENT_DISPATCHED, 'logEventDispatch');
+		$this->addEventListenerTo('Cumula\\ComponentManager', EVENTDISPATCHER_EVENT_DISPATCHED, 'logEventDispatch');
+		$this->addEventListenerTo('Cumula\\SystemConfig', EVENTDISPATCHER_EVENT_DISPATCHED, 'logEventDispatch');
 	}
 	
 	/**
