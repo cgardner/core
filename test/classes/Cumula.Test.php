@@ -2,11 +2,12 @@
 
 require_once 'base/Test.php';
 require_once 'classes/Cumula.class.php';
+use Cumula\Cumula as Cumula;
 
 /**
  * Cumula Class Test Class
  * @package Cumula
- * @runTestsInSeparateProcesses
+ * @norunTestsInSeparateProcesses
  **/
 class Test_Cumula extends Test_BaseTest {
     /**
