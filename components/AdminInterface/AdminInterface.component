@@ -61,6 +61,15 @@ class AdminInterface extends BaseComponent {
 	 *
 	 **/
 	public function startup() {
+
+		/**
+		 * If we add parameters to the method, we get errors saying that the method definition
+		 * does not match that of BaseComponent::startup()
+		 */
+		$args = func_get_args();
+		$event = isset($args[0]) ? $args[0] : NULL;
+		$dispatcher = isset($args[1]) ? $args[1] : NULL;
+
 		$this->addEventListenerTo('Cumula\\Application', BOOT_PREPARE, 'dispatchCollectEvent');
 		
 		//If router is installed, bind to the route collector event

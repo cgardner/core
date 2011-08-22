@@ -96,7 +96,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 		$fields = array();
 		foreach($this->getSchema()->getFields() as $field => $args) {
 			if(property_exists($obj, $field)) {
-				$fields[] = " $field=" . (is_numeric($obj->$field) ? $obj->$field : "'".$this->escapeString($obj->$field)."'");
+				$fields[] = " $field=" . (is_numeric($obj->$field) ? $obj->$field : $this->escapeString($obj->$field));
 			}
 		}
 		$sql .= implode(", ", $fields);
