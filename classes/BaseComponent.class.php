@@ -214,7 +214,17 @@ abstract class BaseComponent extends EventDispatcher {
 		
 	}
 	
-  abstract public static function getInfo();
+
+	/**
+	 * Static method to provide information to the system aobut themselves
+	 * @param void
+	 * @return array
+	 **/
+	public static function getInfo() 
+	{
+		$class = get_class($this);
+		throw new \Exception(sprintf('%s needs  to implement getInfo itself', $class));
+	} // end function getInfo
 
 	/**********************************************
 	* Miscellaneous Installation Functions

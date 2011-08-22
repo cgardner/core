@@ -63,7 +63,7 @@ abstract class EventDispatcher {
 	 */
 	public function addEvent($event) {
 		if ($this->eventExists($event))
-			throw new Exception('Event Already Exists.  You are trying to register an event that has previously been registered.');
+			throw new \Exception('Event Already Exists.  You are trying to register an event that has previously been registered.');
 		else
 			$this->_eventTable[$event] = array();
 	}
@@ -138,7 +138,7 @@ abstract class EventDispatcher {
 	 */
 	public function dispatch($event, $data = array()) {
 		if ($this->eventExists($event)) {
-			array_unshift($data, $event, &$this);
+			array_unshift($data, $event, $this);
 			global $level;
 			if ($event != EVENTDISPATCHER_EVENT_DISPATCHED)
 				$level++;

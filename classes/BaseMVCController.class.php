@@ -109,7 +109,7 @@ abstract class BaseMVCController extends EventDispatcher {
 			$last = $parts[count($parts)-1];
 			$method = $last;
 		}
-		$this->component->registerRoute($route, &$this, "____".$method);
+		$this->component->registerRoute($route, $this, "____".$method);
 	}
 
 	/**
@@ -312,7 +312,7 @@ abstract class BaseMVCController extends EventDispatcher {
 		$this->_alerts['messages'][] = $message;
 	}
 	
-	public function dispatch($event, $args) {
-		$this->component->dispatch($event, $args);
+	public function dispatch($event, $data = array()) {
+		$this->component->dispatch($event, $data);
 	}
 }
