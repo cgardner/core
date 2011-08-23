@@ -104,31 +104,28 @@ final class ComponentManager extends BaseComponent {
 	 * Defines and adds the admin pages to the admin interface, exposing the installed/enabled class lists.
 	 * 
 	 */
-	public function setupAdminPages($event, $args = null) {
-		$am = Application::getAdminInterface();
-		if(!$am)
-			return;
+	public function setupAdminPages($event, $dispatcher) {
 		$uninstalled = array_diff($this->_availableClasses, $this->_installedClasses);
-		$page = $am->newAdminPage();
+		$page = $dispatcher->newAdminPage();
 		$page->title = 'Components';
 		$page->description = 'Below are the installed and enabled components in the system.';
 		$page->route = '/admin/installed_components';
 		$page->component = &$this;
 		$page->callback = 'loadSettings';
 		$page->fields = array(array('name' => 'enabled_components', 
-									'title' => 'Enabled Components',
-									'type' => 'checkboxes',
-									'values' => $this->_installedClasses,
-									'selected' => $this->_enabledClasses,
-									'labels' => $this->_installedClasses),
-							);					
-		$am->addAdminPage($page);
+			'title' => 'Enabled Components',
+			'type' => 'checkboxes',
+			'values' => $this->_installedClasses,
+			'selected' => $this->_enabledClasses,
+			'labels' => $this->_installedClasses),
+		);					
+		$dispatcher->addAdminPage($page);
 		
 		/**
 		 * If there are uninstalled components, show a menu item for those with the number of components in the title 
 		 */
 
-		$page = $am->newAdminPage();
+		$page = $dispatcher->newAdminPage();
 		$page->title = 'New Components';
 		if(count($uninstalled) > 0) {
 			$componentNumber = ' <strong>'.count($uninstalled).'</strong>';
@@ -149,7 +146,7 @@ final class ComponentManager extends BaseComponent {
 		} else {
 			$page->fields = array();
 		}
-		$am->addAdminPage($page);
+		$dispatcher->addAdminPage($page);
 		
 	}
 	
