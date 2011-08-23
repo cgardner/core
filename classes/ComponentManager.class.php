@@ -39,6 +39,7 @@ final class ComponentManager extends BaseComponent {
 	private $_installedClasses = array();
 	private $_availableClasses = array();
 	private $_startupClasses = array();
+	private $componentFiles = array();
 
 	/**
 	 * Constructor.
@@ -59,6 +60,7 @@ final class ComponentManager extends BaseComponent {
 		$this->_output = array();
 
 		$this->addEventListener(COMPONENT_STARTUP_COMPLETE, array(&$this, 'startup'));
+		$this->addEventListenerTo('Cumula\\Autoloader', Autoloader::EVENT_AUTOLOAD, array($this, 'autoload'));
 	}
 	
     /**
@@ -85,7 +87,18 @@ final class ComponentManager extends BaseComponent {
 			$this->addEventListenerTo('AdminInterface\\AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
 		}
 	}
-	
+
+	/**
+	 * Populate the Autoloader
+	 * @param string $event Name of the Event that was dispatched
+	 * @param Cumula\Autoloader $dispatcher Object that dispatched the event
+	 * @param string $className Name of the class being loaded
+	 * @return void
+	 **/
+	public function autoload($event, $dispatcher, $className) 
+	{
+		$dispatcher->registerClasses($this->getComponentFiles());
+	} // end function autoload
 	
 	/**
 	 * Defines and adds the admin pages to the admin interface, exposing the installed/enabled class lists.
@@ -188,15 +201,9 @@ final class ComponentManager extends BaseComponent {
 	 * @param $url
 	 * @return unknown_type
 	 */
-	protected function _getAvailableComponents() {
-		$ret = array();
-        $files = $this->getComponentFiles();
-        foreach ($files as $component) {
-					$this->requireFile($component);
-					$basename = basename($component, '.component');
-					$ret[] = sprintf('%s\\%s', $basename, $basename);
-        }
-        return $ret;
+	protected function _getAvailableComponents() 
+	{
+		return array_keys($this->getComponentFiles());
 	}
 
 	/**
@@ -237,7 +244,6 @@ final class ComponentManager extends BaseComponent {
 			}
 		}
 		if($found) {
-			$this->requireFile($class_file);
 			if(!in_array($component, $this->_installedClasses))
 			{
 				$this->_installedClasses[] = $component;
@@ -283,7 +289,6 @@ final class ComponentManager extends BaseComponent {
 				$class_name = ucfirst(basename($comp));
 				$class_file = $comp_dir.'/'.$class_name.'.component';
 				if (is_file($class_file) && (in_array($class_name, $this->_installedClasses)) && !class_exists($class_name)) {
-					$this->requireFile($class_file);
 				}
 			}
 		}
@@ -412,24 +417,22 @@ final class ComponentManager extends BaseComponent {
 		return $this->_startupClasses;
 	}
 
-    /**
-     * Get the Files that should contain components
-     * @param void
-     * @return array
-     * @author Craig Gardner <craig@seabourneconsulting.com>
-     **/
-    public function getComponentFiles() {
-        return glob(sprintf('{%s*/*.component,%s*/*.component}', COMPROOT, CONTRIBCOMPROOT), GLOB_BRACE);
-        
-    } // end function getComponentFiles
-
 	/**
-	 * Require a file
-	 * @param string $filename
-	 * @return boolean
-	 **/
-	private function requireFile($filename) 
+   * Get the Files that should contain components
+   * @param void
+   * @return array
+   **/
+	public function getComponentFiles() 
 	{
-		require_once($filename);
-	} // end function requireFile
+		if (is_null($this->componentFiles) || count($this->componentFiles) == 0)
+		{
+			foreach(glob(sprintf('{%s*/*.component,%s*/*.component}', COMPROOT, CONTRIBCOMPROOT), GLOB_BRACE) as $file)
+			{
+				$basename = basename($file, '.component');
+				$this->componentFiles[sprintf('%s\\%s', $basename, $basename)] = $file;
+			}
+		}
+		return $this->componentFiles;
+	} // end function getComponentFiles
+
 }
