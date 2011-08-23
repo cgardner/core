@@ -257,18 +257,27 @@ class AdminInterface extends BaseComponent {
 	 * @param	array	The array of POST form values.
 	 *
 	 **/
-	public function saveSettings($route, $dispatcher, $args, $request) {
-		if(!$this->checkUser($request))
+	public function saveSettings($route, $dispatcher, $args, $request) 
+	{
+		if (!$this->checkUser($request))
+		{
 			return;
-		foreach($this->_pages as $page) {
-			if($page->route == $args['setting-page']) {
+		}
+
+		foreach ($this->_pages as $page) 
+		{
+			if ($page->route == $args['setting-page'])
+			{
 				$component = $page->component;
-				foreach($page->fields as $setting) {
+				foreach ($page->fields as $setting) 
+				{
 					$vals = $args[$setting['name']];
 					$component->config->setConfigValue($setting['name'], $vals);
 					$callback = $page->callback;
-					if(is_callable(array($component, $callback)))
+					if (is_callable(array($component, $callback)))
+					{
 						$component->$callback($vals);
+					}
 				}
 				$this->redirectTo($this->completeUrl($page->route));
 				return;

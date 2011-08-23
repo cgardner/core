@@ -78,9 +78,12 @@ final class ComponentManager extends BaseComponent {
 	 * Implementation of the basecomponent startup function.
 	 * 
 	 */
-	public function startup() {
-		if(Application::getAdminInterface())
-			$this->addEventListenerTo('AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
+	public function startup() 
+	{
+		if(class_exists('AdminInterface\\AdminInterface'))
+		{
+			$this->addEventListenerTo('AdminInterface\\AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
+		}
 	}
 	
 	
@@ -171,13 +174,12 @@ final class ComponentManager extends BaseComponent {
 	 * @param $url
 	 * @return unknown_type
 	 */
-	public function startStartupComponents() {
-        $files = $this->getComponentFiles();
-        foreach ($files as $component) {
-					$this->requireFile($component);
-					$basename = basename($component, '.component');
-					$this->startupComponent(sprintf('%s\\%s', $basename, $basename));
-        }
+	public function startStartupComponents() 
+	{
+		foreach ($this->getComponentFiles() as $className => $classFile) 
+		{
+			$this->startupComponent($className);
+		}
 	}
 
 	/**
@@ -315,12 +317,14 @@ final class ComponentManager extends BaseComponent {
 	 * @return unknown_type
 	 */
 	public function startupComponent($component_class) {
-		if(class_exists($component_class) &&
-				!isset($this->_components[$component_class]) &&
-				(in_array($component_class, $this->_enabledClasses))) {
+		if(!isset($this->_components[$component_class]) && (in_array($component_class, $this->_enabledClasses))) 
+		{
 			$this->_components[$component_class] = new $component_class();
-		} else
+		} 
+		else
+		{
 			return false;
+		}
 	}
 
 	/**
