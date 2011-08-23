@@ -204,7 +204,7 @@ class AdminInterface extends BaseComponent {
 		foreach($this->_pages as $page) {
 			//If the route matches, render a form based on the passed settings.
 			if($page->route == $route) {
-				$this->fh = Application::getFormHelper();
+				$this->fh = \FormHelper\FormHelper::getInstance();
 				$this->page = $page;
 				$title = $page->title;
 				$this->addEventListenerTo('Templater\\Templater', TEMPLATER_PREPARE, function($event, $templater) use ($title) {
