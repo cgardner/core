@@ -84,8 +84,7 @@ class SystemConfig extends BaseComponent {
 	 * Sets the admin pages for the system settings.
 	 * 
 	 */
-	public function setupAdminPages($event) {
-		$am = AdminInterface::getInstance();
+	public function setupAdminPages($event, $am) {
 		$page = $am->newAdminPage();
 		$page->title = 'Site Settings';
 		$page->description = 'Basic Site Settings.';

@@ -78,7 +78,7 @@ class Router extends BaseComponent {
 			$this->dispatch(ROUTER_FILE_NOT_FOUND, array($request, $response));
 		}
 		foreach($routes as $route => $args) {
-			$args = array_merge($_GET, $args);
+			$args = array_merge($request->params, $args);
 			$this->dispatch($route, array($args, $request, $response));
 		}
 	}

@@ -1,28 +1,27 @@
 <?php
-
-
+namespace Cumula;
 
 require_once(__DIR__.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'Zend'.DIRECTORY_SEPARATOR.'Loader.php');
 
 set_include_path(__DIR__.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR);
 
-Zend_Loader::loadClass('Zend_Gdata');
+\Zend_Loader::loadClass('Zend_Gdata');
 
-Zend_Loader::loadClass('Zend_Gdata_AuthSub');
+\Zend_Loader::loadClass('Zend_Gdata_AuthSub');
 
-Zend_Loader::loadClass('Zend_Gdata_ClientLogin');
+\Zend_Loader::loadClass('Zend_Gdata_ClientLogin');
 
-Zend_Loader::loadClass('Zend_Gdata_Docs');
+\Zend_Loader::loadClass('Zend_Gdata_Docs');
 
-Zend_Loader::loadClass('Zend_Gdata_App_MediaFileSource');
+\Zend_Loader::loadClass('Zend_Gdata_App_MediaFileSource');
 
 require_once('GDocsZendStreamMediaSource.class.php');
 
 require_once('GDocsSchema.class.php');
 
 class GDocsAPIDataStore extends BaseAPIDataStore {
-	protected $_username;
-	protected $_password;
+	protected $_username = null;
+	protected $_password = null;
 	
 	protected $_client;
 	
@@ -40,8 +39,13 @@ class GDocsAPIDataStore extends BaseAPIDataStore {
 	}
 	
 	public function connect() {
-		$httpClient = Zend_Gdata_ClientLogin::getHttpClient($this->_username, $this->_password, Zend_Gdata_Docs::AUTH_SERVICE_NAME);
-		$this->_client = new Zend_Gdata_Docs($httpClient);
+		if($this->_username && $this->_password) {
+			$httpClient = \Zend_Gdata_ClientLogin::getHttpClient($this->_username, $this->_password, \Zend_Gdata_Docs::AUTH_SERVICE_NAME);
+			$this->_client = new \Zend_Gdata_Docs($httpClient);
+			return $this->_client;
+		} else {
+			return false;
+		}
 	}
 	
 	public function disconnect() {
@@ -50,7 +54,7 @@ class GDocsAPIDataStore extends BaseAPIDataStore {
 	
 	public function create($obj) {
 		// Set the URI to which the file will be uploaded.
-		$uri = Zend_Gdata_Docs::DOCUMENTS_LIST_FEED_URI;
+		$uri = \Zend_Gdata_Docs::DOCUMENTS_LIST_FEED_URI;
 
         // Create the media source which describes the file.
         $entry = $this->_objToMediaSource($obj);

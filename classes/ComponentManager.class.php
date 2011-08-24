@@ -79,8 +79,8 @@ final class ComponentManager extends BaseComponent {
 	 * 
 	 */
 	public function startup() {
-		if(Application::getAdminInterface())
-			$this->addEventListenerTo('AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
+		if(\AdminInterface\AdminInterface::getInstance())
+			$this->addEventListenerTo('AdminInterface\\AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
 	}
 	
 	
@@ -88,8 +88,7 @@ final class ComponentManager extends BaseComponent {
 	 * Defines and adds the admin pages to the admin interface, exposing the installed/enabled class lists.
 	 * 
 	 */
-	public function setupAdminPages($event, $args = null) {
-		$am = Application::getAdminInterface();
+	public function setupAdminPages($event, $am, $args = null) {
 		if(!$am)
 			return;
 		$uninstalled = array_diff($this->_availableClasses, $this->_installedClasses);

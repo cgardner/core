@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 
 require_once("lib/sdb.php");
 
@@ -91,8 +92,13 @@ class SimpleDBDataStore extends BaseDataStore {
 	}
 	
 	public function connect() {
-		$this->_service = new SimpleDB($this->_accessKey, $this->_secretKey);
-		$this->_setDomain();
+		if($this->_accessKey && $this->_secretKey) {
+			$this->_service = new \SimpleDB($this->_accessKey, $this->_secretKey);
+			$this->_setDomain();
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public function disconnect() {

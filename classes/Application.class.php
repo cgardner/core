@@ -202,7 +202,7 @@ final class Application extends EventDispatcher {
 	
 	public static function __callStatic($name, $args) {
 		if(strstr($name, 'get')) {
-			$className = str_replace('get', '', $name);
+			$className = str_replace('get', '', "$name\$name");
             if (class_exists($className)) {
                 return call_user_func(array($className, 'getInstance'));
             }
