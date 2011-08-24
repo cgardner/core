@@ -31,7 +31,7 @@ require_once dirname(__FILE__) . '/../classes/BaseMVCController.class.php';
 require_once dirname(__FILE__) . '/../classes/BaseMVCModel.class.php';
 require_once dirname(__FILE__) . '/../classes/BaseSqlDataStore.class.php';
 require_once dirname(__FILE__) . '/../classes/BaseAPIDataStore.class.php';
-require_once dirname(__FILE__) . '/../classes/SimpleSchema.class.php';
+require_once dirname(__FILE__) . '/../classes/BaseSchema.class.php';
 
 //Load Core Classes
 require_once dirname(__FILE__) . '/../classes/ComponentManager.class.php';
@@ -40,6 +40,7 @@ require_once dirname(__FILE__) . '/../classes/Response.class.php' ;
 require_once dirname(__FILE__) . '/../classes/Request.class.php' ;
 require_once dirname(__FILE__) . '/../classes/SystemConfig.class.php' ;
 require_once dirname(__FILE__) . '/../classes/Cumula.class.php';
+require_once dirname(__FILE__) . '/../classes/SimpleSchema.class.php';
 
 require_once dirname(__FILE__) . '/../libraries/ContentBlock/ContentBlock.class.php';
 require_once dirname(__FILE__) . '/../libraries/SqliteDataStore/SqliteDataStore.class.php';
@@ -47,3 +48,4 @@ require_once dirname(__FILE__) . '/../libraries/StandardConfig/StandardConfig.cl
 require_once dirname(__FILE__) . '/../libraries/YAMLDataStore/YAMLDataStore.class.php';
 require_once dirname(__FILE__) . '/../libraries/GDocsAPIDataStore/GDocsAPIDataStore.class.php';
 require_once dirname(__FILE__) . '/../libraries/MySQLDataStore/MySQLDataStore.class.php';
+require_once dirname(__FILE__) . '/../libraries/SimpleDBDataStore/SimpleDBDataStore.class.php';

@@ -47,7 +47,7 @@ abstract class BaseDataStore extends EventDispatcher {
 	 * 
 	 * @return unknown_type
 	 */
-	public function __construct(CumulaSchema $schema, $configValues = array()) {
+	public function __construct(CumulaSchema $schema, array $configValues = array()) {
 		parent::__construct();
 		$this->setSchema($schema);
 	}
@@ -62,7 +62,7 @@ abstract class BaseDataStore extends EventDispatcher {
 	
 	abstract public function destroy($obj);
 	
-	abstract public function query($args, $order, $limit);
+	abstract public function query($args, $order = array(), $limit = array());
 	
 	abstract public function install();
 	
@@ -133,5 +133,20 @@ abstract class BaseDataStore extends EventDispatcher {
 	 */
 	protected function _arrayToString(array $arr) {
 		return implode(" ", $arr);
+	}
+	
+	protected function _getIdValue($obj) {
+		$idField = $this->_schema->getIdField();
+		return $obj->$idField;	
+	}
+	
+	protected function _getNonIdValues($obj) {
+		$idField = $this->_schema->getIdField();
+		$ret = array();
+		foreach((array)$obj as $key => $value) {
+			if($key != $idField)
+				$ret[$key] = $value;
+		}
+		return $ret;
 	}
 }

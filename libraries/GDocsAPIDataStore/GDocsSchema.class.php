@@ -5,9 +5,9 @@
  * @package Cumula
  * @subpackage Core
  */
-class GDocsSchema extends SimpleSchema implements CumulaSchema {
+class GDocsSchema extends BaseSchema {
 	public function __construct() {
-		
+		parent::__construct();
 	}
 
     /**
@@ -23,7 +23,14 @@ class GDocsSchema extends SimpleSchema implements CumulaSchema {
      * @return array
      */
 	public function getFields() {
-		return array("title" => "string", "id" => "string", "slug" => "string", "content" => "string", "contentType" => "string");
+		return array("title" => "string", 
+					 "id" => "string", 
+					 "slug" => "string", 
+					 "content" => "string", 
+					 "contentType" => "string",
+					 "author" => "string",
+					 "published" => "datetime",
+					 "category" => "array");
 	}
 	
     /**
@@ -32,7 +39,7 @@ class GDocsSchema extends SimpleSchema implements CumulaSchema {
      * @return string
      */
 	public function getIdField() {
-		return "id";
+		return 'id';
 	}
 }
 

@@ -241,6 +241,31 @@ abstract class BaseMVCController extends EventDispatcher {
 		}
 	}
 	
+		/**
+	 * Returns a rendered view specified in $file_name.  $args is exposed to the view.
+	 * 
+	 * @param $url
+	 * @return unknown_type
+	 */
+	protected function renderPartial($file_name = null, $args = array()) {
+		$ext = '.tpl.php';
+		if(pathinfo($file_name, PATHINFO_EXTENSION) == '' && !strpos($file_name, $ext)) {
+			$cont_name = strtolower(str_replace("Controller", "", get_called_class()));
+			$file_name = realpath(dirname($this->_getThisFile()).'/../views/'.$cont_name."/")."/_".$file_name.$ext;
+		}
+		extract($args, EXTR_OVERWRITE);
+		ob_start();
+		include $file_name;
+		$contents = ob_get_contents();
+		ob_end_clean();
+		return $contents;
+	}
+	
+	protected function _getThisFile() {
+		$ref = new ReflectionClass(static::_getThis());
+		return $ref->getFileName();
+	}
+	
 	/**
 	 * Helper function for redirecting client to a new location.
 	 * 

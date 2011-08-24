@@ -40,7 +40,7 @@ abstract class BaseAPIDataStore extends BaseDataStore {
 		
 	}
 	
-	public function query($args, $order, $limit) {
+	public function query($args, $order = array(), $limit = array()) {
 		
 	}
 	

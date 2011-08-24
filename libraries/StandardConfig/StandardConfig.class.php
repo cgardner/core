@@ -33,8 +33,10 @@ class StandardConfig implements CumulaConfig {
 	 */
 	public function __construct($source_directory, $source_file) {
 		global $App;
-		$schema = new SimpleSchema('id', array('id' => 'integer',
-					 'value' => 'string'));
+		$schema = new SimpleSchema(array('id' => 'string',
+					 					 'value' => 'string'), 
+								   'id', 
+								   'config');
 		$this->_dataStore = new YAMLDataStore($schema, array('source_directory' => $source_directory, 'filename' => $source_file));
 		$this->_dataStore->connect();
 	}
@@ -65,7 +67,9 @@ class StandardConfig implements CumulaConfig {
 	 * @see core/interfaces/CumulaConfig#setConfigValue($config, $value)
 	 */
 	public function setConfigValue($config, $value) {
-		$obj = array($config => $value);
+		$obj = $this->_dataStore->newObj();
+		$obj->id = $config;
+		$obj->value = $value;
 		$this->_dataStore->createOrUpdate($obj);
 	}
 	

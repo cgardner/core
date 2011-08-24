@@ -26,9 +26,7 @@ class GDocsAPIDataStore extends BaseAPIDataStore {
 	
 	protected $_client;
 	
-	public function __construct($config_values) {
-		$schema = new GDocsSchema();
-		
+	public function __construct(GDocsSchema $schema, $config_values) {		
 		parent::__construct($schema, $config_values);
 		if(!isset($config_values['username']))
 			throw new Exception('Need a username');
@@ -73,13 +71,33 @@ class GDocsAPIDataStore extends BaseAPIDataStore {
 		return $ret;
 	}
 	
-	public function query($args, $order, $limit) {
+	public function query($args, $order = array(), $limit = array()) {
 		if(is_string($args)) { //assume its an id and return the doc based on that
 			$entry = $this->_client->getDocument($args);
 			$obj = $this->_parseObj($entry);
 			if($entry->content && $entry->content->src)
 				$obj->content = $this->_getContent($entry->content->src);
 			return $obj;
+		} else if (is_array($args)) {
+			foreach($args as $key => $value) {
+				if($key == 'folder') {
+					$ret = $this->_client->getDocumentListFeed("https://docs.google.com/feeds/documents/private/full/-/".urlencode($value));
+				} else if ($key == 'folders' && $value == 'all') {
+					$feed = $this->_client->getDocumentListFeed("https://docs.google.com/feeds/documents/private/full?showfolders=true");
+					$ret = array();
+					foreach($feed->entry as $entry) {
+						foreach($entry->category as $cat) {
+							if($cat->scheme == "http://schemas.google.com/g/2005#kind" && $cat->term == "http://schemas.google.com/docs/2007#folder")
+								$ret[] = $entry;
+						}
+					}
+				}
+				for($i = 0; $i < count($ret); $i++) {
+					$entry = $ret[$i];
+					$ret[$i] = $this->_parseObj($entry);
+				}
+				return $ret;
+			}
 		}
 	}
 	
@@ -102,8 +120,14 @@ class GDocsAPIDataStore extends BaseAPIDataStore {
 	
 	protected function _parseObj($entry) {
 		$obj = $this->_schema->getObjInstance();
+		foreach($obj as $key => $value) {
+			try {
+				$obj->$key = $entry->$key;
+			} catch (Exception $e) {
+			
+			}
+		}
 		$obj->id = $this->_parseId((string)$entry->id);
-		$obj->title = $entry->title;
 		return $obj;
 	}
 	
@@ -113,8 +137,8 @@ class GDocsAPIDataStore extends BaseAPIDataStore {
 		return $ret;
 	}
 	
-	protected function _getContent($url) {
-		$ret = (string)$this->_client->get($url.'&exportFormat=txt')->getBody();
+	protected function _getContent($url, $type = 'html') {
+		$ret = (string)$this->_client->get($url.'&exportFormat='.$type)->getBody();
 		return $ret;
 	}
 }

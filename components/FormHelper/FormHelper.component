@@ -29,7 +29,10 @@ class FormHelper extends BaseComponent {
 	public function __construct() {
 		parent::__construct();
 		$ds = $this->defaultDataStore();
-		$schema = new SimpleSchema('form_ids');
+		$schema = new SimpleSchema(array('id' => 'string',
+					 					 'value' => 'string'), 
+								   'id', 
+								   'config');
 		$this->_dataStore = new $ds($schema, array('source_directory' => DATAROOT, 'filename' => 'data.yaml'));
 		self::$_formId = '';
 	}
@@ -61,7 +64,10 @@ class FormHelper extends BaseComponent {
 		if(!array_key_exists('validate', $options) || $options['validate'] == true) {
 			$idHash = md5(session_id().$action);
 			$valHash = md5((string)microtime(true).(string)rand(0, 1000));
-			$this->_dataStore->create(array($idHash => $valHash));
+			$obj = $this->_dataStore->newObj();
+			$obj->id = $idHash;
+			$obj->value = $valHash;
+			$this->_dataStore->create($obj);
 			$output .= '<input type="hidden" name="validate_id" value="'.$idHash.'">';
 			$output .= '<input type="hidden" name="validate_value" value="'.$valHash.'">';
 		}
