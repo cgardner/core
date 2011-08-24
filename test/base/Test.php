@@ -12,7 +12,8 @@
  * @link        http://cumula.org
  */
 
-require_once('vfsStream/vfsStream.php');
+require_once 'vfsStream/vfsStream.php';
+require_once 'classes/EventDispatcher.class.php';
 
 /**
  * BaseTest Class

@@ -4,6 +4,7 @@ use Cumula\Response as Response;
 
 require_once 'base/Test.php';
 require_once 'classes/EventDispatcher.class.php';
+require_once 'classes/Request.class.php';
 require_once 'classes/Response.class.php';
 
 /**

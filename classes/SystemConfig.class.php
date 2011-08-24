@@ -85,7 +85,7 @@ class SystemConfig extends BaseComponent {
 	 * 
 	 */
 	public function setupAdminPages($event) {
-		$am = AdminInterface::getInstance();
+		$am = \AdminInterface\AdminInterface::getInstance();
 		$page = $am->newAdminPage();
 		$page->title = 'Site Settings';
 		$page->description = 'Basic Site Settings.';

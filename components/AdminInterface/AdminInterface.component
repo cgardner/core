@@ -14,8 +14,6 @@ use Cumula\BaseComponent as BaseComponent;
  * @link       http://cumula.org
  */
 
-require 'lib/AdminPage.class.php';
-
 /**
  * AdminInterface Component
  *
@@ -82,7 +80,23 @@ class AdminInterface extends BaseComponent {
 		
 		//Initialize stats for display on homepage.
 		$this->stats['installed_components'] = count($dispatcher->getEnabledComponentList());
+
+		$this->addEventListenerTo('Cumula\\Autoloader', \Cumula\Autoloader::EVENT_AUTOLOAD, 'autoload');
+
+		$this->addEventListener(ADMIN_COLLECT_SETTINGS_PAGES, array(\Cumula\SystemConfig::getInstance(), 'setupAdminPages'));
 	}
+
+	/**
+	 * Event Handler for Autoloader::EVENT_AUTOLOAD
+	 * @param string $event Name of the event that was dispatched
+	 * @param Cumula\Autoloader $dispatcher Instance of the Object that dispatched the event
+	 * @param string $className Name of the class being loaded
+	 * @return void
+	 **/
+	public function autoload($event, $dispatcher, $className) 
+	{
+		$dispatcher->registerClass('AdminInterface\\AdminPage', realpath(dirname(__FILE__) .'/lib/AdminPage.class.php'));
+	} // end function autoload
 	
 	/**
 	 * Listener for the BOOT_PREPARE event.  Dispatches the ADMIN_COLLECT_SETTINGS_PAGES event to listeners.  
@@ -190,7 +204,7 @@ class AdminInterface extends BaseComponent {
 		foreach($this->_pages as $page) {
 			//If the route matches, render a form based on the passed settings.
 			if($page->route == $route) {
-				$this->fh = Application::getFormHelper();
+				$this->fh = \FormHelper\FormHelper::getInstance();
 				$this->page = $page;
 				$title = $page->title;
 				$this->addEventListenerTo('Templater\\Templater', TEMPLATER_PREPARE, function($event, $templater) use ($title) {
@@ -257,18 +271,27 @@ class AdminInterface extends BaseComponent {
 	 * @param	array	The array of POST form values.
 	 *
 	 **/
-	public function saveSettings($route, $dispatcher, $args, $request) {
-		if(!$this->checkUser($request))
+	public function saveSettings($route, $dispatcher, $args, $request) 
+	{
+		if (!$this->checkUser($request))
+		{
 			return;
-		foreach($this->_pages as $page) {
-			if($page->route == $args['setting-page']) {
+		}
+
+		foreach ($this->_pages as $page) 
+		{
+			if ($page->route == $args['setting-page'])
+			{
 				$component = $page->component;
-				foreach($page->fields as $setting) {
+				foreach ($page->fields as $setting) 
+				{
 					$vals = $args[$setting['name']];
 					$component->config->setConfigValue($setting['name'], $vals);
 					$callback = $page->callback;
-					if(is_callable(array($component, $callback)))
+					if (is_callable(array($component, $callback)))
+					{
 						$component->$callback($vals);
+					}
 				}
 				$this->redirectTo($this->completeUrl($page->route));
 				return;

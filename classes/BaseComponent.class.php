@@ -62,14 +62,17 @@ abstract class BaseComponent extends EventDispatcher {
 	 * 
 	 * @return unknown_type
 	 */
-	protected function _registerEvents() {
-		if(file_exists(static::rootDirectory() . '/events.inc')) {
+	protected function _registerEvents() 
+	{
+		$eventsFile = static::rootDirectory() .'/events.inc';
+		if (file_exists($eventsFile)) 
+		{
 			//Grab current consts
 			$prev_consts = get_defined_constants(true);
 			$prev_consts = $prev_consts['user'];
 			
 			//Pull in the consts defined in events.inc
-			require_once static::rootDirectory() . '/events.inc';
+			require_once $eventsFile;
 			
 			//Grab all defined consts plus new events in the current user space
 			$new_consts = get_defined_constants(true);
@@ -79,7 +82,8 @@ abstract class BaseComponent extends EventDispatcher {
 			$consts = array_diff_assoc($new_consts, $prev_consts);
 			
 			//Iterate through and automatically register all new events
-			foreach($consts as $name => $const) {
+			foreach ($consts as $name => $const) 
+			{
 				$this->addEvent($const);
 			}
 		}

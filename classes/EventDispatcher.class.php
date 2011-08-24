@@ -13,6 +13,12 @@ namespace Cumula;
  * @link       http://cumula.org
  */
 require_once 'Exception/EventException.class.php';
+require_once(implode(DIRECTORY_SEPARATOR, array(
+	dirname(__FILE__),
+	'..',
+	'includes',
+	'core.inc',
+)));
 
 /**
  * EventDispatcher Class
