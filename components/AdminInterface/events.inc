@@ -16,4 +16,4 @@
 /**
  * Event Dispatched
  */
-const ADMIN_COLLECT_SETTINGS_PAGES = 'admin_collect_settings_pages';
+const ADMIN_COLLECT_SETTINGS_PAGES = 'ADMIN_COLLECT_SETTINGS_PAGES';

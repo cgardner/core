@@ -223,8 +223,8 @@ class AdminInterface extends BaseComponent {
 	 **/
 	protected function _checkPerms() {
 		$this->perms = array();
-		$readable_files = array(CONFIGROOT, APPROOT, COMPROOT);
-		$writable_files = array(CONFIGROOT, DATAROOT);
+		$readable_files = array(CONFIGROOT, APPROOT, COMPROOT, DATAROOT, PUBLICROOT, ASSETROOT, CONTRIBCOMPROOT);
+		$writable_files = array(CONFIGROOT, DATAROOT, PUBLICROOT, ASSETROOT, CONTRIBCOMPROOT);
 		foreach($readable_files as $file) {
 			if(!isset($this->perms[$file]))
 				$this->perms[$file] = TRUE;

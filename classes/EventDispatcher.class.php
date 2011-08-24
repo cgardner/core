@@ -62,7 +62,7 @@ abstract class EventDispatcher {
 	 */
 	public function addEvent($event) {
 		if ($this->eventExists($event))
-			throw new Exception('Event Already Exists.  You are trying to register an event that has previously been registered.');
+			trigger_error('Event Already Exists.  You are trying to register an event that has previously been registered.', E_USER_WARNING);
 		else
 			$this->_eventTable[$event] = array();
 	}
@@ -99,7 +99,7 @@ abstract class EventDispatcher {
 	 */
 	public function addEventListenerTo($class, $event, $function) {
 		if(!class_exists($class))
-			throw new EventException('Tried to bind to an event for a class that does not exist.');
+			trigger_error('Tried to bind to an event for a class that does not exist.', E_USER_WARNING);
 		if(is_string($function)) {
 			$callback = array($this, $function);
 		} else if (is_callable($function)) {
@@ -109,7 +109,7 @@ abstract class EventDispatcher {
 		if($instance)
 			return $instance->addEventListener($event, $callback);
 		else
-			throw new EventException("Tried to bind event to class $class which has not yet been instantiated");
+			trigger_error("Tried to bind event to class $class which has not yet been instantiated", E_USER_WARNING);
 	}
 	
 	/**
