@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 
 abstract class BaseSchema extends EventDispatcher implements CumulaSchema {
 	protected $_fields;
@@ -37,7 +38,7 @@ abstract class BaseSchema extends EventDispatcher implements CumulaSchema {
 	}
 	
 	public function getObjInstance() {
-		$obj = new stdClass();
+		$obj = new \stdClass();
 		foreach($this->getFields() as $field => $type) {
 			$obj->$field = null;
 		}
