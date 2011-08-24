@@ -3,6 +3,7 @@
 use Cumula\YAMLDataStore as YAMLDataStore;
 
 require_once 'base/Test.php';
+require_once 'classes/BaseDataStore.class.php';
 require_once 'libraries/YAMLDataStore/YAMLDataStore.class.php';
 
 /**

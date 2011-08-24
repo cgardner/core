@@ -39,6 +39,7 @@ final class ComponentManager extends BaseComponent {
 	private $_installedClasses = array();
 	private $_availableClasses = array();
 	private $_startupClasses = array();
+	private $componentFiles = array();
 
 	/**
 	 * Constructor.
@@ -59,6 +60,7 @@ final class ComponentManager extends BaseComponent {
 		$this->_output = array();
 
 		$this->addEventListener(COMPONENT_STARTUP_COMPLETE, array(&$this, 'startup'));
+		$this->addEventListenerTo('Cumula\\Autoloader', Autoloader::EVENT_AUTOLOAD, array($this, 'autoload'));
 	}
 	
     /**
@@ -78,41 +80,52 @@ final class ComponentManager extends BaseComponent {
 	 * Implementation of the basecomponent startup function.
 	 * 
 	 */
-	public function startup() {
-		if(Application::getAdminInterface())
-			$this->addEventListenerTo('AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
+	public function startup() 
+	{
+		if(class_exists('AdminInterface\\AdminInterface'))
+		{
+			$this->addEventListenerTo('AdminInterface\\AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
+		}
 	}
-	
+
+	/**
+	 * Populate the Autoloader
+	 * @param string $event Name of the Event that was dispatched
+	 * @param Cumula\Autoloader $dispatcher Object that dispatched the event
+	 * @param string $className Name of the class being loaded
+	 * @return void
+	 **/
+	public function autoload($event, $dispatcher, $className) 
+	{
+		$dispatcher->registerClasses($this->getComponentFiles());
+	} // end function autoload
 	
 	/**
 	 * Defines and adds the admin pages to the admin interface, exposing the installed/enabled class lists.
 	 * 
 	 */
-	public function setupAdminPages($event, $args = null) {
-		$am = Application::getAdminInterface();
-		if(!$am)
-			return;
+	public function setupAdminPages($event, $dispatcher) {
 		$uninstalled = array_diff($this->_availableClasses, $this->_installedClasses);
-		$page = $am->newAdminPage();
+		$page = $dispatcher->newAdminPage();
 		$page->title = 'Components';
 		$page->description = 'Below are the installed and enabled components in the system.';
 		$page->route = '/admin/installed_components';
 		$page->component = &$this;
 		$page->callback = 'loadSettings';
 		$page->fields = array(array('name' => 'enabled_components', 
-									'title' => 'Enabled Components',
-									'type' => 'checkboxes',
-									'values' => $this->_installedClasses,
-									'selected' => $this->_enabledClasses,
-									'labels' => $this->_installedClasses),
-							);					
-		$am->addAdminPage($page);
+			'title' => 'Enabled Components',
+			'type' => 'checkboxes',
+			'values' => $this->_installedClasses,
+			'selected' => $this->_enabledClasses,
+			'labels' => $this->_installedClasses),
+		);					
+		$dispatcher->addAdminPage($page);
 		
 		/**
 		 * If there are uninstalled components, show a menu item for those with the number of components in the title 
 		 */
 
-		$page = $am->newAdminPage();
+		$page = $dispatcher->newAdminPage();
 		$page->title = 'New Components';
 		if(count($uninstalled) > 0) {
 			$componentNumber = ' <strong>'.count($uninstalled).'</strong>';
@@ -133,7 +146,7 @@ final class ComponentManager extends BaseComponent {
 		} else {
 			$page->fields = array();
 		}
-		$am->addAdminPage($page);
+		$dispatcher->addAdminPage($page);
 		
 	}
 	
@@ -171,13 +184,12 @@ final class ComponentManager extends BaseComponent {
 	 * @param $url
 	 * @return unknown_type
 	 */
-	public function startStartupComponents() {
-        $files = $this->getComponentFiles();
-        foreach ($files as $component) {
-					$this->requireFile($component);
-					$basename = basename($component, '.component');
-					$this->startupComponent(sprintf('%s\\%s', $basename, $basename));
-        }
+	public function startStartupComponents() 
+	{
+		foreach ($this->getComponentFiles() as $className => $classFile) 
+		{
+			$this->startupComponent($className);
+		}
 	}
 
 	/**
@@ -186,15 +198,9 @@ final class ComponentManager extends BaseComponent {
 	 * @param $url
 	 * @return unknown_type
 	 */
-	protected function _getAvailableComponents() {
-		$ret = array();
-        $files = $this->getComponentFiles();
-        foreach ($files as $component) {
-					$this->requireFile($component);
-					$basename = basename($component, '.component');
-					$ret[] = sprintf('%s\\%s', $basename, $basename);
-        }
-        return $ret;
+	protected function _getAvailableComponents() 
+	{
+		return array_keys($this->getComponentFiles());
 	}
 
 	/**
@@ -235,7 +241,6 @@ final class ComponentManager extends BaseComponent {
 			}
 		}
 		if($found) {
-			$this->requireFile($class_file);
 			if(!in_array($component, $this->_installedClasses))
 			{
 				$this->_installedClasses[] = $component;
@@ -281,7 +286,6 @@ final class ComponentManager extends BaseComponent {
 				$class_name = ucfirst(basename($comp));
 				$class_file = $comp_dir.'/'.$class_name.'.component';
 				if (is_file($class_file) && (in_array($class_name, $this->_installedClasses)) && !class_exists($class_name)) {
-					$this->requireFile($class_file);
 				}
 			}
 		}
@@ -315,12 +319,14 @@ final class ComponentManager extends BaseComponent {
 	 * @return unknown_type
 	 */
 	public function startupComponent($component_class) {
-		if(class_exists($component_class) &&
-				!isset($this->_components[$component_class]) &&
-				(in_array($component_class, $this->_enabledClasses))) {
+		if(!isset($this->_components[$component_class]) && (in_array($component_class, $this->_enabledClasses))) 
+		{
 			$this->_components[$component_class] = new $component_class();
-		} else
+		} 
+		else
+		{
 			return false;
+		}
 	}
 
 	/**
@@ -408,24 +414,22 @@ final class ComponentManager extends BaseComponent {
 		return $this->_startupClasses;
 	}
 
-    /**
-     * Get the Files that should contain components
-     * @param void
-     * @return array
-     * @author Craig Gardner <craig@seabourneconsulting.com>
-     **/
-    public function getComponentFiles() {
-        return glob(sprintf('{%s*/*.component,%s*/*.component}', COMPROOT, CONTRIBCOMPROOT), GLOB_BRACE);
-        
-    } // end function getComponentFiles
-
 	/**
-	 * Require a file
-	 * @param string $filename
-	 * @return boolean
-	 **/
-	private function requireFile($filename) 
+   * Get the Files that should contain components
+   * @param void
+   * @return array
+   **/
+	public function getComponentFiles() 
 	{
-		require_once($filename);
-	} // end function requireFile
+		if (is_null($this->componentFiles) || count($this->componentFiles) == 0)
+		{
+			foreach(glob(sprintf('{%s*/*.component,%s*/*.component}', COMPROOT, CONTRIBCOMPROOT), GLOB_BRACE) as $file)
+			{
+				$basename = basename($file, '.component');
+				$this->componentFiles[sprintf('%s\\%s', $basename, $basename)] = $file;
+			}
+		}
+		return $this->componentFiles;
+	} // end function getComponentFiles
+
 }
