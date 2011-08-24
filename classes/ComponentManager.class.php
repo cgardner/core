@@ -1,4 +1,8 @@
 <?php
+namespace Cumula;
+
+use \ReflectionClass as ReflectionClass;
+
 /**
  * Cumula
  *
@@ -43,7 +47,6 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function __construct() {
 		parent::__construct();
-		//print_r(Application::getInstance());
 		Application::getInstance()->addEventListener(BOOT_INIT, array(&$this, 'loadComponents'));
 		Application::getInstance()->addEventListener(BOOT_STARTUP, array(&$this, 'startupComponents'));
 		$this->addEvent(COMPONENT_INIT_COMPLETE);
@@ -171,8 +174,9 @@ final class ComponentManager extends BaseComponent {
 	public function startStartupComponents() {
         $files = $this->getComponentFiles();
         foreach ($files as $component) {
-            require_once($component);
-            $this->startUpComponent(basename($component, '.component'));
+					$this->requireFile($component);
+					$basename = basename($component, '.component');
+					$this->startupComponent(sprintf('%s\\%s', $basename, $basename));
         }
 	}
 
@@ -186,7 +190,9 @@ final class ComponentManager extends BaseComponent {
 		$ret = array();
         $files = $this->getComponentFiles();
         foreach ($files as $component) {
-            $ret[] = basename($component, '.component');
+					$this->requireFile($component);
+					$basename = basename($component, '.component');
+					$ret[] = sprintf('%s\\%s', $basename, $basename);
         }
         return $ret;
 	}
@@ -206,27 +212,42 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function installComponent($component) {
 		$found = false;
-		//TODO: replace the hard-coded components directory with a system config
-		$dir = dir(COMPROOT);
-		$comp_dir = $dir->path.'/'.$component;
-		$class_file = $comp_dir.'/'.$component.'.component';
-		if (is_file($class_file)) {
-			$found = true;
-		} else {
-			$dir = dir(CONTRIBCOMPROOT);
+		if (class_exists($component))
+		{
+			$reflection = new ReflectionClass($component);
+			$class_file = $reflection->getFileName();
+			$found = TRUE;
+		}
+		else 
+		{
+			//TODO: replace the hard-coded components directory with a system config
+			$dir = dir(COMPROOT);
 			$comp_dir = $dir->path.'/'.$component;
 			$class_file = $comp_dir.'/'.$component.'.component';
-			if(is_file($class_file))
+			if (is_file($class_file)) {
 				$found = true;
+			} else {
+				$dir = dir(CONTRIBCOMPROOT);
+				$comp_dir = $dir->path.'/'.$component;
+				$class_file = $comp_dir.'/'.$component.'.component';
+				if(is_file($class_file))
+					$found = true;
+			}
 		}
 		if($found) {
-			require_once $class_file;
+			$this->requireFile($class_file);
 			if(!in_array($component, $this->_installedClasses))
-			$this->_installedClasses[] = $component;
+			{
+				$this->_installedClasses[] = $component;
+			}
 			if(!in_array($component, $this->_enabledClasses))
-			$this->_enabledClasses[] = $component;
+			{
+				$this->_enabledClasses[] = $component;
+			}
 			if(!array_key_exists($component, $this->_components))
-			$this->_components[$component] = new $component;
+			{
+				$this->_components[$component] = new $component;
+			}
 			$instance = $this->_components[$component];
 			$instance->install();
 			$instance->installAssets();
@@ -260,7 +281,7 @@ final class ComponentManager extends BaseComponent {
 				$class_name = ucfirst(basename($comp));
 				$class_file = $comp_dir.'/'.$class_name.'.component';
 				if (is_file($class_file) && (in_array($class_name, $this->_installedClasses)) && !class_exists($class_name)) {
-					require_once $class_file;
+					$this->requireFile($class_file);
 				}
 			}
 		}
@@ -295,8 +316,8 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function startupComponent($component_class) {
 		if(class_exists($component_class) &&
-		!isset($this->_components[$component_class]) &&
-		(in_array($component_class, $this->_enabledClasses))) {
+				!isset($this->_components[$component_class]) &&
+				(in_array($component_class, $this->_enabledClasses))) {
 			$this->_components[$component_class] = new $component_class();
 		} else
 			return false;
@@ -397,4 +418,14 @@ final class ComponentManager extends BaseComponent {
         return glob(sprintf('{%s*/*.component,%s*/*.component}', COMPROOT, CONTRIBCOMPROOT), GLOB_BRACE);
         
     } // end function getComponentFiles
+
+	/**
+	 * Require a file
+	 * @param string $filename
+	 * @return boolean
+	 **/
+	private function requireFile($filename) 
+	{
+		require_once($filename);
+	} // end function requireFile
 }

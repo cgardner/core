@@ -1,4 +1,6 @@
 <?php
+namespace UserManager;
+use Cumula\BaseMVCModel as BaseMVCModel;
 
 class User extends BaseMVCModel {
 	public function __construct($args = array()) {

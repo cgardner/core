@@ -44,7 +44,7 @@ class Test_MySQLDataStore extends Test_BaseTest
 			'db' => 'testdb',	
 		);
 
-		$this->schema = $this->getMock('SimpleSchema');
+		$this->schema = $this->getMock('Cumula\\SimpleSchema');
 	} // end function setUp
 
 	/**
@@ -55,7 +55,7 @@ class Test_MySQLDataStore extends Test_BaseTest
 	 **/
 	public function testConfig() 
 	{
-		$this->instance = new MySQLDataStore($this->schema, $this->options);
+		$this->instance = new Cumula\MySQLDataStore($this->schema, $this->options);
 		foreach ($this->options as $key => $value) {
 			$method = sprintf('get%s', str_replace(' ', '', ucwords(str_replace('_', ' ', $key))));
 			$this->assertTrue(is_callable(array($this->instance, $method)), "Testing $method");

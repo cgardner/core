@@ -1,4 +1,6 @@
 <?php
+namespace AdminInterface;
+use Cumula\BaseComponent as BaseComponent;
 /**
  * Cumula
  *
@@ -58,16 +60,25 @@ class AdminInterface extends BaseComponent {
 	 * @param	ComponentManager	The ComponentManager instance.
 	 *
 	 **/
-	public function startup($event, $dispatcher) {
-		$this->addEventListenerTo('Application', BOOT_PREPARE, 'dispatchCollectEvent');
+	public function startup() {
+
+		/**
+		 * If we add parameters to the method, we get errors saying that the method definition
+		 * does not match that of BaseComponent::startup()
+		 */
+		$args = func_get_args();
+		$event = isset($args[0]) ? $args[0] : NULL;
+		$dispatcher = isset($args[1]) ? $args[1] : NULL;
+
+		$this->addEventListenerTo('Cumula\\Application', BOOT_PREPARE, 'dispatchCollectEvent');
 		
 		//If router is installed, bind to the route collector event
 		if(defined('ROUTER_COLLECT_ROUTES'))
-			$this->addEventListenerTo('Router', ROUTER_COLLECT_ROUTES, 'collectAdminPages');
+			$this->addEventListenerTo('Cumula\\Router', ROUTER_COLLECT_ROUTES, 'collectAdminPages');
 		
 		//If the menu manager is installed, bind to the menu collector event
 		if(defined('MENUMANAGER_COLLECT_MENUS'))
-			$this->addEventListenerTo('MenuManager', MENUMANAGER_COLLECT_MENUS, 'sendMenus');
+			$this->addEventListenerTo('MenuManager\\MenuManager', MENUMANAGER_COLLECT_MENUS, 'sendMenus');
 		
 		//Initialize stats for display on homepage.
 		$this->stats['installed_components'] = count($dispatcher->getEnabledComponentList());
@@ -171,7 +182,7 @@ class AdminInterface extends BaseComponent {
 	public function adminPage($route, $router, $args, $request) {
 		if(!$this->checkUser($request))
 			return;
-		$this->addEventListenerTo('Templater', TEMPLATER_PREPARE, function($event, $templater) {
+		$this->addEventListenerTo('Templater\\Templater', TEMPLATER_PREPARE, function($event, $templater) {
 			$templater->setTemplateDir(COMPROOT.'AdminInterface/template/');
 		});
 		
@@ -182,7 +193,7 @@ class AdminInterface extends BaseComponent {
 				$this->fh = Application::getFormHelper();
 				$this->page = $page;
 				$title = $page->title;
-				$this->addEventListenerTo('Templater', TEMPLATER_PREPARE, function($event, $templater) use ($title) {
+				$this->addEventListenerTo('Templater\\Templater', TEMPLATER_PREPARE, function($event, $templater) use ($title) {
 					$templater->setTitle($title);
 				});
 				$this->render();
@@ -197,7 +208,7 @@ class AdminInterface extends BaseComponent {
 	public function index($route, $router, $args, $request) {
 		if(!$this->checkUser($request))
 			return;
-		$this->addEventListenerTo('Templater', TEMPLATER_PREPARE, function($event, $templater) {
+		$this->addEventListenerTo('Templater\\Templater', TEMPLATER_PREPARE, function($event, $templater) {
 			$templater->setTemplateDir(COMPROOT.'AdminInterface/template/');
 		});
 		$this->pages = $this->_pages;

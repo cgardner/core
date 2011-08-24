@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 /**
  * Cumula
  *
@@ -35,7 +36,7 @@ class SystemConfig extends BaseComponent {
 	}
 	
 	public function setupListeners() {
-		$this->addEventListenerTo('ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
+		$this->addEventListenerTo('Cumula\\ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
 	}
 	
 	
@@ -74,8 +75,9 @@ class SystemConfig extends BaseComponent {
 	 * Implements the BaseComponent startup function
 	 * 
 	 */
-	public function startup($event) {
-		$this->addEventListenerTo('AdminInterface', 'ADMIN_COLLECT_SETTINGS_PAGES', 'setupAdminPages');
+
+	public function startup() {
+		$this->addEventListenerTo('AdminInterface\\AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
 	}
 	
 	/**

@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 /**
  * Cumula
  *
@@ -137,7 +138,7 @@ abstract class EventDispatcher {
 	 */
 	public function dispatch($event, $data = array()) {
 		if ($this->eventExists($event)) {
-			array_unshift($data, $event, &$this);
+			array_unshift($data, $event, $this);
 			global $level;
 			if ($event != EVENTDISPATCHER_EVENT_DISPATCHED)
 				$level++;
@@ -173,7 +174,13 @@ abstract class EventDispatcher {
 	 * @return BaseComponent|bool	The instance, if it exists, otherwise false
 	 */
 	public static function getInstance() {
-		return isset(self::$_instances[get_called_class()]) ? self::$_instances[get_called_class()] : false;
+		$class = get_called_class();
+		if (!isset(self::$_instances[$class]))
+		{
+			$instance = new $class();
+			self::setInstance($instance);
+		}
+		return self::$_instances[$class];
 	}
 	
 	/**

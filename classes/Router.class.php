@@ -1,4 +1,6 @@
 <?php
+namespace Cumula;
+use Templater\Templater as Templater;
 /**
  * Cumula
  *
@@ -42,7 +44,7 @@ class Router extends BaseComponent {
 
 	public function filenotfound($event, $dispatcher, $request, $response) {
 		//TODO: do something more smart here
-		$fileName = Application::getTemplater()->config->getConfigValue('template_directory', TEMPLATEROOT).'404.tpl.php';
+		$fileName = Templater::getInstance()->config->getConfigValue('template_directory', TEMPLATEROOT).'404.tpl.php';
 		$this->render($fileName);
 		$response->response['content'] = $this->renderPartial(implode(DIRECTORY_SEPARATOR, array(APPROOT, 'public', '404.html')));
 		$response->send404();
@@ -147,7 +149,7 @@ class Router extends BaseComponent {
 
 			//The urls match, so we call the passed handler function, passing in the args
 			if($match) {
-				$args = array_merge(Application::getRequest()->params, $args);
+				$args = array_merge(Request::getInstance()->params, $args);
 				$return_handlers[$route] = $args;
 			}
 		}

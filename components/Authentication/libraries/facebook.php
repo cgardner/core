@@ -1,4 +1,6 @@
 <?php
+namespace Authentication;
+use Cumula\SystemConfig as SystemConfig;
 require_once(dirname(__FILE__) .'/facebook-php-sdk/src/facebook.php');
 
 class facebookAuthentication extends Authentication implements CumulaAuth
@@ -30,8 +32,9 @@ class facebookAuthentication extends Authentication implements CumulaAuth
 	{
 		parent::__construct();
 
-		$this->fbClientId = Application::getSystemConfig()->getValue('facebook_client_id', FALSE);
-		$this->fbClientSecret = Application::getSystemConfig()->getValue('facebook_client_secret', FALSE);
+		$config = SystemConfig::getInstance();
+		$this->fbClientId = $config->getValue('facebook_client_id', FALSE);
+		$this->fbClientSecret = $config->getValue('facebook_client_secret', FALSE);
 		if ($this->fbClientId == FALSE || $this->fbClientSecret == FALSE) 
 		{
 			throw new Exception('Facebook Authentication is not configured');
@@ -45,7 +48,7 @@ class facebookAuthentication extends Authentication implements CumulaAuth
    */
 	public function authenticate($params)
   {
-		$facebook = new Facebook(array(
+		$facebook = new \Facebook(array(
 			'appId' => $this->fbClientId,
 			'secret' => $this->fbClientSecret,
 		));

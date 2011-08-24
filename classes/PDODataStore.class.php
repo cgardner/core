@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 
 require_once realpath(dirname(__FILE__) .'/BaseSqlDataStore.class.php');
 /**

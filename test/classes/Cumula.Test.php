@@ -2,11 +2,12 @@
 
 require_once 'base/Test.php';
 require_once 'classes/Cumula.class.php';
+use Cumula\Cumula as Cumula;
 
 /**
  * Cumula Class Test Class
  * @package Cumula
- * @runTestsInSeparateProcesses
+ * @norunTestsInSeparateProcesses
  **/
 class Test_Cumula extends Test_BaseTest {
     /**
@@ -14,7 +15,7 @@ class Test_Cumula extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula::setInstance
+     * @covers Cumula\Cumula::setInstance
      **/
     public function testSetInstance() {
         $application = $this->getMock('EventDispatcher');
@@ -28,7 +29,7 @@ class Test_Cumula extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula::getInstance
+     * @covers Cumula\Cumula::getInstance
      **/
     public function testGetInstance() {
         $application = $this->getMock('EventDispatcher');

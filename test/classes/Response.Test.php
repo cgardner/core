@@ -1,5 +1,7 @@
 <?php
 
+use Cumula\Response as Response;
+
 require_once 'base/Test.php';
 require_once 'classes/EventDispatcher.class.php';
 require_once 'classes/Response.class.php';
@@ -23,7 +25,8 @@ class Test_Response extends Test_BaseTest {
      * @return void
      **/
     public function setUp() {
-        $this->response = new Response();
+			parent::setUp();
+			$this->response = new Response();
     } // end function setUp
 
     /**
@@ -31,7 +34,7 @@ class Test_Response extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Response::__construct
+     * @covers Cumula\Response::__construct
      **/
     public function testConstructor() {
         $response = array(
@@ -48,8 +51,8 @@ class Test_Response extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Response::sendRawResponse
-     * @covers Response::_sendHeader
+     * @covers Cumula\Response::sendRawResponse
+     * @covers Cumula\Response::_sendHeader
      **/
     public function testSendRawResponse() {
         $body = uniqid('body_');
@@ -81,7 +84,7 @@ class Test_Response extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Response::sendRawResponse
+     * @covers Cumula\Response::sendRawResponse
      **/
     public function testSendRawResponse404() {
         $body = uniqid('body_');
@@ -107,7 +110,7 @@ class Test_Response extends Test_BaseTest {
      * @param string $sendUrl
      * @return void
      * @group all
-     * @covers Response::send302
+     * @covers Cumula\Response::send302
      * @dataProvider send302DataProvider
      **/
     public function testSend302($sendUrl, $expected = NULL) {
@@ -127,7 +130,7 @@ class Test_Response extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Response::send
+     * @covers Cumula\Response::send
      **/
     public function testSend() {
         $content = uniqid('content_');

@@ -1,4 +1,5 @@
 <?php
+namespace Authentication;
 
 class twitterAuthentication extends Authentication implements CumulaAuth
 {
@@ -28,7 +29,7 @@ class twitterAuthentication extends Authentication implements CumulaAuth
     $this->oauth_token_secret = 'pPVTMx96ZlqWjKPLxW6B8OKXcWbA51RrVkSlJXqFnk';
     
     //$this->twitterObj = new EpiTwitter($this->consumer_key, $this->consumer_secret, $this->oauth_token, $this->oauth_token_secret);
-    $this->twitterObjUnAuth = new EpiTwitter($this->consumer_key, $this->consumer_secret);
+    $this->twitterObjUnAuth = new \EpiTwitter($this->consumer_key, $this->consumer_secret);
     
     //$this->twitterObj->useAsynchronous(FALSE);
     $this->twitterObjUnAuth->useAsynchronous(FALSE);

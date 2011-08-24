@@ -1,4 +1,7 @@
 <?php
+namespace FormHelper;
+use Cumula\BaseComponent as BaseComponent;
+use Cumula\SimpleSchema as SimpleSchema;
 /**
  * Cumula
  *
@@ -40,7 +43,7 @@ class FormHelper extends BaseComponent {
 	public function startup() {
 		$this->_dataStore->connect();
 		//Is a form submission
-		$this->addEventListenerTo('Application', BOOT_PREPROCESS, 'formCheck');
+		$this->addEventListenerTo('Cumula\\Application', BOOT_PREPROCESS, 'formCheck');
 	}
 	
 	public function formCheck($event, $dispatcher, $request, $response) {

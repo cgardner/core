@@ -1,4 +1,5 @@
 <?php
+namespace Cumula;
 /**
  * Cumula
  *
@@ -50,11 +51,8 @@ abstract class BaseComponent extends EventDispatcher {
 		$this->_output = array();
 		$this->config = new StandardConfig(CONFIGROOT, get_class($this).'.yaml');
 		
-        try {
-            $this->addEventListenerTo('ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
-            $this->addEventListenerTo('Application', BOOT_SHUTDOWN, 'shutdown');
-        }
-        catch (EventException $e) {}
+		$this->addEventListenerTo('Cumula\\ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
+		$this->addEventListenerTo('Cumula\\Application', BOOT_SHUTDOWN, 'shutdown');
 
 		$this->addEvent(EVENT_LOGGED);
 	}
@@ -216,7 +214,17 @@ abstract class BaseComponent extends EventDispatcher {
 		
 	}
 	
-  abstract public static function getInfo();
+
+	/**
+	 * Static method to provide information to the system aobut themselves
+	 * @param void
+	 * @return array
+	 **/
+	public static function getInfo() 
+	{
+		$class = get_class($this);
+		throw new \Exception(sprintf('%s needs  to implement getInfo itself', $class));
+	} // end function getInfo
 
 	/**********************************************
 	* Miscellaneous Installation Functions
@@ -228,19 +236,27 @@ abstract class BaseComponent extends EventDispatcher {
 	 **/
 	public function installAssets() {
 		$class = get_class($this);
-		$assetDir = implode(DIRECTORY_SEPARATOR, array(APPROOT, 'public', 'assets'));
-		if (is_dir($assetDir) === FALSE) {
-			mkdir($assetDir);
-		}
-
-		$componentPublicAssetDir = $assetDir . DIRECTORY_SEPARATOR . $class;
-		if (is_dir($componentPublicAssetDir) === FALSE) {
-			mkdir($componentPublicAssetDir);
+		if (stripos($class, '\\'))
+		{
+			$classExploded = explode('\\', $class);
+			$class = $classExploded[1];
 		}
 
 		$files = glob(sprintf('{%s/%s/assets,%s/%s/assets}', COMPROOT, $class, CONTRIBCOMPROOT, $class), GLOB_BRACE | GLOB_NOSORT);
-		foreach ($files as $componentAssetDir) {
-			$this->copyAssetFiles($componentAssetDir, $componentPublicAssetDir);
+		if (is_array($files) && count($files) > 0)
+		{
+			$assetDir = implode(DIRECTORY_SEPARATOR, array(APPROOT, 'public', 'assets'));
+			if (is_dir($assetDir) === FALSE) {
+				mkdir($assetDir);
+			}
+
+			$componentPublicAssetDir = $assetDir . DIRECTORY_SEPARATOR . $class;
+			if (is_dir($componentPublicAssetDir) === FALSE) {
+				mkdir($componentPublicAssetDir);
+			}
+			foreach ($files as $componentAssetDir) {
+				$this->copyAssetFiles($componentAssetDir, $componentPublicAssetDir);
+			}
 		}
 	} // end function installAssets
 
@@ -310,11 +326,15 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function addOutputBlock($block) {
+		$response = Response::getInstance();
 		
-		if(empty(Application::getResponse()->response['data'][$block->data['variable_name']]))
-			Application::getResponse()->response['data'][$block->data['variable_name']] = array($block);
-		else {
-			Application::getResponse()->response['data'][$block->data['variable_name']][] = $block;
+		if(empty($response->response['data'][$block->data['variable_name']]))
+		{
+			$response->response['data'][$block->data['variable_name']] = array($block);
+		}
+		else 
+		{
+			$response->response['data'][$block->data['variable_name']][] = $block;
 		}
 	}
 	
@@ -336,7 +356,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * 
 	 */
 	protected function _getThisFile() {
-		$ref = new ReflectionClass(static::_getThis());
+		$ref = new \ReflectionClass(static::_getThis());
 		return $ref->getFileName();
 	}
 	
@@ -347,7 +367,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function redirectTo($url) {
-		Application::getResponse()->send302($url);
+		Response::getInstance()->send302($url);
 	}
 	
 	/**
@@ -357,8 +377,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function completeUrl($url) {
-		$session = Application::getSystemConfig();
-		$base = $session->getValue(SETTING_DEFAULT_BASE_PATH);
+		$base = SystemConfig::getInstance()->getValue(SETTING_DEFAULT_BASE_PATH);
 		return ($base == '/') ? $url : $base.$url;
 	}
 	
@@ -368,7 +387,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function defaultDataStore() {
-		return Application::getSystemConfig()->getValue(SETTING_DEFAULT_DATASTORE);
+		return SystemConfig::getInstance()->getValue(SETTING_DEFAULT_DATASTORE);
 	}
 	
 	public function linkTo($title, $url, $args = array()) {
@@ -386,7 +405,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function rootDirectory() {
-		$class = new ReflectionClass(get_class($this));
+		$class = new \ReflectionClass(get_class($this));
 		return dirname($class->getFileName());	
 	}
 	/**

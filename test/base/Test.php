@@ -36,6 +36,7 @@ class Test_BaseTest extends PHPUnit_Framework_TestCase {
      * @return void
      **/
     public function setUp() {
+			$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
       
     } // end function setUp
 

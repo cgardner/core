@@ -1,4 +1,10 @@
 <?php
+namespace Logger;
+use Cumula\BaseComponent as BaseComponent;
+use Cumula\SystemConfig as SystemConfig;
+use Cumula\SimpleSchema as SimpleSchema;
+use Cumula\ComponentManager as ComponentManager;
+
 /**
  * Cumula
  *
@@ -29,8 +35,9 @@ class Logger extends BaseComponent {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$log_dir = Application::getSystemConfig()->getValue('log_directory', APPROOT.'/log');
-		$log_file = Application::getSystemConfig()->getValue('environment', ENV_DEVELOPMENT).'.log';
+		$log_dir = SystemConfig::getInstance()->getValue('log_directory', APPROOT.'/log');
+		$log_file = SystemConfig::getInstance()->getValue('environment', ENV_DEVELOPMENT).'.log';
+		$this->syslog = SystemConfig::getInstance()->getValue('syslog', FALSE);
 		if(!file_exists($log_dir))
 			mkdir($log_dir);
 		$schema = new SimpleSchema(array('id' => 'string'), 'id', 'log');
@@ -58,6 +65,11 @@ class Logger extends BaseComponent {
 		if($other_info)
 			$other_info = "\nArgs:\n ".var_export($other_info, true);
 		$this->dataStore->create(array($level, $message, $other_info));
+
+		// Output to the system log if configured
+		if ($this->syslog && $this->syslog == 'true') {
+			syslog(LOG_NOTICE, $message);
+		}
 	}
   /**
    * Implementation of the getInfo method
