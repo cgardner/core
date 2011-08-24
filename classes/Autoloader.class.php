@@ -103,6 +103,7 @@ class Autoloader extends EventDispatcher
 			'Cumula\\BaseMVCController' => $dir .'/BaseMVCController.class.php',
 			'Cumula\\BaseMVCModel' => $dir .'/BaseMVCModel.class.php',
 			'Cumula\\SystemConfig' => $dir .'/SystemConfig.class.php',
+			'Cumula\\BaseSchema' => $dir .'/BaseSchema.class.php',
 
 			// Exceptions
 			'Cumula\\EventException' => $dir .'/Exception/EventException.class.php',
