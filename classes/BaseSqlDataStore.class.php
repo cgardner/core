@@ -49,7 +49,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	 * @see core/interfaces/DataStore#create($obj)
 	 */
 	public function create($obj) {
-		$sql = "INSERT INTO {$this->getSchema()->name} ";
+		$sql = "INSERT INTO {$this->getSchema()->getName()} ";
 		$keys = array();
 		$values = array();
 		foreach($this->getSchema()->getFields() as $field => $args) {
@@ -64,7 +64,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	}
 	
 	public function install() {
-		$sql_output = "CREATE TABLE IF NOT EXISTS {$this->getSchema()->name}(";
+		$sql_output = "CREATE TABLE IF NOT EXISTS {$this->getSchema()->getName()}(";
 		$fields = array();
 		foreach(static::translateFields($this->getSchema()->getFields()) as $field => $attrs) {
 			$field = "$field {$attrs['type']}";
@@ -82,7 +82,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	}
 	
 	public function uninstall() {
-		return "DROP TABLE {$this->getSchema()->name}";
+		return "DROP TABLE {$this->getSchema()->getName()}";
 	}
 
 	/* (non-PHPdoc)
@@ -92,7 +92,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 		$idField = $this->getSchema()->getIdField();
 		if(!$this->recordExists($obj->$idField))
 			return false;
-		$sql = "UPDATE {$this->getSchema()->name} SET ";
+		$sql = "UPDATE {$this->getSchema()->getName()} SET ";
 		$fields = array();
 		foreach($this->getSchema()->getFields() as $field => $args) {
 			if(property_exists($obj, $field)) {
@@ -130,7 +130,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	 */
 	public function destroy($obj) {
 		$idField = $this->getSchema()->getIdField();
-		$sql = "DELETE FROM {$this->getSchema()->name} WHERE ";
+		$sql = "DELETE FROM {$this->getSchema()->getName()} WHERE ";
 		if(is_numeric($obj))
 			$sql .= $idField.' = '.$obj.';';
 		else
@@ -142,7 +142,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	 * @see core/interfaces/DataStore#query($args, $order, $limit)
 	 */
 	public function query($args, $order = array(), $limit = array()) {
-		$sql = "SELECT * FROM {$this->getSchema()->name} WHERE ";
+		$sql = "SELECT * FROM {$this->getSchema()->getName()} WHERE ";
 		//Args is an id
 		if (is_numeric($args)) {
 			$sql .= "{$this->getSchema()->getIdField()}=$args";

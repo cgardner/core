@@ -13,7 +13,6 @@ namespace Cumula;
  * @link       http://cumula.org
  */
 
-require_once(__DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."includes".DIRECTORY_SEPARATOR."core.inc");
 
 /**
  * Application Class

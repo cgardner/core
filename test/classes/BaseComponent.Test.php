@@ -16,6 +16,8 @@
 require_once 'base/Test.php';
 require_once 'vfsStream/vfsStream.php';
 require_once 'classes/EventDispatcher.class.php';
+require_once 'interfaces/CumulaConfig.interface.php';
+require_once 'libraries/StandardConfig/StandardConfig.class.php';
 require_once 'classes/BaseComponent.class.php';
 
 /**
