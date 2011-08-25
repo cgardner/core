@@ -306,7 +306,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * 
 	 */
 	public function renderContent($content, $var_name = 'content') {
-		$block = new ContentBlock();
+		$block = new \ContentBlock\ContentBlock();
 		$block->content = $content;
 		$block->data['variable_name'] = $var_name;
 		$this->addOutputBlock($block);

@@ -1,5 +1,5 @@
 <?php
-namespace Cumula;
+namespace GDocsAPIDataStore;
 
 /**
  * Simple Schema Class

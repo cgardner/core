@@ -1,5 +1,5 @@
 <?php
-namespace Cumula;
+namespace GDocsAPIDataStore;
 
 require_once(__DIR__.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'Zend'.DIRECTORY_SEPARATOR.'Loader.php');
 

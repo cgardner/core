@@ -1,5 +1,5 @@
 <?php
-namespace Cumula;
+namespace SimpleDBDataStore;
 
 require_once("lib/sdb.php");
 
