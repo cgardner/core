@@ -50,7 +50,7 @@ class Logger extends BaseComponent {
 		if($cm) {
 			$comps = $cm->getEnabledComponents();
 			foreach($comps as $comp) {
-				$this->addEventListenerTo($comp, EVENT_LOGGED, 'logMessage');
+				$this->addEventListenerTo($comp, 'event_logged', 'logMessage');
 			}
 		}
 	}

@@ -45,7 +45,7 @@ class FormHelper extends BaseComponent {
 	public function startup() {
 		$this->_dataStore->connect();
 		//Is a form submission
-		$this->addEventListenerTo('Cumula\\Application', BOOT_PREPROCESS, 'formCheck');
+		$this->addEventListenerTo('Application', 'boot_preprocess', 'formCheck');
 	}
 	
 	public function formCheck($event, $dispatcher, $request, $response) {

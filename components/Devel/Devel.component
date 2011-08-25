@@ -41,7 +41,7 @@ class Devel extends BaseComponent {
 		$this->_benchmarks = array();
 		
 		//Add  listener to app BOOT_INIT event
-		$this->addEventListenerTo('Cumula\\Application', BOOT_INIT, 'startAppTimer');
+		$this->addEventListenerTo('Application', 'boot_init', 'startAppTimer');
 		$this->_logEventStack = '';
 	}
 	
@@ -55,11 +55,11 @@ class Devel extends BaseComponent {
 	 * @return unknown_type
 	 */
 	public function startAppTimer($event, $dispatcher, $request, $response) {
-		$this->addEventListenerTo('Cumula\\Application', EVENTDISPATCHER_EVENT_DISPATCHED, 'logEventDispatch');
-		$this->addEventListenerTo('Cumula\\Response', EVENTDISPATCHER_EVENT_DISPATCHED, 'logEventDispatch');
+		$this->addEventListenerTo('Application', 'eventdispatcher_event_dispatched', 'logEventDispatch');
+		$this->addEventListenerTo('Response', 'eventdispatcher_event_dispatched', 'logEventDispatch');
 		
 		$this->addBenchmark('app_boot');
-		$this->addEventListenerTo('Cumula\\Response', RESPONSE_PREPARE, 'stopAppTimer');
+		$this->addEventListenerTo('Response', 'response_prepare', 'stopAppTimer');
 	}
 	
 	/**
@@ -97,10 +97,10 @@ class Devel extends BaseComponent {
 		$components = ComponentManager::getInstance()->getEnabledComponents();
 		foreach($components as $component) {
 			if($component != get_class($this))
-				$this->addEventListenerTo($component, EVENTDISPATCHER_EVENT_DISPATCHED, 'logEventDispatch');
+				$this->addEventListenerTo($component, 'eventdispatcher_event_dispatched', 'logEventDispatch');
 		}
-		$this->addEventListenerTo('Cumula\\ComponentManager', EVENTDISPATCHER_EVENT_DISPATCHED, 'logEventDispatch');
-		$this->addEventListenerTo('Cumula\\SystemConfig', EVENTDISPATCHER_EVENT_DISPATCHED, 'logEventDispatch');
+		$this->addEventListenerTo('Cumula\\ComponentManager', 'eventdispatcher_event_dispatched', 'logEventDispatch');
+		$this->addEventListenerTo('Cumula\\SystemConfig', 'eventdispatcher_event_dispatched', 'logEventDispatch');
 	}
 	
 	/**

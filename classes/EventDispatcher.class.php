@@ -56,13 +56,16 @@ class EventDispatcher {
 	/**
 	 * Constructor.  Sets the default global $level to 0.
 	 */
-	public function __construct() {
+	public function __construct() 
+	{
 		self::setInstance($this);
 		
 		global $level;
 		if(!isset($level))
+		{
 			$level = 0;
-		$this->addEvent(EVENTDISPATCHER_EVENT_DISPATCHED);		
+		}
+		$this->addEvent('eventdispatcher_event_dispatched');
 	}
 	
 	/**
@@ -198,25 +201,34 @@ class EventDispatcher {
 	 * @param	string	The event to dispatch
 	 * @param	array 	An optional array or arguments to pass to the Event Listeners
 	 */
-	public function dispatch($event, $data = array()) {
+	public function dispatch($event, $data = array()) 
+	{
 		if (($listeners = self::eventHashExists($event)) !== FALSE)
 		{
 			array_unshift($data, $event, $this);
 			global $level;
-			if ($event != EVENTDISPATCHER_EVENT_DISPATCHED)
+			if ($event != 'eventdispatcher_event_dispatched')
+			{
 				$level++;
+			}
 			//For each listener call the handler function	
-			foreach($listeners as $event_handler) {
+			foreach ($listeners as $event_handler) 
+			{
 				//Fire of an EVENT_DISPATCHED event if there are active listeners
-				if ($event != EVENTDISPATCHER_EVENT_DISPATCHED) {	
-					$this->dispatch(EVENTDISPATCHER_EVENT_DISPATCHED, array($event, $this, $event_handler, $level));
+				if ($event != 'eventdispatcher_event_dispatched') 
+				{	
+					$this->dispatch('eventdispatcher_event_dispatched', array($event, $this, $event_handler, $level));
 				}
 				call_user_func_array($event_handler, $data);
 			}
-			if ($event != EVENTDISPATCHER_EVENT_DISPATCHED)
+			if ($event != 'eventdispatcher_event_dispatched')
+			{
 				$level--;
+			}
 			return true;
-		} else {
+		} 
+		else 
+		{
 			return false;
 		}
 	}
