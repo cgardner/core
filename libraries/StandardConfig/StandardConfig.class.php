@@ -1,5 +1,5 @@
 <?php
-namespace Cumula;
+namespace StandardConfig;
 /**
  * Cumula
  *
@@ -22,7 +22,7 @@ namespace Cumula;
  * @subpackage	Core
  * @author     Seabourne Consulting
  */
-class StandardConfig implements CumulaConfig {
+class StandardConfig implements \Cumula\CumulaConfig {
 	private $_dataStore;
 	
 	/**
@@ -34,11 +34,11 @@ class StandardConfig implements CumulaConfig {
 	 */
 	public function __construct($source_directory, $source_file) {
 		global $App;
-		$schema = new SimpleSchema(array('id' => 'string',
+		$schema = new \Cumula\SimpleSchema(array('id' => 'string',
 					 					 'value' => 'string'), 
 								   'id', 
 								   'config');
-		$this->_dataStore = new YAMLDataStore($schema, array('source_directory' => $source_directory, 'filename' => $source_file));
+		$this->_dataStore = new \YAMLDataStore\YAMLDataStore($schema, array('source_directory' => $source_directory, 'filename' => $source_file));
 		$this->_dataStore->connect();
 	}
 	

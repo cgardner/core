@@ -43,6 +43,7 @@ class Autoloader extends EventDispatcher
 		$instance = self::getInstance();
 		$instance->addEvent(self::EVENT_AUTOLOAD);
 		$instance->addEventListenerTo($class, self::EVENT_AUTOLOAD, array($instance, 'defaultAutoloader'));
+		$instance->addEventListenerTo($class, self::EVENT_AUTOLOAD, array($instance, 'libraryAutoloader'));
 	} // end function setup
 
 	/**
@@ -113,17 +114,35 @@ class Autoloader extends EventDispatcher
 			'Cumula\\CumulaConfig' => $interfaceDir .'/CumulaConfig.interface.php',
 			'Cumula\\CumulaSchema' => $interfaceDir .'/CumulaSchema.interface.php',
 			'Cumula\\CumulaTemplater' => $interfaceDir .'/CumulaTemplater.interface.php',
-
-			// Libraries
-			'Cumula\\StandardConfig' => $libDir .'/StandardConfig/StandardConfig.class.php',
-			'Cumula\\ContentBlock' => $libDir .'/ContentBlock/ContentBlock.class.php',
-			'Cumula\\YAMLDataStore' => $libDir .'/YAMLDataStore/YAMLDataStore.class.php',
-			'Cumula\\SqliteDataStore' => $libDir .'/SqliteDataStore/SqliteDataStore.class.php',
 		);
 
 		$dispatcher->registerClasses($classes);
 	} // end function defaultAutoloader
 
+	/**
+	 * Autoloader Function for the libraries
+	 * For libraries, the namespace is the directory and the class is the filename (without .class.php)
+	 * 	ie. the file libraries/MyLibrary/MyLibrary.class.php will contain the class MyLibrary\MyLibrary
+	 * 		and libraries/MyLibrary/SomeOtherFile.class.php will have the MyLibrary\SomeOtherFile class
+	 * @param string $event Event being dispatched
+	 * @param Cumula\Autoloader $dispatcher Object dispatching the event
+	 * @param string $className className being loaded
+	 * @return void
+	 **/
+	public function libraryAutoloader($event, $dispatcher, $className) 
+	{
+		$libraryPath = realpath(dirname(__DIR__) .'/libraries');
+
+		$files = glob(sprintf('%s/*/*.class.php', $libraryPath), GLOB_NOSORT);
+		foreach ($files as $file) 
+		{
+			$class = sprintf('%s\\%s', basename(dirname($file)), basename($file, '.class.php'));
+			if (stripos($file, str_replace('\\', '/', $class)) !== 0) 
+			{
+				$dispatcher->registerClass($class, $file);
+			}
+		}
+	} // end function libraryAutoloader
 	/**
 	 * Register a class with the autoloader
 	 * @param string $className Name of the class being registered

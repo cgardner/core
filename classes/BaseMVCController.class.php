@@ -239,7 +239,7 @@ abstract class BaseMVCController extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	protected function renderContent($content, $name = 'content') {
-		$block = new ContentBlock();
+		$block = new \ContentBlock\ContentBlock();
 		$block->content = $content;
 		$block->data['variable_name'] = $name;
 		$this->component->addOutputBlock($block);
