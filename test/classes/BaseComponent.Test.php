@@ -89,7 +89,7 @@ class Test_BaseComponent extends Test_BaseTest {
         $this->assertEquals($constValue, $constants[$constName]);
 
         // Let's not forget why we did all of this work.
-        $this->assertTrue($baseComponent->eventExists($constValue));
+        $this->assertTrue(\Cumula\EventDispatcher::eventHashExists($constValue));
     } // end function testRegisterEvents
 
     /**

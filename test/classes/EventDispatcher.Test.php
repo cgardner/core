@@ -73,16 +73,16 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @group all
      * @covers Cumula\EventDispatcher::addEvent
      * @covers Cumula\EventDispatcher::removeEvent
-     * @covers Cumula\EventDispatcher::eventExists
+     * @covers Cumula\EventDispatcher::eventHashExists
      **/
     public function testEventCreationAndRemoval() {
         $eventId = uniqid('event_');
 
         $this->eventDispatcher->addEvent($eventId);
-        $this->assertTrue($this->eventDispatcher->eventExists($eventId));
+        $this->assertTrue(\Cumula\EventDispatcher::eventHashExists($eventId));
 
         $this->eventDispatcher->removeEvent($eventId);
-        $this->assertFalse($this->eventDispatcher->eventExists($eventId));
+        $this->assertFalse(\Cumula\EventDispatcher::eventHashExists($eventId));
     } // end function testEventCreationAndRemoval
 
 

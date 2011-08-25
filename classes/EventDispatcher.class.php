@@ -44,10 +44,14 @@ require_once(implode(DIRECTORY_SEPARATOR, array(
  * @subpackage	Core
  * @author     Seabourne Consulting
  */
-abstract class EventDispatcher {
+class EventDispatcher {
 	protected static $_instances = array();
 	
-	protected $_eventTable = array();
+	/**
+	 * Has containing the Listeners
+	 * @var array
+	 **/
+	private static $eventHash = array();
 	
 	/**
 	 * Constructor.  Sets the default global $level to 0.
@@ -68,20 +72,31 @@ abstract class EventDispatcher {
 	 * @param	string	The event to add to the registry.
 	 */
 	public function addEvent($event) {
-		if ($this->eventExists($event))
-			trigger_error('Event Already Exists.  You are trying to register an event that has previously been registered.', E_USER_WARNING);
-		else
-			$this->_eventTable[$event] = array();
+		$class = __CLASS__;
+		$calledClass = get_called_class();
+		$eventHash = $class::getEventHash();
+
+		// See if the event exists.  If not, set it up in the eventHash
+		if (!isset($eventHash[$calledClass][$event]))
+		{
+			$eventHash[$calledClass][$event] = array();
+			$class::setEventHash($eventHash);
+		}
 	}
-	
+
 	/**
 	 * Removes an event from the registry table.
 	 * 
 	 * @param	string	The event to remove from the registry.
 	 */
 	public function removeEvent($event) {
-		if ($this->eventExists($event)) {
-			unset($this->_eventTable[$event]);
+		$class = __CLASS__;
+		$calledClass = get_called_class();
+		$eventHash = $class::getEventHash();
+		if (isset($eventHash[$calledClass][$event])) 
+		{
+			unset($eventHash[$calledClass][$event]);
+			$class::setEventHash($eventHash);
 		}
 	}
 	
@@ -92,9 +107,7 @@ abstract class EventDispatcher {
 	 * @param	function	a function, or an array containing the class and method, or a closure.  Uses the same syntax as call_user_func_array.
 	 */
 	public function addEventListener($event, $handler) {
-		if ($this->eventExists($event)) {
-			$this->_eventTable[$event][] = $handler;
-		}
+		$this->addEventListenerTo(get_called_class(), $event, $handler);
 	}
 	
 	/**
@@ -105,32 +118,74 @@ abstract class EventDispatcher {
 	 * @param	function|string	A string or closure.  If a string, must be a publicly accessible function in the EventDispatcher instance.
 	 */
 	public function addEventListenerTo($class, $event, $function) {
-		if(!class_exists($class))
-			trigger_error('Tried to bind to an event for a class that does not exist.', E_USER_WARNING);
-		if(is_string($function)) {
+		if (is_string($function)) 
+		{
 			$callback = array($this, $function);
-		} else if (is_callable($function)) {
+		}
+		else if (is_callable($function)) 
+		{
 			$callback = $function;
 		}
-		$instance = call_user_func(array($class, 'getInstance'));
-		if($instance)
-			return $instance->addEventListener($event, $callback);
-		else
-			trigger_error("Tried to bind event to class $class which has not yet been instantiated", E_USER_WARNING);
+		$myClass = __CLASS__;
+		$myClass::addClassListenerHash($class, $event, $callback);
 	}
 	
+	/**
+	 * Add the Listener to the Class hash
+	 * @param string $class The class the listener is being attached to
+	 * @param string $event The Event the listener is for
+	 * @param callback $callback The callback to be executed when the event is dispatched
+	 * @return void
+	 **/
+	public static function addClassListenerHash($class, $event, $callback) 
+	{
+		$hash = static::getEventHash();
+		
+		if (!isset($hash[$class][$event]))
+		{
+			$hash[$class][$event] = array();
+		}
+
+		// Prevent a listener from being called twice.
+		if (!in_array($callback, $hash[$class][$event]))
+		{
+			$hash[$class][$event][] = $callback;
+		}
+		
+		static::setEventHash($hash);
+	} // end function addListenerHash
+
+	/**
+	 * Determine whether an event exists in the hash or not
+	 * @param string $eventName Event being checked
+	 * @return mixed
+	 **/
+	public static function eventHashExists($eventName) 
+	{
+		$class = get_called_class();
+		$eventHash = static::getEventHash();
+		return isset($eventHash[$class][$eventName]) ? $eventHash[$class][$eventName] : FALSE;
+	} // end function eventHashExists
 	/**
 	 * Given an event and handler, removes any matching entry in the event registry
 	 * 
 	 * @param	string The event to remove handler from.
 	 * @param	function	a function, or an array containing the class and method, or a closure to remove.
 	 */
-	public function removeEventListener($event, $handler) {
-		if($this->eventExists($event)) {
-			for($i = 0; $i < count($this->_eventTable[$event]); $i++) {
-				$h = $this->_eventTable[$event][$i];
-				if($h === $handler) {
-					unset($this->_eventTable[$event][$i]);
+	public function removeEventListener($event, $handler) 
+	{
+		$class = __CLASS__;
+		$calledClass = get_called_class();
+		$eventHash = $class::getEventHash();
+		if (isset($eventHash[$calledClass][$event]))
+		{
+			foreach ($eventHash[$calledClass][$event] as $key => $listener)
+			{
+				if ($listener === $handler)
+				{
+						unset($eventHash[$calledClass][$event][$key]);
+						$class::setEventHash($eventHash);
+						return;
 				}
 			}
 		}
@@ -143,13 +198,14 @@ abstract class EventDispatcher {
 	 * @param	array 	An optional array or arguments to pass to the Event Listeners
 	 */
 	public function dispatch($event, $data = array()) {
-		if ($this->eventExists($event)) {
+		if (($listeners = self::eventHashExists($event)) !== FALSE)
+		{
 			array_unshift($data, $event, $this);
 			global $level;
 			if ($event != EVENTDISPATCHER_EVENT_DISPATCHED)
 				$level++;
 			//For each listener call the handler function	
-			foreach($this->_eventTable[$event] as $event_handler) {
+			foreach($listeners as $event_handler) {
 				//Fire of an EVENT_DISPATCHED event if there are active listeners
 				if ($event != EVENTDISPATCHER_EVENT_DISPATCHED) {	
 					$this->dispatch(EVENTDISPATCHER_EVENT_DISPATCHED, array($event, $this, $event_handler, $level));
@@ -165,15 +221,20 @@ abstract class EventDispatcher {
 	}
 	 
 	/**
-	 * Verifies that an event exists in the internal registry.
-	 * 
-	 * @param	string	The event to check
-	 * @return bool	True or false depending on whether the event exists.
+	 * Get the events for the current class
+	 * @param void
+	 * @return mixed
+	 **/
+	public function getEvents() 
+	{
+		$class = __CLASS__;
+		$calledClass = get_called_class();
+		$eventHash = $class::getEventHash();
+		return isset($eventHash[$calledClass]) ? $eventHash[$calledClass] : FALSE;
+	} // end function getEvents
+	/**
+	 * Getters and Setters
 	 */
-	public function eventExists($event) {
-		return array_key_exists($event, $this->_eventTable);
-	}	
-
 	/**
 	 * Returns the instance of the static class.
 	 * 
@@ -197,4 +258,26 @@ abstract class EventDispatcher {
 	public static function setInstance($instance) {
 		self::$_instances[get_class($instance)] = $instance;
 	}
+	/**
+	 * Getter for $this->eventHash
+	 * @param void
+	 * @return array
+	 * @author Craig Gardner <craig@seabourneconsulting.com>
+	 **/
+	private static function getEventHash() 
+	{
+		$class = __CLASS__;
+		return $class::$eventHash;
+	} // end function getEventHash()
+	
+	/**
+	 * Setter for $this->eventHash
+	 * @param array
+	 * @return void
+	 * @author Craig Gardner <craig@seabourneconsulting.com>
+	 **/
+	private static function setEventHash(array $arg0) 
+	{
+		static::$eventHash = $arg0;
+	} // end function setEventHash()
 }
