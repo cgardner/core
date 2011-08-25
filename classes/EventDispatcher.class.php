@@ -66,6 +66,7 @@ class EventDispatcher {
 			$level = 0;
 		}
 		$this->addEvent('eventdispatcher_event_dispatched');
+		$this->addEvent('event_registered');
 	}
 	
 	/**
@@ -131,7 +132,9 @@ class EventDispatcher {
 		}
 
 		$myClass = __CLASS__;
-		$myClass::addClassListenerHash(Autoloader::absoluteClassName($class), $event, $callback);
+		$absClass = Autoloader::absoluteClassName($class);
+		$myClass::addClassListenerHash($absClass, $event, $callback);
+		$myClass::getInstance()->dispatch('event_registered', array($absClass, $event));
 	}
 	
 	/**
@@ -170,6 +173,7 @@ class EventDispatcher {
 		$eventHash = static::getEventHash();
 		return isset($eventHash[$class][$eventName]) ? $eventHash[$class][$eventName] : FALSE;
 	} // end function eventHashExists
+
 	/**
 	 * Given an event and handler, removes any matching entry in the event registry
 	 * 
@@ -206,11 +210,21 @@ class EventDispatcher {
 		if (($listeners = self::eventHashExists($event)) !== FALSE)
 		{
 			array_unshift($data, $event, $this);
+
 			global $level;
 			if ($event != 'eventdispatcher_event_dispatched')
 			{
 				$level++;
 			}
+
+			// Flag to determine whether to dispatch the before and after events
+			$fireBeforeAndAfter = (stripos($event, 'before_') === FALSE) && (stripos($event, 'after_') === FALSE);
+			if ($fireBeforeAndAfter)
+			{
+				$beforeEvent = sprintf('before_%s', $event);
+				$this->dispatch($beforeEvent, $data);
+			}
+
 			//For each listener call the handler function	
 			foreach ($listeners as $event_handler) 
 			{
@@ -221,6 +235,13 @@ class EventDispatcher {
 				}
 				call_user_func_array($event_handler, $data);
 			}
+
+			if ($fireBeforeAndAfter)
+			{
+				$afterEvent = sprintf('after_%s', $event);
+				$this->dispatch($afterEvent, $data);
+			}
+
 			if ($event != 'eventdispatcher_event_dispatched')
 			{
 				$level--;

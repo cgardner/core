@@ -86,6 +86,7 @@ class Autoloader extends EventDispatcher
 			// Core Classes
 			'Cumula\\Autoloader' => $dir .'/Autoloader.class.php',
 			'Cumula\\Application' => $dir. '/Application.class.php',
+			'Cumula\\EventDispatcher' => $dir .'/EventDispatcher.class.php',
 			'Cumula\\BaseComponent' => $dir .'/BaseComponent.class.php',
 			'Cumula\\Request' => $dir .'/Request.class.php',
 			'Cumula\\Response' => $dir .'/Response.class.php',

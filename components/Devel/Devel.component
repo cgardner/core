@@ -35,6 +35,7 @@ class Devel extends BaseComponent {
 	 * @return unknown_type
 	 */
 	public function __construct() {
+		$this->addEventListenerTo('Cumula\\EventDispatcher', 'event_registered', 'registerPreAndPost');
 		parent::__construct();
 		
 		//Initialize the benchmarks container to an empty array.
@@ -93,13 +94,17 @@ class Devel extends BaseComponent {
 	/* (non-PHPdoc)
 	 * @see core/abstracts/BaseComponent#startup()
 	 */
-	public function startup() {
+	public function startup() 
+	{
 		$components = ComponentManager::getInstance()->getEnabledComponents();
-		foreach($components as $component) {
+		foreach($components as $component) 
+		{
 			if($component != get_class($this))
+			{
 				$this->addEventListenerTo($component, 'eventdispatcher_event_dispatched', 'logEventDispatch');
+			}
 		}
-		$this->addEventListenerTo('Cumula\\ComponentManager', 'eventdispatcher_event_dispatched', 'logEventDispatch');
+		$this->addEventListenerTo('Cumula\\ComponentManager', 'eventdispatcher_event_dispatched', 'logEventDispatch'); 
 		$this->addEventListenerTo('Cumula\\SystemConfig', 'eventdispatcher_event_dispatched', 'logEventDispatch');
 	}
 	
@@ -112,19 +117,69 @@ class Devel extends BaseComponent {
 	 * @param $handler
 	 * @return unknown_type
 	 */
-	public function logEventDispatch($event, $caller, $event_dispatched, $instance, $handler) {
+	public function logEventDispatch($event, $caller, $event_dispatched, $instance, $handler = FALSE) 
+	{
 		global $level;
-		if(is_array($handler))
-			$string = "$event_dispatched dispatched by ".get_class($instance)." to ".get_class($handler[0]).'::'.$handler[1];
-		else
-			$string = "$event_dispatched dispatched by ".get_class($instance)." to ".get_class($handler);
-		$this->_logInfo("Level $level: ".$string);	
-		$spacing = '';
-		for($i = 1; $i < $level; $i++) {
-			$spacing .= "&nbsp;&nbsp;&nbsp;";
+		$classInstance = get_class($instance);
+		$handlerClass = FALSE;
+
+		// Default Message
+		$string = sprintf('%s dispatched by %s', $event_dispatched, $classInstance);
+
+		// Get the class of the handler if available
+		if (is_object($handler))
+		{
+			$handlerClass = get_class($handler);
 		}
+		elseif (is_array($handler) && isset($handler[0]) && is_object($handler[0]))
+		{
+			$handlerClass = get_class($handler[0]);
+		}
+
+		// If the $handler and $handlerClass have been changed, build the message
+		if ($handler !== FALSE && $handlerClass !== FALSE)
+		{
+			if(is_array($handler))
+			{
+				$handlerClass .= '::'. $handler[1];
+			}
+			$string = sprintf('%s dispatched by %s to %s', $event_dispatched, $classInstance, $handlerClass);
+		}
+
+		$this->_logInfo("Level $level: ".$string);	
+		$spacing = str_repeat('&nbsp;&nbsp;&nbsp;', $level - 1);
 		$this->_logEventStack .= $spacing.$string."\n";
 	}
+
+	/**
+	 * Register a before and after event listener
+	 * @param void
+	 * @return void
+	 **/
+	public function registerPreAndPost($event, $dispatcher, $registeredClass, $registeredEvent) 
+	{
+		$notAllowed = array(
+			$event,
+			'eventdispatcher_event_dispatched',
+			'before_',
+			'after_',
+		);
+		$allowRegistration = TRUE;
+		foreach ($notAllowed as $string) {
+			if (stripos($registeredEvent, $string) !== FALSE)
+			{
+				$allowRegistration = FALSE;
+			}
+		}
+		// Don't register a before and after listener for event_registered or event_dispatcher_event_dispatched
+		if ($allowRegistration && $registeredClass !== __CLASS__)
+		{
+			$beforeEvent = sprintf('before_%s', $registeredEvent);
+			$afterEvent = sprintf('after_%s', $registeredEvent);
+			$this->addEventListenerTo($registeredClass, $beforeEvent, 'logEventDispatch');
+			$this->addEventListenerTo($registeredClass, $afterEvent, 'logEventDispatch');
+		}
+	} // end function registerPreAndPost
 	
 	/**
 	 * Adds a new benchmark time
