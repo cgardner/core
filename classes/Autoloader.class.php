@@ -38,12 +38,11 @@ class Autoloader extends EventDispatcher
 	 **/
 	public static function setup() 
 	{
-		$class = 'Cumula\\Autoloader';
-		spl_autoload_register(array($class, 'load'));
+		spl_autoload_register(array('Cumula\\Autoloader', 'load'));
 		$instance = self::getInstance();
-		$instance->addEvent(self::EVENT_AUTOLOAD);
-		$instance->addEventListenerTo($class, self::EVENT_AUTOLOAD, array($instance, 'defaultAutoloader'));
-		$instance->addEventListenerTo($class, self::EVENT_AUTOLOAD, array($instance, 'libraryAutoloader'));
+		$instance->addEvent('event_autoload');
+		$instance->addEventListenerTo('Autoloader', 'event_autoload', array($instance, 'defaultAutoloader'));
+		$instance->addEventListenerTo('Autoloader', 'event_autoload', array($instance, 'libraryAutoloader'));
 	} // end function setup
 
 	/**
