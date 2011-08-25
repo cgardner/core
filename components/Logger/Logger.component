@@ -48,7 +48,7 @@ class Logger extends BaseComponent {
 	public function startup() {
 		$cm = ComponentManager::getInstance();
 		if($cm) {
-			$comps = $cm->getEnabledComponentList();
+			$comps = $cm->getEnabledComponents();
 			foreach($comps as $comp) {
 				$this->addEventListenerTo($comp, EVENT_LOGGED, 'logMessage');
 			}

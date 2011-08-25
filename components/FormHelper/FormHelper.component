@@ -3,7 +3,6 @@ namespace FormHelper;
 
 use Cumula\BaseComponent as BaseComponent;
 use Cumula\SimpleSchema as SimpleSchema;
-use Cumula\YAMLDataStore as YAMLDataStore;
 
 /**
  * Cumula

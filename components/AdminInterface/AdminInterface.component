@@ -79,7 +79,7 @@ class AdminInterface extends BaseComponent {
 			$this->addEventListenerTo('MenuManager\\MenuManager', MENUMANAGER_COLLECT_MENUS, 'sendMenus');
 		
 		//Initialize stats for display on homepage.
-		$this->stats['installed_components'] = count($dispatcher->getEnabledComponentList());
+		$this->stats['installed_components'] = count($dispatcher->getEnabledComponents());
 
 		$this->addEventListenerTo('Cumula\\Autoloader', \Cumula\Autoloader::EVENT_AUTOLOAD, 'autoload');
 

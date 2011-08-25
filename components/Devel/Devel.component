@@ -76,7 +76,7 @@ class Devel extends BaseComponent {
 			$response->response['content'] .= '<div>Rendering the page took '.(number_format($time, 4)*1000).' ms</div>';
 			$response->response['content'] .= '<div>Rendering the page used '.(memory_get_usage()/1000).' KB of memory</div>'; 
 			$response->response['content'] .= '<div>Rendering the page used a maximum '.(memory_get_peak_usage()/1000).' KB of memory</div>';
-			$comps = ComponentManager::getInstance()->getEnabledComponentList();
+			$comps = ComponentManager::getInstance()->getEnabledComponents();
 			$response->response['content'] .= '<div>Rendering the page used '.count($comps).' components</div>';
 			$response->response['content'] .= '<div>Call Stack</div><pre>'.$this->_logEventStack.'</pre>';
 		}
@@ -94,7 +94,7 @@ class Devel extends BaseComponent {
 	 * @see core/abstracts/BaseComponent#startup()
 	 */
 	public function startup() {
-		$components = ComponentManager::getInstance()->getEnabledComponentList();
+		$components = ComponentManager::getInstance()->getEnabledComponents();
 		foreach($components as $component) {
 			if($component != get_class($this))
 				$this->addEventListenerTo($component, EVENTDISPATCHER_EVENT_DISPATCHED, 'logEventDispatch');
