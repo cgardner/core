@@ -14,12 +14,6 @@ class Autoloader extends EventDispatcher
 	 * Properties
 	 */
 	/**
-	 * Autoload Event
-	 * @var string
-	 **/
-	const EVENT_AUTOLOAD = 'event_autoload';
-
-	/**
 	 * Instance Variable
 	 * @var Cumula\Autoloader
 	 **/
@@ -38,12 +32,11 @@ class Autoloader extends EventDispatcher
 	 **/
 	public static function setup() 
 	{
-		$class = 'Cumula\\Autoloader';
-		spl_autoload_register(array($class, 'load'));
+		spl_autoload_register(array('Cumula\\Autoloader', 'load'));
 		$instance = self::getInstance();
-		$instance->addEvent(self::EVENT_AUTOLOAD);
-		$instance->addEventListenerTo($class, self::EVENT_AUTOLOAD, array($instance, 'defaultAutoloader'));
-		$instance->addEventListenerTo($class, self::EVENT_AUTOLOAD, array($instance, 'libraryAutoloader'));
+		$instance->addEvent('event_autoload');
+		$instance->addEventListenerTo('Cumula\\Autoloader', 'event_autoload', array($instance, 'defaultAutoloader'));
+		$instance->addEventListenerTo('Cumula\\Autoloader', 'event_autoload', array($instance, 'libraryAutoloader'));
 	} // end function setup
 
 	/**
@@ -57,7 +50,7 @@ class Autoloader extends EventDispatcher
 		// If we don't already know about the class, dispatch the event to find it.
 		if (($classFile = $instance->classExists($className)) === FALSE)
 		{
-			$instance->dispatch(self::EVENT_AUTOLOAD, array($className));
+			$instance->dispatch('event_autoload', array($className));
 			if (($classFile = $instance->classExists($className)) === FALSE)
 			{
 				return FALSE;
@@ -93,6 +86,7 @@ class Autoloader extends EventDispatcher
 			// Core Classes
 			'Cumula\\Autoloader' => $dir .'/Autoloader.class.php',
 			'Cumula\\Application' => $dir. '/Application.class.php',
+			'Cumula\\EventDispatcher' => $dir .'/EventDispatcher.class.php',
 			'Cumula\\BaseComponent' => $dir .'/BaseComponent.class.php',
 			'Cumula\\Request' => $dir .'/Request.class.php',
 			'Cumula\\Response' => $dir .'/Response.class.php',

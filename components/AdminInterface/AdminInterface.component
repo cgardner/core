@@ -81,7 +81,7 @@ class AdminInterface extends BaseComponent {
 
 		$this->addEventListenerTo('Autoloader', 'event_autoload', 'autoload');
 
-		$this->addEventListener('ADMIN_COLLECT_SETTINGS_PAGES', array(\Cumula\SystemConfig::getInstance(), 'setupAdminPages'));
+		$this->addEventListener('admin_collect_settings_pages', array(\Cumula\SystemConfig::getInstance(), 'setupAdminPages'));
 	}
 
 	/**
@@ -108,7 +108,7 @@ class AdminInterface extends BaseComponent {
 	public function dispatchCollectEvent($event, $dispatcher, $request, $response) {
 		//only dispatch the event if the request is for one of the admin routes.
 		if (strstr($request->path, '/admin')) {	
-			$this->dispatch(ADMIN_COLLECT_SETTINGS_PAGES);
+			$this->dispatch('admin_collect_settings_pages');
 		}
 	}
 	
@@ -194,7 +194,7 @@ class AdminInterface extends BaseComponent {
 	public function adminPage($route, $router, $args, $request) {
 		if(!$this->checkUser($request))
 			return;
-		$this->addEventListenerTo('Templater\\Templater', TEMPLATER_PREPARE, function($event, $templater) {
+		$this->addEventListenerTo('Templater\\Templater', 'templater_prepare', function($event, $templater) {
 			$templater->setTemplateDir(COMPROOT.'AdminInterface/template/');
 		});
 		
@@ -205,7 +205,7 @@ class AdminInterface extends BaseComponent {
 				$this->fh = \FormHelper\FormHelper::getInstance();
 				$this->page = $page;
 				$title = $page->title;
-				$this->addEventListenerTo('Templater\\Templater', TEMPLATER_PREPARE, function($event, $templater) use ($title) {
+				$this->addEventListenerTo('Templater\\Templater', 'templater_prepare', function($event, $templater) use ($title) {
 					$templater->setTitle($title);
 				});
 				$this->render();
@@ -220,7 +220,7 @@ class AdminInterface extends BaseComponent {
 	public function index($route, $router, $args, $request) {
 		if(!$this->checkUser($request))
 			return;
-		$this->addEventListenerTo('Templater\\Templater', TEMPLATER_PREPARE, function($event, $templater) {
+		$this->addEventListenerTo('Templater\\Templater', 'templater_prepare', function($event, $templater) {
 			$templater->setTemplateDir(COMPROOT.'AdminInterface/template/');
 		});
 		$this->pages = $this->_pages;

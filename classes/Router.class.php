@@ -33,13 +33,13 @@ class Router extends BaseComponent {
 		parent::__construct();
 
 		$this->_routes = array();
-		$this->addEvent(ROUTER_COLLECT_ROUTES);
-		$this->addEvent(ROUTER_FILE_NOT_FOUND);
-		$this->addEvent(ROUTER_ADD_ROUTE);
+		$this->addEvent('router_collect_routes');
+		$this->addEvent('router_file_not_found');
+		$this->addEvent('router_add_route');
 
-		Application::getInstance()->addEventListener(BOOT_PREPROCESS, array(&$this, 'collectRoutes'));
-		Application::getInstance()->addEventListener(BOOT_PROCESS, array(&$this, 'processRoute'));
-		$this->addEventListener(ROUTER_FILE_NOT_FOUND, array(&$this, 'filenotfound'));
+		$this->addEventListenerTo('Application', 'boot_preprocess', array(&$this, 'collectRoutes'));
+		$this->addEventListenerTo('Application', 'boot_process', array(&$this, 'processRoute'));
+		$this->addEventListener('router_file_not_found', array(&$this, 'filenotfound'));
 	}
 
 	public function filenotfound($event, $dispatcher, $request, $response) {
@@ -55,7 +55,7 @@ class Router extends BaseComponent {
 	}
 
 	public function collectRoutes($event) {
-		$this->dispatch(ROUTER_COLLECT_ROUTES);
+		$this->dispatch('router_collect_routes');
 		$routes = $this->_collectedRoutes;
 		if(!$routes)
 			return;
@@ -67,7 +67,7 @@ class Router extends BaseComponent {
 				$handler = $return;
 				$args = array();
 			}
-			$this->dispatch(ROUTER_ADD_ROUTE, array($route, $handler, $args));
+			$this->dispatch('router_add_route', array($route, $handler, $args));
 			$this->_addRoute($route, $handler);
 		}
 	}
@@ -75,7 +75,7 @@ class Router extends BaseComponent {
 	public function processRoute($event, $dispatcher, $request, $response) {
 		$routes = $this->_parseRoute($request);
 		if(!count($routes)) {
-			$this->dispatch(ROUTER_FILE_NOT_FOUND, array($request, $response));
+			$this->dispatch('router_file_not_found', array($request, $response));
 		}
 		foreach($routes as $route => $args) {
 			$args = array_merge($request->params, $args);

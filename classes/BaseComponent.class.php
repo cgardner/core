@@ -46,49 +46,15 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function __construct() {
-		$this->_registerEvents();
 		parent::__construct();
 		$this->_output = array();
 		$this->config = new \StandardConfig\StandardConfig(CONFIGROOT, get_class($this).'.yaml');
 		
-		$this->addEventListenerTo('Cumula\\ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
-		$this->addEventListenerTo('Application', BOOT_SHUTDOWN, 'shutdown');
+		$this->addEventListenerTo('ComponentManager', 'component_startup_complete', 'startup');
+		$this->addEventListenerTo('Application', 'boot_shutdown', 'shutdown');
 
-		$this->addEvent(EVENT_LOGGED);
+		$this->addEvent('message_logged');
 	}
-
-	/**
-	 * Registers any constant defined in an 'events.inc' file in the component directory.
-	 * 
-	 * @return unknown_type
-	 */
-	protected function _registerEvents() 
-	{
-		$eventsFile = static::rootDirectory() .'/events.inc';
-		if (file_exists($eventsFile)) 
-		{
-			//Grab current consts
-			$prev_consts = get_defined_constants(true);
-			$prev_consts = $prev_consts['user'];
-			
-			//Pull in the consts defined in events.inc
-			require_once $eventsFile;
-			
-			//Grab all defined consts plus new events in the current user space
-			$new_consts = get_defined_constants(true);
-			$new_consts = $new_consts['user'];
-			
-			//Find only the new consts added
-			$consts = array_diff_assoc($new_consts, $prev_consts);
-			
-			//Iterate through and automatically register all new events
-			foreach ($consts as $name => $const) 
-			{
-				$this->addEvent($const);
-			}
-		}
-	}
-	
 
 	/**********************************************
 	* Logging Functions
@@ -149,7 +115,7 @@ abstract class BaseComponent extends EventDispatcher {
 		$timestamp = date("r");
 		$message = "$timestamp $className: $message";
 		$args = array($logLevel, $message, $other_args);
-		$this->dispatch(EVENT_LOGGED, $args);
+		$this->dispatch('message_logged', $args);
 	}
 	
 
