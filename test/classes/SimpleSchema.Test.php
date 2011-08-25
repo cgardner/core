@@ -4,6 +4,7 @@ use Cumula\SimpleSchema as SimpleSchema;
 
 require_once 'base/Test.php';
 require_once 'interfaces/CumulaSchema.interface.php';
+require_once 'classes/BaseSchema.class.php';
 require_once 'classes/SimpleSchema.class.php';
 
 /**
