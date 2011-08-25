@@ -91,6 +91,7 @@ class Autoloader extends EventDispatcher
 		$interfaceDir = realpath($basedir .'/interfaces/');
 		$classes = array(
 			// Core Classes
+			'Cumula\\Autoloader' => $dir .'/Autoloader.class.php',
 			'Cumula\\Application' => $dir. '/Application.class.php',
 			'Cumula\\BaseComponent' => $dir .'/BaseComponent.class.php',
 			'Cumula\\Request' => $dir .'/Request.class.php',
@@ -176,6 +177,36 @@ class Autoloader extends EventDispatcher
 		$this->setCache(array_merge($cache, $classArray));
 	} // end function registerClasses
 
+		/**
+		 * Get the Absolute Class name rather than a realative class name
+		 * @param string $className Relative Class Name (without namespace)
+		 * @return string Absolute ClassName (with namespace);
+		 **/
+		public static function absoluteClassName($className) 
+		{
+			$cache = self::getInstance()->getCache();
+			if (isset($cache[$className]) || $className == __CLASS__)
+			{
+				return $className;
+			}
+			$classes = array();
+			foreach ($cache as $class => $file)
+			{
+				$classArr = explode('\\', $class);
+				if ($classArr[count($classArr) - 1] == $className)
+				{
+					$classes[$classArr[0]] = $class;
+				}
+			}
+
+			if (count($classes) > 1)
+			{
+				unset($classes['Cumula']);
+				ksort($classes);
+			}
+
+			return array_shift($classes);
+		} // end function absoluteClassName
 	/**
 	 * Getters and Setters
 	 */

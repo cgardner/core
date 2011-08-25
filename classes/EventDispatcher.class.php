@@ -126,8 +126,9 @@ class EventDispatcher {
 		{
 			$callback = $function;
 		}
+
 		$myClass = __CLASS__;
-		$myClass::addClassListenerHash($class, $event, $callback);
+		$myClass::addClassListenerHash(Autoloader::absoluteClassName($class), $event, $callback);
 	}
 	
 	/**
