@@ -1,7 +1,5 @@
 <?php
 
-use Cumula\YAMLDataStore as YAMLDataStore;
-
 require_once 'base/Test.php';
 require_once 'classes/BaseDataStore.class.php';
 require_once 'libraries/YAMLDataStore/YAMLDataStore.class.php';
@@ -50,7 +48,7 @@ class Test_YamlDataStore extends Test_BaseTest {
             ->method('getIdField')
             ->will($this->returnValue('key'));
 
-        $this->dataStore = new YAMLDataStore($this->schema, $this->config);
+        $this->dataStore = new \YAMLDataStore\YAMLDataStore($this->schema, $this->config);
     } // end function setUp
 
     /**
@@ -58,8 +56,8 @@ class Test_YamlDataStore extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula\YAMLDataStore::__construct
-     * @covers Cumula\YAMLDataStore::getSchema
+     * @covers YAMLDataStore\YAMLDataStore::__construct
+     * @covers YAMLDataStore\YAMLDataStore::getSchema
      **/
     public function testConstructor() {
         $schema = $this->dataStore->getSchema();
@@ -72,8 +70,8 @@ class Test_YamlDataStore extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula\YAMLDataStore::connect
-     * @covers Cumula\YAMLDataStore::_load
+     * @covers YAMLDataStore\YAMLDataStore::connect
+     * @covers YAMLDataStore\YAMLDataStore::_load
      **/
     public function testConnect() {
         file_put_contents($this->getDataStoreFile(), 'Key: Value');
@@ -83,7 +81,7 @@ class Test_YamlDataStore extends Test_BaseTest {
 
 
         $this->config['filename'] = 'doesNotExist.yml';
-        $datastore = new YAMLDataStore($this->schema, $this->config);
+        $datastore = new \YAMLDataStore\YAMLDataStore($this->schema, $this->config);
         $this->assertFileNotExists($this->getDataStoreFile());
         $datastore->connect();
         $this->assertFileNotExists($this->getDataStoreFile());
@@ -94,10 +92,10 @@ class Test_YamlDataStore extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula\YAMLDataStore::create
-     * @covers Cumula\YAMLDataStore::update
-     * @covers Cumula\YAMLDataStore::_save
-     * @covers Cumula\YAMLDataStore::_dataStoreFile
+     * @covers YAMLDataStore\YAMLDataStore::create
+     * @covers YAMLDataStore\YAMLDataStore::update
+     * @covers YAMLDataStore\YAMLDataStore::_save
+     * @covers YAMLDataStore\YAMLDataStore::_dataStoreFile
      * @dataProvider createDataProvider
      **/
     public function testCreate($method) {
@@ -115,7 +113,7 @@ class Test_YamlDataStore extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula\YAMLDataStore::createOrUpdate
+     * @covers YAMLDataStore\YAMLDataStore::createOrUpdate
      **/
     public function testCreateOrUpdate() {
         $data1 = $this->getData();
@@ -142,7 +140,7 @@ class Test_YamlDataStore extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula\YAMLDataStore::destroy
+     * @covers YAMLDataStore\YAMLDataStore::destroy
      **/
     public function testDestroy() {
         $data1 = $this->getData();
@@ -184,7 +182,7 @@ class Test_YamlDataStore extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula\YAMLDataStore::lastRowId
+     * @covers YAMLDataStore\YAMLDataStore::lastRowId
      **/
     public function testLastRowId() {
         $max = rand(1, 20);
@@ -199,7 +197,7 @@ class Test_YamlDataStore extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula\YAMLDataStore::recordExists
+     * @covers YAMLDataStore\YAMLDataStore::recordExists
      * @test
      **/
     public function testRecordExists() {
@@ -217,7 +215,7 @@ class Test_YamlDataStore extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula\YAMLDataStore::query
+     * @covers YAMLDataStore\YAMLDataStore::query
      **/
     public function testQuery() {
         $data = $this->getData();

@@ -23,7 +23,7 @@ namespace TextFileDataStore;
  * @author     Seabourne Consulting
  */
 
-class TextFileDataStore extends BaseDataStore {
+class TextFileDataStore extends \Cumula\BaseDataStore {
 	
 	private $_logFile;
 	

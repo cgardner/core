@@ -68,22 +68,20 @@ class AdminInterface extends BaseComponent {
 		$event = isset($args[0]) ? $args[0] : NULL;
 		$dispatcher = isset($args[1]) ? $args[1] : NULL;
 
-		$this->addEventListenerTo('Cumula\\Application', BOOT_PREPARE, 'dispatchCollectEvent');
+		$this->addEventListenerTo('Application', 'boot_prepare', 'dispatchCollectEvent');
 		
-		//If router is installed, bind to the route collector event
-		if(defined('ROUTER_COLLECT_ROUTES'))
-			$this->addEventListenerTo('Cumula\\Router', ROUTER_COLLECT_ROUTES, 'collectAdminPages');
+		// bind to the route collector event
+		$this->addEventListenerTo('Router', 'router_collect_routes', 'collectAdminPages');
 		
-		//If the menu manager is installed, bind to the menu collector event
-		if(defined('MENUMANAGER_COLLECT_MENUS'))
-			$this->addEventListenerTo('MenuManager\\MenuManager', MENUMANAGER_COLLECT_MENUS, 'sendMenus');
+		// bind to the menu collector event
+		$this->addEventListenerTo('MenuManager', 'menu_collect_menus', 'sendMenus');
 		
 		//Initialize stats for display on homepage.
 		$this->stats['installed_components'] = count($dispatcher->getEnabledComponents());
 
-		$this->addEventListenerTo('Cumula\\Autoloader', \Cumula\Autoloader::EVENT_AUTOLOAD, 'autoload');
+		$this->addEventListenerTo('Autoloader', 'event_autoload', 'autoload');
 
-		$this->addEventListener(ADMIN_COLLECT_SETTINGS_PAGES, array(\Cumula\SystemConfig::getInstance(), 'setupAdminPages'));
+		$this->addEventListener('ADMIN_COLLECT_SETTINGS_PAGES', array(\Cumula\SystemConfig::getInstance(), 'setupAdminPages'));
 	}
 
 	/**

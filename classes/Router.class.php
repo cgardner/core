@@ -97,7 +97,7 @@ class Router extends BaseComponent {
 		//Generate array of url segments
 		$segments = explode('/', $path);
 		//Iterate through passed routes
-		foreach($this->_eventTable as $route => $handlers) {
+		foreach($this->getEvents() as $route => $handlers) {
 			if($route == '/' && ($path == '/' || $path == '')) {
 				$return_handlers[$route] = array();
 				return $return_handlers;
@@ -157,8 +157,6 @@ class Router extends BaseComponent {
 	}
 
 	protected function _addRoute($route, $handler) {
-		if(!$this->eventExists($route))
-			$this->addEvent($route);
 		$this->addEventListener($route, $handler);
 	}
   /**
