@@ -49,7 +49,7 @@ abstract class BaseComponent extends EventDispatcher {
 		$this->_registerEvents();
 		parent::__construct();
 		$this->_output = array();
-		$this->config = new StandardConfig(CONFIGROOT, get_class($this).'.yaml');
+		$this->config = new \StandardConfig\StandardConfig(CONFIGROOT, get_class($this).'.yaml');
 		
 		$this->addEventListenerTo('Cumula\\ComponentManager', COMPONENT_STARTUP_COMPLETE, 'startup');
 		$this->addEventListenerTo('Cumula\\Application', BOOT_SHUTDOWN, 'shutdown');

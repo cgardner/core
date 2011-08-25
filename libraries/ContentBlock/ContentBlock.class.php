@@ -1,5 +1,5 @@
 <?php
-namespace Cumula;
+namespace ContentBlock;
 /**
  * Cumula
  *
@@ -22,7 +22,7 @@ namespace Cumula;
  * @subpackage	Core
  * @author     Seabourne Consulting
  */
-class ContentBlock extends EventDispatcher {
+class ContentBlock extends \Cumula\EventDispatcher {
 	public $data;
 	public $content = '';
 	

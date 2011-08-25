@@ -2,7 +2,6 @@
 namespace MenuManager;
 use Cumula\BaseComponent as BaseComponent;
 use Cumula\Application as Application;
-use Cumula\ContentBlock as ContentBlock;
 /**
  * Cumula
  *
@@ -56,7 +55,7 @@ class MenuManager extends BaseComponent {
 		$this->dispatch(MENUMANAGER_COLLECT_MENUS);
 		
 		foreach($this->_menus as $menuId => $menu) {
-			$block = new ContentBlock();
+			$block = new \ContentBlock\ContentBlock();
 			$block->content = $this->_renderMenu($menu);
 			$block->data['variable_name'] = $menu->menuId;
 			$this->addOutputBlock($block);
