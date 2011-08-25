@@ -112,8 +112,10 @@ abstract class BaseMVCController extends EventDispatcher {
 				$method = $last;
 		} else {
 			$comp = static::_getThis()->component;
-			$class = strtolower(str_ireplace('Component', '', get_class($comp)));
-			$controller = strtolower(str_ireplace('Controller', '', get_called_class()));
+			$raw_class = explode("\\", get_class($comp));
+			$class = strtolower(str_ireplace('Component', '', $raw_class[count($raw_class)-1]));
+			$cont_class = explode("\\", get_called_class());
+			$controller = strtolower(str_ireplace('Controller', '', $cont_class[count($cont_class)-1]));
 			if($method == null) 
 				$method = $first;
 			if($route == 'index') {
@@ -269,7 +271,8 @@ abstract class BaseMVCController extends EventDispatcher {
 	protected function renderPartial($file_name = null, $args = array()) {
 		$ext = '.tpl.php';
 		if(pathinfo($file_name, PATHINFO_EXTENSION) == '' && !strpos($file_name, $ext)) {
-			$cont_name = strtolower(str_replace("Controller", "", get_called_class()));
+			$class = explode("\\", get_called_class());
+			$cont_name = strtolower(str_replace("Controller", "", $class[count($class)-1]));
 			$file_name = realpath(dirname($this->_getThisFile()).'/../views/'.$cont_name."/")."/_".$file_name.$ext;
 		}
 		extract($args, EXTR_OVERWRITE);
@@ -281,7 +284,7 @@ abstract class BaseMVCController extends EventDispatcher {
 	}
 	
 	protected function _getThisFile() {
-		$ref = new ReflectionClass(static::_getThis());
+		$ref = new \ReflectionClass(static::_getThis());
 		return $ref->getFileName();
 	}
 	

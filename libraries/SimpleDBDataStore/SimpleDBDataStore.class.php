@@ -1,5 +1,6 @@
 <?php
 namespace SimpleDBDataStore;
+use \Cumula\BaseDataStore as BaseDataStore;
 
 require_once("lib/sdb.php");
 
@@ -11,7 +12,7 @@ class SimpleDBDataStore extends BaseDataStore {
 	protected $_accessKey;
 	protected $_secretKey;
 	
-	public function __construct(BaseSchema $schema, array $config) {
+	public function __construct(\Cumula\BaseSchema $schema, array $config) {
 		parent::__construct($schema, $config);
 		if (!isset($config['access_key']) || !isset($config['secret_key']))
 			throw new Exception("Must have an access key and a secret key and a domain.");

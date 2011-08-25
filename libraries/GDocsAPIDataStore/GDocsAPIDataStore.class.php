@@ -1,6 +1,8 @@
 <?php
 namespace GDocsAPIDataStore;
 
+use \Cumula\BaseAPIDataStore as BaseAPIDataStore;
+
 require_once(__DIR__.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'Zend'.DIRECTORY_SEPARATOR.'Loader.php');
 
 set_include_path(__DIR__.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR);
@@ -126,10 +128,11 @@ class GDocsAPIDataStore extends BaseAPIDataStore {
 		$obj = $this->_schema->getObjInstance();
 		foreach($obj as $key => $value) {
 			try {
-				$obj->$key = $entry->$key;
-			} catch (Exception $e) {
-			
+				isset($entry->$key);
+			} catch (\Zend_Gdata_App_InvalidArgumentException $e) {
+				continue;
 			}
+			$obj->$key = $entry->$key;
 		}
 		$obj->id = $this->_parseId((string)$entry->id);
 		return $obj;

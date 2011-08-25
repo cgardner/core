@@ -2,7 +2,7 @@
 namespace GDocsAPIDataStore;
 
 
-class GDocsZendStreamMediaSource extends Zend_Gdata_App_BaseMediaSource
+class GDocsZendStreamMediaSource extends \Zend_Gdata_App_BaseMediaSource
 {
 
     /**

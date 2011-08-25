@@ -104,12 +104,12 @@ final class Application extends EventDispatcher {
 	 */
 	public $bootProcess = array(BOOT_INIT, 
 						  	 	   BOOT_STARTUP, 
-										 BOOT_PREPARE,
-						   		   BOOT_PREPROCESS, 
-						   		   BOOT_PROCESS, 
-						   		   BOOT_POSTPROCESS, 
-						   		   BOOT_CLEANUP, 
-						   		   BOOT_SHUTDOWN);
+								   BOOT_PREPARE,
+								   BOOT_PREPROCESS, 
+								   BOOT_PROCESS, 
+								   BOOT_POSTPROCESS, 
+								   BOOT_CLEANUP, 
+								   BOOT_SHUTDOWN);
 						   	
 	
 	protected static $_request;
@@ -179,6 +179,7 @@ final class Application extends EventDispatcher {
 		
 		define('PUBLICROOT', APPROOT.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR);
 		define('ASSETROOT', APPROOT.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR);
+		define('LIBDIR', $core_path.DIRECTORY_SEPARATOR.'libraries');
 	}
 	
 	/**
@@ -201,7 +202,7 @@ final class Application extends EventDispatcher {
 	
 	public static function __callStatic($name, $args) {
 		if(strstr($name, 'get')) {
-			$className = str_replace('get', '', "$name\$name");
+			$className = str_replace('get', '', "$name\\$name");
             if (class_exists($className)) {
                 return call_user_func(array($className, 'getInstance'));
             }

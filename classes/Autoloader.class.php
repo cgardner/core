@@ -99,6 +99,7 @@ class Autoloader extends EventDispatcher
 			'Cumula\\ComponentManager' => $dir .'/ComponentManager.class.php',
 			'Cumula\\SimpleSchema' => $dir .'/SimpleSchema.class.php',
 			'Cumula\\BaseDataStore' => $dir .'/BaseDataStore.class.php',
+			'Cumula\\BaseAPIDataStore' => $dir .'/BaseAPIDataStore.class.php',
 			'Cumula\\BaseSqlDataStore' => $dir .'/BaseSqlDataStore.class.php',
 			'Cumula\\BaseMVCComponent' => $dir .'/BaseMVCComponent.class.php',
 			'Cumula\\BaseMVCController' => $dir .'/BaseMVCController.class.php',
