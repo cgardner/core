@@ -267,6 +267,22 @@ class EventDispatcher {
 		return isset($eventHash[$calledClass]) ? $eventHash[$calledClass] : FALSE;
 	} // end function getEvents
 	/**
+	 * Get an Instance of a class
+	 * @param string $className Relative name of the class you're looking for
+	 * @return Object Instance of the class you've requested
+	 **/
+	public function instance($className) 
+	{
+		$absClass = Autoloader::absoluteClassName($className);
+		if ($absClass === FALSE || !is_callable($absClass, 'getInstance')) 
+		{
+			return FALSE;
+		}
+		$instance = $absClass::getInstance();
+		return $instance;
+	} // end function instance
+
+	/**
 	 * Getters and Setters
 	 */
 	/**
