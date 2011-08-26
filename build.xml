@@ -53,6 +53,52 @@
         </coverage-report>
     </target>
 
+		<target name="app.clean.all" depends="app.clean.prompt, app.clean.data, app.clean.config" 
+			description="Clean all of the applications data and config files">
+		</target>
+
+		<target name="app.clean.data" depends="app.clean.prompt" description="Remove the application data directory">
+			<delete dir="${app.path}data" />
+		</target>
+
+		<target name="app.clean.config" depends="app.clean.prompt" description="Remove the application config directory">
+			<delete dir="${app.path}config" />
+		</target>
+
+		<target name="app.clean.prompt" description="Prompt the user for the application information">
+			<if>
+				<not><isset property="app.clean.assertTrue" /></not>
+				<then>
+					<propertyprompt propertyName="app.clean.assertTrue" defaultValue="n" 
+						promptText="Are you sure you want to delete the application files?" />
+				</then>
+			</if>
+
+			<condition property="cleanTrue">
+				<or>
+					<equals arg1="${app.clean.assertTrue}" arg2="y" />
+					<equals arg1="${app.clean.assertTrue}" arg2="Y" />
+				</or>
+			</condition>
+
+			<fail unless="cleanTrue"  message="Decided not to clean the application" />
+
+			<condition property="getAppName">
+				<and>
+					<not><isset property="app.name" /></not>
+				</and>
+			</condition>
+
+			<if>
+				<istrue value="${getAppName}" />
+				<then>
+					<propertyprompt propertyName="app.name" defaultValue="app" promptText="Application you wish to clean" />
+					<property name="app.path" value="${project.basedir}/../${app.name}/" />
+				</then>
+			</if>
+		</target>
+
+		<!-- Build Archives -->
 		<target name="build" depends="build.prepare" description="Build a tarball and zip for the project">
 			<propertyprompt propertyName="build.ref" defaultValue="master" promptText="Which Ref are you building for?" />
 			<exec command="git clone --recursive git://github.com/Cumula/framework.git ${project.builddir}/cumula-${build.ref}" 
