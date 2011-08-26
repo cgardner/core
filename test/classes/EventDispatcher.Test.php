@@ -49,7 +49,7 @@ class Test_EventDispatcher extends Test_BaseTest {
 
         // Make sure the EVENTDISPATCHER_EVENT_DISPATCHED event was registered
         // in the constructor
-        $dispatcher->addEventListener(EVENTDISPATCHER_EVENT_DISPATCHED, array($this, 'eventDispatched'));
+        $dispatcher->addEventListener('eventdispatcher_event_dispatched', array($this, 'eventDispatched'));
     } // end function testConstructor
 
     /**
@@ -102,6 +102,26 @@ class Test_EventDispatcher extends Test_BaseTest {
         $instance = EventDispatcherClass::getInstance();
         $this->assertEquals($this->eventDispatcher, $instance);
     } // end function testStaticGetInstance
+
+		/**
+		 * Test the instance() method
+		 * @param void
+		 * @return void
+		 * @group all
+		 * @TODO Mock or overload the Router class and make sure the instance() method will return an 
+		 * 	instance of the proper class
+		 **/
+		public function testInstanceMethod() 
+		{
+			$instance = $this->eventDispatcher->myInstance('Router');
+			$this->assertInstanceOf('Cumula\\Router', $instance);
+
+			Cumula\Autoloader::getInstance()->registerClass('EventDispatcherClass', __FILE__);
+
+			$instance = $this->eventDispatcher->myInstance('EventDispatcherClass');
+			$this->assertInstanceOf('EventDispatcherClass', $instance);
+			$this->assertEquals($instance, $this->eventDispatcher);
+		} // end function testInstanceMethod
 
     /**
      * test the addEventListener and dispatch methods
@@ -209,11 +229,19 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @author Craig Gardner <craig@seabourneconsulting.com>
      **/
     public function eventDispatched() {
-        $this->calls++;
+			$this->calls++;
     } // end function eventDispatched
 } // end class Test_EventDispatcher extends Test_BaseTest
 
-class EventDispatcherClass extends Cumula\EventDispatcher {}
+class EventDispatcherClass extends Cumula\EventDispatcher {
+	/**
+	 * proxy method for Cumula\EventDispatcher::instance()
+	 **/
+	public function myInstance($className) 
+	{
+		return $this->instance($className);
+	} // end function myInstance
+}
 
 class EventDispatcherClass2 extends Cumula\EventDispatcher {
     public $calls = 0;
