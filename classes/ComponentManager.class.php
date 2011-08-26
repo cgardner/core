@@ -322,6 +322,7 @@ final class ComponentManager extends BaseComponent {
 	 *
 	 */
 	public function installComponent($component) {
+		$component = Autoloader::absoluteClassName($component);
 
 		if (!in_array($component, $this->_availableClasses)) {
 			throw new Exception("Install fail. $component does not exist, please verify file location");
@@ -373,6 +374,8 @@ final class ComponentManager extends BaseComponent {
 	 * @return component string if successful, false otherwise
 	 */
 	public function enableComponent($component) {
+		$component = Autoloader::absoluteClassName($component);
+
 		if (in_array($component, $this->_enabledClasses)) {
 			return FALSE;
 		}
@@ -418,6 +421,8 @@ final class ComponentManager extends BaseComponent {
 	}
 
 	public function disableComponent($component) {
+		$component = Autoloader::absoluteClassName($component);
+
 		$instance = $this->getComponentInstance($component);
 		if ($instance) {
 			$instance->disable();
@@ -435,6 +440,8 @@ final class ComponentManager extends BaseComponent {
 	}
 
 	public function uninstallComponent($component) {
+		$component = Autoloader::absoluteClassName($component);
+
 		if (!in_array($component, $this->_installedClasses)) {
 			return FALSE;
 		}
