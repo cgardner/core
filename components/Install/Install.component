@@ -69,7 +69,7 @@ class Install extends BaseComponent {
 	
 	public function finished() {
 		$this->_setTemplate();
-		$this->instance('ComponentManager')->disableComponent('Install');
+		$this->instance('ComponentManager')->uninstallComponent('Install');
 		$this->render();
 	}
 	
