@@ -193,7 +193,11 @@ class Autoloader extends EventDispatcher
 				}
 			}
 
-			if (count($classes) > 1)
+			if (count($classes) === 0)
+			{
+				return FALSE;
+			}
+			elseif (count($classes) > 1)
 			{
 				unset($classes['Cumula']);
 				ksort($classes);
