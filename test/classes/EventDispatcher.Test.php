@@ -53,20 +53,6 @@ class Test_EventDispatcher extends Test_BaseTest {
     } // end function testConstructor
 
     /**
-     * Make sure an Exception is thrown when an event is added multiple times
-     * @param void
-     * @return void
-     * @group all
-     * @covers Cumula\EventDispatcher::addEvent
-     * @expectedException Exception
-     **/
-    public function testAddEventException() {
-        // Should throw an exception because the event was added
-        // in the constructor already
-        $this->eventDispatcher->addEvent(EVENTDISPATCHER_EVENT_DISPATCHED);
-    } // end function testAddEventException
-
-    /**
      * Test the addEvent and removeEvent methods
      * @param void
      * @return void
@@ -79,12 +65,12 @@ class Test_EventDispatcher extends Test_BaseTest {
         $eventId = uniqid('event_');
 
         $this->eventDispatcher->addEvent($eventId);
-        $this->assertTrue(\Cumula\EventDispatcher::eventHashExists($eventId));
+				$class = get_class($this->eventDispatcher);
+        $this->assertTrue($class::eventHashExists($eventId) !== FALSE);
 
         $this->eventDispatcher->removeEvent($eventId);
-        $this->assertFalse(\Cumula\EventDispatcher::eventHashExists($eventId));
+        $this->assertFalse($class::eventHashExists($eventId));
     } // end function testEventCreationAndRemoval
-
 
     /**
      * Test the static getInstance method
@@ -116,6 +102,7 @@ class Test_EventDispatcher extends Test_BaseTest {
 			$instance = $this->eventDispatcher->myInstance('Router');
 			$this->assertInstanceOf('Cumula\\Router', $instance);
 
+			// Add the class to the autoloader so it can be found
 			Cumula\Autoloader::getInstance()->registerClass('EventDispatcherClass', __FILE__);
 
 			$instance = $this->eventDispatcher->myInstance('EventDispatcherClass');
@@ -186,38 +173,6 @@ class Test_EventDispatcher extends Test_BaseTest {
         $this->eventDispatcher->dispatch($eventId);
         $this->assertEquals(1, $this->calls);
     }
-
-    /**
-     * Test the addEventListenerTo method with a string callback
-     * @param void
-     * @return void
-     * @group all
-     * @covers Cumula\EventDispatcher::addEventListenerTo
-     */
-    public function testAddEventListenerToWithStringCallback() {
-        $dispatcher = new EventDispatcherClass2();
-
-        $eventId2 = uniqid('event2_');
-        $this->eventDispatcher->addEvent($eventId2);
-        $dispatcher->addEventListenerTo('EventDispatcherClass', $eventId2, 'eventCallback');
-        $this->eventDispatcher->dispatch($eventId2);
-        $this->assertEquals(1, $dispatcher->calls);
-    } // end function testAddEventListenerTo
-
-    /**
-     * test the addEventListenerTo method on an uninstantiated class
-     * @param void
-     * @return void
-     * @group all
-     * @covers Cumula\EventDispatcher::addEventListenerTo
-     * @expectedException Cumula\EventException
-     **/
-    public function testAddEventListenerToUninstantiatedClass() {
-        $eventId = uniqid('event_');
-        
-        $this->eventDispatcher->addEventListenerTo('EventDispatcherClass4', $eventId, array($this, 'eventDispatched'));
-        $this->fail('Expected an EventException');
-    } // end function testAddEventListenerToUninstantiatedClass
 
     /**
      * HELPER METHODS |helpers
