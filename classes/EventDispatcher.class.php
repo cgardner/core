@@ -126,10 +126,11 @@ class EventDispatcher {
 		{
 			$callback = array($this, $function);
 		}
-		else if (is_callable($function)) 
+		else if (is_callable($function) || is_array($function)) 
 		{
 			$callback = $function;
-		}
+		} 
+		
 
 		$myClass = __CLASS__;
 		$absClass = Autoloader::absoluteClassName($class);

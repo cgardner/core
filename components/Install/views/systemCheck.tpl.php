@@ -1,6 +1,6 @@
 	<h2>Installation: Step 2</h2>
 	
-	<?php if (in_array(FALSE, $this->perms)) { ?>
+	<?php if (!in_array(FALSE, $this->perms)) { ?>
 	<p>We've performed an initial system check and it looks like your system is ready to support Cumula.  Results are below.</p>
 	<?php } else {?>
 	<p>We've performed an initial system check and there were some problems.  Please see below for more details.</p>

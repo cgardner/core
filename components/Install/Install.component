@@ -16,7 +16,8 @@ class Install extends BaseComponent {
 								'/install/setup_user' => array(&$this, 'setupUser'),
 								'/install/system_check' => array(&$this, 'systemCheck'),
 								'/install/save_user' => array(&$this, 'saveUser'),
-								'/install/finished' => array(&$this, 'finished')));
+								'/install/finished' => array(&$this, 'finished'),
+								'/install/complete' => array(&$this, 'complete')));
 	}
 	
 	public function startInstall() {
@@ -68,6 +69,7 @@ class Install extends BaseComponent {
 	
 	public function finished() {
 		$this->_setTemplate();
+		$this->instance('ComponentManager')->disableComponent('Install');
 		$this->render();
 	}
 	
