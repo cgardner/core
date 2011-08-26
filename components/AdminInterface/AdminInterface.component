@@ -82,6 +82,10 @@ class AdminInterface extends BaseComponent {
 		$this->addEventListenerTo('Autoloader', 'event_autoload', 'autoload');
 
 		$this->addEventListener('admin_collect_settings_pages', array(\Cumula\SystemConfig::getInstance(), 'setupAdminPages'));
+		
+		$this->addEventListenerTo('UserManager', 'register_auth_domain', function($event, $dispatcher) {
+			$dispatcher->registerAuthDomain('admin_interface', array('paths' => array('/admin', '/admin/*')));
+		});
 	}
 
 	/**

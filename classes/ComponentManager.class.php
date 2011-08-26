@@ -39,6 +39,16 @@ final class ComponentManager extends BaseComponent {
 	private $_availableClasses = array();
 	private $_startupClasses = array();
 	private $componentFiles = array();
+	
+	private $_installList = array("Install\\Install", 
+								'FormHelper\\FormHelper', 
+								'UserManager\\UserManager', 
+								'Templater\\Templater', 
+								'Logger\\Logger', 
+								'MenuManager\\MenuManager', 
+								'Authentication\\Authentication',
+								//'UserManager\\UserManager',
+								'AdminInterface\\AdminInterface');
 
 	/**
 	 * Constructor.
@@ -89,7 +99,7 @@ final class ComponentManager extends BaseComponent {
 
 	public function startup()
 	{
-		$this->addEventListenerTo('AdminInterface\\AdminInterface', 'admin_collect_settings_pages', 'setupAdminPages');
+		$this->addEventListenerTo('AdminInterface', 'admin_collect_settings_pages', 'setupAdminPages');
 	}
 
 	/**
@@ -218,7 +228,7 @@ final class ComponentManager extends BaseComponent {
 
 		// If no components are installed, install all available components
 		if (empty($this->_installedClasses)) {
-			$this->installComponents($this->_availableClasses);
+			$this->installComponents($this->_getAvailableComponents());
 		}
 
 		$this->dispatch('component_init_complete');

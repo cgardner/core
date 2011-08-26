@@ -32,10 +32,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	private $schema;
 
 	abstract public function escapeString($dirtyString);
-	
-	public function __construct($schema, $config_values) {
-		parent::__construct($schema, $config_values);
-	}
+
 	
 	protected function doExec($sql) {
 		
@@ -215,9 +212,9 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	 **/
 	public function setSchema($arg0) 
 	{
-		if (($arg0 instanceOf SimpleSchema) === FALSE)
+		if (($arg0 instanceOf BaseSchema) === FALSE)
 		{
-			throw new DataStoreException('Schema is not an instance of SimpleSchema');
+			throw new DataStoreException('Schema is not an instance of BaseSchema');
 		}
 		$this->schema = $arg0;
 		return $this;

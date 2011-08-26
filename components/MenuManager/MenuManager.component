@@ -53,7 +53,6 @@ class MenuManager extends BaseComponent {
 	
 	public function renderMenus($event) {
 		$this->dispatch('menu_collect_menus');
-		
 		foreach($this->_menus as $menuId => $menu) {
 			$block = new \ContentBlock\ContentBlock();
 			$block->content = $this->_renderMenu($menu);

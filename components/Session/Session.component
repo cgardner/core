@@ -1,8 +1,7 @@
 <?php
 namespace Session;
-use Cumula\BaseComponent as BaseComponent;
-use Cumula\Application as Application;
-use Cumula\ComponentManager as ComponentManager;
+use \Cumula\BaseComponent as BaseComponent;
+use \Cumula\ComponentManager as ComponentManager;
 
 class Session extends BaseComponent {
 	public function __construct() {
@@ -10,6 +9,14 @@ class Session extends BaseComponent {
 	
 		//Add  listener to app BOOT_INIT event
 		$this->addEventListenerTo('Application', 'boot_init', array($this, 'startSession'));
+		$this->addEventListenerTo('Application', 'boot_shutdown', array($this, 'clearFlash'));
+	}
+	
+	public function clearFlash() {
+		if($this->instance('Response')->response['status_code'] != 302) {
+			unset($this->warning);
+			unset($this->notice);
+		}
 	}
 	
 	public function startSession() {
@@ -17,10 +24,10 @@ class Session extends BaseComponent {
 		session_start();
 	}
   
-  public function endSession() {
-    session_unset();
-    session_destroy();
-  }
+	public function endSession() {
+		session_unset();
+		session_destroy();
+	}
 	
 	protected function _composeName() {
 		$name = $_SERVER['REMOTE_ADDR'];
@@ -51,6 +58,23 @@ class Session extends BaseComponent {
 		$cm = ComponentManager::getInstance();
 		$cm->registerStartupComponent($this);
 	}
+	
+	public function __get($name) {
+		return $this->getValue($name, false);
+	}
+	
+	public function __set($name, $value) {
+		return $this->setValue($name, $value);
+	}
+	
+	public function __isset($name) {
+		return ($this->__get($name) != false);
+	}
+	
+	public function __unset($name) {
+		return $this->unsetValue($name, false);
+	}
+	
   /**
    * Implementation of the getInfo method
    * @param void
