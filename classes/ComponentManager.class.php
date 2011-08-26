@@ -77,7 +77,7 @@ final class ComponentManager extends BaseComponent {
     public static function getInfo() {
         return array(
             'name' => 'Component Manager',
-            'description' => 'Componenet to manage other components',
+            'description' => 'Component to manage other components',
             'version' => '0.1.0',
             'dependencies' => array(),
         );
@@ -161,6 +161,7 @@ final class ComponentManager extends BaseComponent {
 	public function shutdown() {
 		$this->config->setConfigValue('installed_components', $this->_installedClasses);
 		$this->config->setConfigValue('enabled_components', $this->_enabledClasses);
+		$this->config->setConfigValue('startup_components', $this->_startupClasses);
 	}
 
 	/**
@@ -179,7 +180,6 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function registerStartupComponent($obj) {
 		$this->_startupClasses[] = get_class($obj);
-		$this->config->setConfigValue('startup_components', $this->_startupClasses);
 	}
 	
 	/**
@@ -190,7 +190,7 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function startStartupComponents()
 	{
-		foreach ($this->getComponentFiles() as $className => $classFile)
+		foreach ($this->_startupClasses as $className)
 		{
 			$this->startupComponent($className);
 		}
@@ -215,49 +215,30 @@ final class ComponentManager extends BaseComponent {
 	 * @return unknown_type
 	 */
 	public function loadComponents() {
+
+		// If no components are installed, install all available components
 		if (empty($this->_installedClasses)) {
 			$this->installComponents($this->_availableClasses);
 		}
-		
-		$this->parseComponentDir(COMPROOT);
-		$this->parseComponentDir(CONTRIBCOMPROOT);
 
 		$this->dispatch('component_init_complete');
-	}
-	
-	protected function parseComponentDir($path) {
-		$dir = dir($path);
-		while (false !== ($comp = $dir->read())) {
-			if(!strstr($comp, '.')) {
-				$comp_dir = $dir->path.'/'.$comp;
-				$class_name = ucfirst(basename($comp));
-				$class_file = $comp_dir.'/'.$class_name.'.component';
-				if (is_file($class_file) && (in_array($class_name, $this->_installedClasses)) && !class_exists($class_name)) {
-				}
-			}
-		}
 	}
 
 	/**
 	 * This function instantiates the components by iterating through the internal library array and creating
 	 * new class instances for each entry.
 	 *
-	 * After all the components have been instantiated, the event COMPONENT_LOAD_COMPLETE is dispatched.
+	 * After all the components have been instantiated, the event COMPONENT_STARTUP_COMPLETE is dispatched.
 	 *
 	 * @return unknown_type
 	 */
-	// TODO: How do we figure out if a component has been installed?
-	// If it was installed programmatically or via the admin interface then the correct installation and enabling
-	// process was executed. However, if a user manually edits the component yaml files we need a way to trigger
-	// the install/enable functions for that component. Same for disabling/uninstalling components
 	public function startupComponents() {
 		if (empty($this->_enabledClasses)) {
-			$this->installComponents($this->_installedClasses);
-			$list = $this->_installedClasses;
-		} else {
-			$list = $this->_enabledClasses;
+			$this->enableComponents($this->_installedClasses);
 		}
-		foreach($list as $class_name) {
+		$list = $this->_enabledClasses;
+
+		foreach ($list as $class_name) {
 			$this->startupComponent($class_name);
 		}
 		$this->dispatch('component_startup_complete');
@@ -269,14 +250,20 @@ final class ComponentManager extends BaseComponent {
 	 * @param $component_class
 	 * @return unknown_type
 	 */
-	public function startupComponent($component_class) {
-		if(!isset($this->_components[$component_class]) && (in_array($component_class, $this->_enabledClasses)))
+	public function startupComponent($component_class, $enable_override = FALSE) {
+		if(!isset($this->_components[$component_class]))
 		{
-			$this->_components[$component_class] = new $component_class();
+			if ($enable_override || in_array($component_class, $this->_enabledClasses)) {
+				$this->_components[$component_class] = new $component_class();
+			}
+			else
+			{
+				return FALSE;
+			}
 		}
 		else
 		{
-			return false;
+			return FALSE;
 		}
 	}
 
@@ -290,7 +277,7 @@ final class ComponentManager extends BaseComponent {
 		if(isset($this->_components[$className]))
 			return $this->_components[$className];
 		else
-			return false;
+			return FALSE;
 	}
 
 	/**
@@ -320,58 +307,30 @@ final class ComponentManager extends BaseComponent {
 	 * *************************************************************************
 	 */
 
-
 	/**
 	 * Installs a single component, based on the string $component parameter.
 	 *
 	 */
 	public function installComponent($component) {
-		$found = false;
-		if (class_exists($component))
-		{
-			$reflection = new ReflectionClass($component);
-			$class_file = $reflection->getFileName();
-			$found = TRUE;
+
+		if (!in_array($component, $this->_availableClasses)) {
+			throw new Exception("Install fail. $component does not exist, please verify file location");
 		}
-		else
-		{
-			$dir = dir(COMPROOT);
-			$comp_dir = $dir->path.'/'.$component;
-			$class_file = $comp_dir.'/'.$component.'.component';
-			if (is_file($class_file)) {
-				$found = true;
-			} else {
-				$dir = dir(CONTRIBCOMPROOT);
-				$comp_dir = $dir->path.'/'.$component;
-				$class_file = $comp_dir.'/'.$component.'.component';
-				if(is_file($class_file))
-					$found = true;
-			}
+
+		if (in_array($component, $this->_installedClasses)) {
+			return FALSE;
 		}
-		if ($found) {
-			if(!in_array($component, $this->_installedClasses))
-			{
-				$this->_installedClasses[] = $component;
-			}
-			if(!in_array($component, $this->_enabledClasses))
-			{
-				$this->_enabledClasses[] = $component;
-			}
-			if(!array_key_exists($component, $this->_components))
-			{
-				$this->_components[$component] = new $component;
-			}
-			$instance = $this->_components[$component];
+
+		$this->_installedClasses[] = $component;
+		$this->startupComponent($component, TRUE);
+		$instance = $this->getComponentInstance($component);
+
+		if ($instance) {
 			$instance->install();
 			$instance->installAssets();
-
-			$this->_installedClasses[] = $component;
-			$this->config->setConfigValue('installed_components', $this->_installedClasses);
-
-			return $component;
 		}
 
-		return FALSE;
+		return $component;
 	}
 
 	/**
@@ -394,29 +353,23 @@ final class ComponentManager extends BaseComponent {
 	public function setInstalledComponents($components) {
 		$uninstall_list = array_diff($this->_installedClasses, $components);
 		$install_list = array_diff($components, $this->_installedClasses);
-		foreach ($uninstall_list as $uninstall_component) {
-			$instance = $this->getComponentInstance($uninstall_component);
-			if ($instance) {
-				if (in_array($uninstall_component, $this->_enabledClasses)) {
-					$instance->disable();
-					unset($this->_enabledClasses[$uninstall_component]);
-				}
-				$instance->uninstall();
-				unset($this->_installedClasses[$uninstall_component]);
-
-			}
-		}
-
-		// Set enabled and installed component config based off removed components
-		$this->config->setConfigValue('enabled_components', $this->_enabledClasses);
-		$this->config->setConfigValue('installed_components', $this->_installedClasses);
-
+		$this->uninstallComponents($uninstall_list);
 		$this->installComponents($install_list);
 	}
 
+	/**
+	 * @throws Exception
+	 * @param  $component
+	 * @return component string if successful, false otherwise
+	 */
 	public function enableComponent($component) {
 		if (in_array($component, $this->_enabledClasses)) {
 			return FALSE;
+		}
+
+		// Install the component if it's not already
+		if (!in_array($component, $this->_installedClasses)) {
+			$this->installComponent($component);
 		}
 
 		$this->startupComponent($component);
@@ -426,7 +379,6 @@ final class ComponentManager extends BaseComponent {
 		}
 
 		$this->_enabledClasses[] = $component;
-		$this->config->setConfigValue('enabled_components', $this->_enabledClasses);
 
 		return $component;
 	}
@@ -445,19 +397,55 @@ final class ComponentManager extends BaseComponent {
 	}
 
 	/**
-	 * Takes an array of components and enables components not currently enabled while disabling installed components
+	 * Takes an array of components and enables components not currently enabled while disabling enabled components
 	 * not in the input list
 	 */
 	public function setEnabledComponents($components) {
-		$disable_list = array_diff($this->_installedClasses, $components);
+		$disable_list = array_diff($this->_enabledClasses, $components);
 		$enable_list = array_diff($components, $this->_enabledClasses);
-		foreach($disable_list as $class_name) {
-			$instance = $this->getComponentInstance($class_name);
-			if($instance) {
-				$instance->disable();
-			}
-		}
+		$this->disableComponents($disable_list);
 		$this->enableComponents($enable_list);
+	}
+
+	public function disableComponent($component) {
+		$instance = $this->getComponentInstance($component);
+		if ($instance) {
+			$instance->disable();
+			unset($this->_enabledClasses[$component]);
+			return $component;
+		} else {
+			return FALSE;
+		}
+	}
+
+	public function disableComponents($components) {
+		foreach($components as $component) {
+			$this->disableComponent($component);
+		}
+	}
+
+	public function uninstallComponent($component) {
+		if (!in_array($component, $this->_installedClasses)) {
+			return FALSE;
+		}
+
+		$instance = $this->getComponentInstance($component);
+		if ($instance) {
+			if (in_array($component, $this->_enabledClasses)) {
+				$this->disableComponent($component);
+			}
+			$instance->uninstall();
+			unset($this->_installedClasses[$component]);
+			return $component;
+		} else {
+			return FALSE;
+		}
+	}
+
+	public function uninstallComponents($components) {
+		foreach($components as $component) {
+			$this->uninstallComponent($component);
+		}
 	}
 
 
