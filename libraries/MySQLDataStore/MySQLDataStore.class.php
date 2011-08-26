@@ -7,7 +7,7 @@ require_once realpath(dirname(__FILE__) .'/../../classes/PDODataStore.class.php'
  *
  * Implementation of DataStore that uses a MySQL backend to save data
  *
- * @package Cumlula
+ * @package Cumula
  * @subpackage CoreData
  * @author Seabourne Consulting
  **/

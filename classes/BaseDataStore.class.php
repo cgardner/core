@@ -137,7 +137,7 @@ abstract class BaseDataStore extends EventDispatcher {
 	}
 	
 	protected function _getIdValue($obj) {
-		$idField = $this->_schema->getIdField();
+		$idField = $this->getSchema()->getIdField();
 		return $obj->$idField;	
 	}
 	

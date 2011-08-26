@@ -96,16 +96,15 @@ class Test_YamlDataStore extends Test_BaseTest {
      * @covers YAMLDataStore\YAMLDataStore::update
      * @covers YAMLDataStore\YAMLDataStore::_save
      * @covers YAMLDataStore\YAMLDataStore::_dataStoreFile
+		 * @covers YAMLDataStore\YAMLDataStore::_createOrUpdate
      * @dataProvider createDataProvider
      **/
     public function testCreate($method) {
         $obj = $this->getData();
         $this->dataStore->$method($obj);
 
-        $contents = file($this->getDataStoreFile());
-        foreach ($obj as $key => $value) {
-            $this->assertContains(sprintf("%s: %s\n", $key, $value), $contents);
-        }
+        $contents = file_get_contents($this->getDataStoreFile());
+				$this->assertContains(sprintf("%s: %s\n", $obj->key, $obj->value), $contents);
     } // end function testCreate
 
     /**
@@ -118,20 +117,16 @@ class Test_YamlDataStore extends Test_BaseTest {
     public function testCreateOrUpdate() {
         $data1 = $this->getData();
 
-        $keys = array_keys($data1);
-
         // Loop twice; DRY
         for ($i = 0; $i < 2; $i++) {
             // Set create or update the data
             $this->dataStore->createOrUpdate($data1);
-            $contents = file($this->getDataStoreFile());
-            foreach ($data1 as $key => $value) {
-                $this->assertContains(sprintf("%s: %s\n", $key, $value), $contents);
-            }
+            $contents = file_get_contents($this->getDataStoreFile());
+						$this->assertContains(sprintf("%s: %s\n", $data1->key, $data1->value), $contents);
 
             // Modify the data and continue
             $_data = each($this->getData());
-            $data1[$keys[0]] = $_data[0];
+            $data1->key = $_data['value'];
         }
     } // end function testCreateOrUpdate
 
@@ -149,18 +144,15 @@ class Test_YamlDataStore extends Test_BaseTest {
         // Make sure the test data isn't the same
         $this->assertNotEquals($data1, $data2);
 
-        $this->dataStore->create($data1 + $data2);
+				$this->dataStore->create($data1);
+				$this->dataStore->create($data2);
 
-        $keys = array_keys($data1);
-        $deleteMe = $keys[0];
+        $deleteMe = $data1;
         for ($i = 0; $i < 2; $i++) {
             $this->dataStore->destroy($deleteMe);
             $contents = file($this->getDataStoreFile());
-            if (is_array($deleteMe)) {
-                // Check the array
-                foreach ($deleteMe as $key => $value) {
-                    $this->assertContains(sprintf("%s: %s\n", $key, $value), $contents);
-                }
+            if (is_object($deleteMe)) {
+							$this->assertFalse($this->dataStore->recordExists($deleteMe->key));
             }
             else {
                 // Check the string 
@@ -172,7 +164,7 @@ class Test_YamlDataStore extends Test_BaseTest {
                     }
                 }
                 $this->assertTrue($foundFlag);
-                $deleteMe = $data2;
+                $deleteMe = $data2->key;
             }
         }
     } // end function testDestroy
@@ -204,10 +196,7 @@ class Test_YamlDataStore extends Test_BaseTest {
         $data = $this->getData();
 
         $this->dataStore->create($data);
-
-        foreach($data as $key => $value) {
-            $this->assertTrue($this->dataStore->recordExists($key));
-        }
+				$this->assertTrue($this->dataStore->recordExists($data->key));
     } // end function testRecordExists
 
     /**
@@ -221,9 +210,7 @@ class Test_YamlDataStore extends Test_BaseTest {
         $data = $this->getData();
         $this->dataStore->create($data);
 
-        foreach ($data as $key => $value) {
-            $this->assertEquals($data[$key], $this->dataStore->query($key));
-        }
+				$this->assertEquals($data->value, $this->dataStore->query($data->key));
 
         $this->assertNull($this->dataStore->query('doesNotExist'));
     } // end function testQuery
@@ -255,9 +242,10 @@ class Test_YamlDataStore extends Test_BaseTest {
      * @return void
      **/
     private function getData() {
-        return array(
-            uniqid('key') => uniqid('value'),
-        );
+			$obj = new stdClass();
+			$obj->key = uniqid('key');
+			$obj->value = uniqid('value');
+			return $obj;
     } // end function getData
     
 } // end class Test_YamlDataStore extends Test_BaseTest

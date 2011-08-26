@@ -138,8 +138,8 @@ class Test_Response extends Test_BaseTest {
         $this->repsonse->response['content'] = $content;
 
         global $response_prepare, $response_send;
-        $this->response->addEventListener(RESPONSE_PREPARE, function() { global $response_prepare; $response_prepare = TRUE; });
-        $this->response->addEventListener(RESPONSE_SEND, function() { global $response_send; $response_send = TRUE; });
+        $this->response->addEventListener('response_prepare', function() { global $response_prepare; $response_prepare = TRUE; });
+        $this->response->addEventListener('response_send', function() { global $response_send; $response_send = TRUE; });
 
         $this->response->send();
 
