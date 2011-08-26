@@ -295,7 +295,7 @@ class AdminInterface extends BaseComponent {
 						$component->$callback($vals);
 					}
 				}
-				$this->redirectTo($this->completeUrl($page->route));
+				$this->redirectTo($page->route);
 				return;
 			}
 		}

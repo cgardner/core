@@ -337,7 +337,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function redirectTo($url) {
-		Response::getInstance()->send302($url);
+		Response::getInstance()->send302($this->completeUrl($url));
 	}
 	
 	/**

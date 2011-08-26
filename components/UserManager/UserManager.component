@@ -93,7 +93,10 @@ class UserManager extends BaseComponent {
 		$user->username = $login;
 		$user->domain = $domain;
 		$user->password = md5($credential);
-		$this->_userStore->create($user);
+		if(!$this->_userStore->query(array('domain' => $domain, 'username' => $login)))
+			return $this->_userStore->create($user);
+		else 
+			return false;
 	}
 	
 	public function deleteUser($domain, $login) {
