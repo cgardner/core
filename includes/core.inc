@@ -7,9 +7,6 @@
 
 //TODO: Replace with function to dynamically load everything in the core folder
 
-//Load Events
-require_once dirname(__FILE__) . '/events.inc';
-
 //Load Constants
 require_once dirname(__FILE__) . '/constants.inc';
 

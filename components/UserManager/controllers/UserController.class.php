@@ -30,14 +30,14 @@ class UserController extends BaseMVCController {
 			$this->addWarning('Username or password is invalid!');
 			$this->form = FormHelper::getInstance();
 			$this->render('login');
-			$this->dispatch(USER_MANAGER_LOGIN_FAILED, array($user));
+			$this->dispatch('user_manager_login_failed', array($user));
 		} else {
 			$this->addMessage('Login Successful!');
 			$session = Session::getInstance();
 			$session->setValue('user', $user);
 			$ref = $session->getValue('login_referer', '/');
 			$session->unsetValue('login_referer');
-			$this->dispatch(USER_MANAGER_LOGIN_SUCCEEDED, array($user));
+			$this->dispatch('user_manager_login_succeeded', array($user));
 			$this->redirectTo($ref);
 		}
 	}
@@ -59,7 +59,7 @@ class UserController extends BaseMVCController {
 			$user = new User($args);
 			$user->save();
 			$this->addMessage('Account Created!');
-			$this->dispatch(USER_MANAGER_USER_REGISTERED, array($user));
+			$this->dispatch('user_manager_user_registered', array($user));
 			$session = Session::getInstance();
 			$session->setValue('user', $user);
 			$ref = $session->getValue('login_referer', '/');

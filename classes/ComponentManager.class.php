@@ -57,15 +57,16 @@ final class ComponentManager extends BaseComponent {
 		parent::__construct();
 
 		// Create new events for component management
-		$this->addEvent(COMPONENT_INIT_COMPLETE);
-		$this->addEvent(COMPONENT_STARTUP_COMPLETE);
+		$this->addEvent('component_init_complete');
+		$this->addEvent('component_startup_complete');
 
 		// Set listeners for events
-		Application::getInstance()->addEventListener(BOOT_INIT, array(&$this, 'loadComponents'));
-		Application::getInstance()->addEventListener(BOOT_STARTUP, array(&$this, 'startupComponents'));
-		Application::getInstance()->addEventListener(BOOT_SHUTDOWN, array(&$this, 'shutdown'));
-		$this->addEventListener('COMPONENT_STARTUP_COMPLETE', array(&$this, 'startup'));
-		$this->addEventListenerTo('Cumula\\Autoloader', Autoloader::EVENT_AUTOLOAD, array($this, 'autoload'));
+		$this->addEventListener('component_startup_complete', array(&$this, 'startup'));
+
+		$this->addEventListenerTo('Application', 'boot_init', array(&$this, 'loadComponents'));
+		$this->addEventListenerTo('Application', 'boot_startup', array(&$this, 'startupComponents'));
+		$this->addEventListenerTo('Application', 'boot_shutdown', array(&$this, 'shutdown'));
+		$this->addEventListenerTo('Cumula\\Autoloader', 'event_autoload', array($this, 'autoload'));
 
 
 		// Initialize config and settings
@@ -96,10 +97,7 @@ final class ComponentManager extends BaseComponent {
 
 	public function startup()
 	{
-		if(class_exists('AdminInterface\\AdminInterface'))
-		{
-			$this->addEventListenerTo('AdminInterface\\AdminInterface', 'ADMIN_COLLECT_SETTINGS_PAGES', 'setupAdminPages');
-		}
+		$this->addEventListenerTo('AdminInterface', 'admin_collect_settings_pages', 'setupAdminPages');
 	}
 
 	/**
@@ -232,7 +230,7 @@ final class ComponentManager extends BaseComponent {
 		$this->parseComponentDir(COMPROOT);
 		$this->parseComponentDir(CONTRIBCOMPROOT);
 
-		$this->dispatch(COMPONENT_INIT_COMPLETE);
+		$this->dispatch('component_init_complete');
 	}
 	
 	protected function parseComponentDir($path) {
@@ -270,7 +268,7 @@ final class ComponentManager extends BaseComponent {
 		foreach($list as $class_name) {
 			$this->startupComponent($class_name);
 		}
-		$this->dispatch(COMPONENT_STARTUP_COMPLETE);
+		$this->dispatch('component_startup_complete');
 	}
 
 	/**

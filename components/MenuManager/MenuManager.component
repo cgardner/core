@@ -35,7 +35,7 @@ class MenuManager extends BaseComponent {
 		
 		$this->_menus = array();
 		
-		Application::getInstance()->addEventListener(BOOT_POSTPROCESS, array(&$this, 'renderMenus'));
+		$this->addEventListenerTo('Application', 'boot_postprocess', array(&$this, 'renderMenus'));
 	}
 
 	//Item should be an array defining an itemTitle and itemPath
@@ -52,7 +52,7 @@ class MenuManager extends BaseComponent {
 	}
 	
 	public function renderMenus($event) {
-		$this->dispatch(MENUMANAGER_COLLECT_MENUS);
+		$this->dispatch('menu_collect_menus');
 		
 		foreach($this->_menus as $menuId => $menu) {
 			$block = new \ContentBlock\ContentBlock();

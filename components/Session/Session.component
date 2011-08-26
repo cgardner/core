@@ -9,7 +9,7 @@ class Session extends BaseComponent {
 		parent::__construct();
 	
 		//Add  listener to app BOOT_INIT event
-		Application::getInstance()->addEventListener(BOOT_INIT, array($this, 'startSession'));
+		$this->addEventListenerTo('Application', 'boot_init', array($this, 'startSession'));
 	}
 	
 	public function startSession() {

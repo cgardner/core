@@ -102,14 +102,16 @@ final class Application extends EventDispatcher {
 	 * 
 	 * @var array
 	 */
-	public $bootProcess = array(BOOT_INIT, 
-						  	 	   BOOT_STARTUP, 
-								   BOOT_PREPARE,
-								   BOOT_PREPROCESS, 
-								   BOOT_PROCESS, 
-								   BOOT_POSTPROCESS, 
-								   BOOT_CLEANUP, 
-								   BOOT_SHUTDOWN);
+	public $bootProcess = array(
+			'boot_init', 
+			'boot_startup', 
+			'boot_prepare',
+			'boot_preprocess', 
+			'boot_process', 
+			'boot_postprocess', 
+			'boot_cleanup', 
+			'boot_shutdown',
+	);
 						   	
 	
 	protected static $_request;
