@@ -112,7 +112,7 @@ class YAMLDataStore extends \Cumula\BaseDataStore {
 			}
 		} else {
 			//if obj is an object, unset the object based on the passed id
-			$key = $this->_getKeyValue($obj);
+			$key = $this->_getIdValue($obj);
 			unset($this->_storage[$key]);
 			$this->_save();
 		}
