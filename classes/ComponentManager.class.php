@@ -40,13 +40,15 @@ final class ComponentManager extends BaseComponent {
 	private $_startupClasses = array();
 	private $componentFiles = array();
 	
-	private $_installList = array('\\Install\\Install', 
-								'\\FormHelper\\FormHelper', 
-								'\\UserManager\\UserManager', 
-								'\\Templater\\Templater', 
-								'\\Logger\\Logger', 
-								'\\MenuManager\\MenuManager', 
-								'\\Authentication\\Authentication');
+	private $_installList = array("Install\\Install", 
+								'FormHelper\\FormHelper', 
+								'UserManager\\UserManager', 
+								'Templater\\Templater', 
+								'Logger\\Logger', 
+								'MenuManager\\MenuManager', 
+								'Authentication\\Authentication',
+								//'UserManager\\UserManager',
+								'AdminInterface\\AdminInterface');
 
 	/**
 	 * Constructor.
@@ -224,7 +226,7 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function loadComponents() {
 		if (empty($this->_installedClasses)) {
-			$this->installComponents($this->_installList);
+			$this->installComponents($this->_getAvailableComponents());
 		}
 		
 		$this->parseComponentDir(COMPROOT);

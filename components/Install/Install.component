@@ -8,13 +8,15 @@ class Install extends BaseComponent {
 	}
 	
 	public function startup($event, $dispatcher) {
-		$this->addEventListenerTo('Router', 'ROUTER_COLLECT_ROUTES', 'handleRoutes');
+		$this->addEventListenerTo('Router', 'router_collect_routes', 'handleRoutes');
 	}
 	
 	public function handleRoutes($route, $router) {
 		$router->addRoutes(array('/install' => array(&$this, 'startInstall'),
 								'/install/setup_user' => array(&$this, 'setupUser'),
-								'/install/system_check' => array(&$this, 'systemCheck')));
+								'/install/system_check' => array(&$this, 'systemCheck'),
+								'/install/save_user' => array(&$this, 'saveUser'),
+								'/install/finished' => array(&$this, 'finished')));
 	}
 	
 	public function startInstall() {
@@ -54,11 +56,23 @@ class Install extends BaseComponent {
 	
 	
 	public function saveUser($route, $router, $args) {
-		
+		$um = $this->instance('UserManager');
+		if($args['password'] == $args['passconf']) {
+			$um->createUser('admin_interface', $args['username'], $args['password']);
+			$this->redirectTo('/install/finished');
+		} else {
+			$this->instance('Session')->warning = 'Password and confirmation don\'t match!';
+			$this->redirectTo('/install/setup_user');
+		}
+	}
+	
+	public function finished() {
+		$this->_setTemplate();
+		$this->render();
 	}
 	
 	protected function _setTemplate() {
-		$this->addEventListenerTo('Templater', 'TEMPLATER_PREPARE', function($event, $templater) {
+		$this->addEventListenerTo('Templater', 'templater_prepare', function($event, $templater) {
 			$templater->setTemplateDir(COMPROOT.'Install/template/');
 		});
 	}

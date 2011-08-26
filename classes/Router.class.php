@@ -53,6 +53,14 @@ class Router extends BaseComponent {
 	public function addRoutes($routes) {
 		$this->_collectedRoutes = array_merge($this->_collectedRoutes, $routes);
 	}
+	
+	public function setRoutes($routes) {
+		$this->_collectedRoutes = $routes;
+	}
+	
+	public function getRoutes() {
+		return $this->_collectedRoutes;
+	}
 
 	public function collectRoutes($event) {
 		$this->dispatch('router_collect_routes');
@@ -113,7 +121,7 @@ class Router extends BaseComponent {
 			$args = array();
 
 			if(count($segments) != count($route_segments))
-			continue;
+				continue;
 
 			//Iterate through all URL segments
 			for($i = 0; $i < count($segments); $i++) {
