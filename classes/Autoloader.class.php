@@ -176,9 +176,10 @@ class Autoloader extends EventDispatcher
 		 * @param string $className Relative Class Name (without namespace)
 		 * @return string Absolute ClassName (with namespace);
 		 **/
-		public static function absoluteClassName($className) 
+		public static function absoluteClassName($className, $secondCall = FALSE) 
 		{
-			$cache = self::getInstance()->getCache();
+			$instance = self::getInstance();
+			$cache = $instance->getCache();
 			if (isset($cache[$className]) || $className == __CLASS__)
 			{
 				return $className;
@@ -195,7 +196,16 @@ class Autoloader extends EventDispatcher
 
 			if (count($classes) === 0)
 			{
-				return FALSE;
+				if ($secondCall)
+				{
+					return FALSE;
+				}
+				else 
+				{
+					$instance->dispatch('event_autoload', array($className));
+					$class = __CLASS__;
+					return $class::absoluteClassName($className, TRUE);
+				}
 			}
 			elseif (count($classes) > 1)
 			{
