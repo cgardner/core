@@ -6,10 +6,10 @@
  */
 
 
-const TEMPLATER_RENDER = 'templater_render';
-const TEMPLATER_PREPARE = 'templater_prepare';
-const TEMPLATER_CLEANUP = 'templater_cleanup';
-const TEMPLATER_GET_JAVASCRIPT = 'templater_get_javascript';
-const TEMPLATER_GET_STYLESHEETS = 'templater_get_stylesheets';
-const TEMPLATER_SET_TITLE = 'templater_get_title';
-const TEMPLATER_GET_META = 'templater_get_meta';
+const TEMPLATER_RENDER = 'TEMPLATER_RENDER';
+const TEMPLATER_PREPARE = 'TEMPLATER_PREPARE';
+const TEMPLATER_CLEANUP = 'TEMPLATER_CLEANUP';
+const TEMPLATER_GET_JAVASCRIPT = 'TEMPLATER_GET_JAVASCRIPT';
+const TEMPLATER_GET_STYLESHEETS = 'TEMPLATER_GET_STYLESHEETS';
+const TEMPLATER_SET_TITLE = 'TEMPLATER_SET_TITLE';
+const TEMPLATER_GET_META = 'TEMPLATER_GET_META';

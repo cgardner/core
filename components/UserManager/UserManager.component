@@ -5,6 +5,7 @@ use Cumula\BaseMVCComponent as BaseMVCComponent;
 class UserManager extends BaseMVCComponent {
 	public function __construct() {
 		parent::__construct();
+		$this->registerEvent('REGISTER_AUTH_DOMAIN');
 	}
 
   /**

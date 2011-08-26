@@ -32,6 +32,6 @@ const EVENTDISPATCHER_EVENT_DISPATCHED = 'event_dispatched';
 
 const EVENT_LOGGED = 'message_logged';
 
-const ROUTER_COLLECT_ROUTES = 'router_collect_routes';
-const ROUTER_FILE_NOT_FOUND = 'router_file_not_found';
-const ROUTER_ADD_ROUTE = 'router_add_route';
+const ROUTER_COLLECT_ROUTES = 'ROUTER_COLLECT_ROUTES';
+const ROUTER_FILE_NOT_FOUND = 'ROUTER_FILE_NOT_FOUND';
+const ROUTER_ADD_ROUTE = 'ROUTER_ADD_ROUTE';

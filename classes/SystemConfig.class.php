@@ -77,7 +77,7 @@ class SystemConfig extends BaseComponent {
 	 */
 
 	public function startup() {
-		$this->addEventListenerTo('AdminInterface\\AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
+		$this->addEventListenerTo('AdminInterface\\AdminInterface', 'ADMIN_COLLECT_SETTINGS_PAGES', 'setupAdminPages');
 	}
 	
 	/**

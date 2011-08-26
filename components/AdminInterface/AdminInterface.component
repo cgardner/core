@@ -194,7 +194,7 @@ class AdminInterface extends BaseComponent {
 	public function adminPage($route, $router, $args, $request) {
 		if(!$this->checkUser($request))
 			return;
-		$this->addEventListenerTo('Templater\\Templater', TEMPLATER_PREPARE, function($event, $templater) {
+		$this->addEventListenerTo('Templater', 'TEMPLATER_PREPARE', function($event, $templater) {
 			$templater->setTemplateDir(COMPROOT.'AdminInterface/template/');
 		});
 		

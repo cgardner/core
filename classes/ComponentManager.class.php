@@ -39,6 +39,14 @@ final class ComponentManager extends BaseComponent {
 	private $_availableClasses = array();
 	private $_startupClasses = array();
 	private $componentFiles = array();
+	
+	private $_installList = array('\\Install\\Install', 
+								'\\FormHelper\\FormHelper', 
+								'\\UserManager\\UserManager', 
+								'\\Templater\\Templater', 
+								'\\Logger\\Logger', 
+								'\\MenuManager\\MenuManager', 
+								'\\Authentication\\Authentication');
 
 	/**
 	 * Constructor.
@@ -56,7 +64,7 @@ final class ComponentManager extends BaseComponent {
 		Application::getInstance()->addEventListener(BOOT_INIT, array(&$this, 'loadComponents'));
 		Application::getInstance()->addEventListener(BOOT_STARTUP, array(&$this, 'startupComponents'));
 		Application::getInstance()->addEventListener(BOOT_SHUTDOWN, array(&$this, 'shutdown'));
-		$this->addEventListener(COMPONENT_STARTUP_COMPLETE, array(&$this, 'startup'));
+		$this->addEventListener('COMPONENT_STARTUP_COMPLETE', array(&$this, 'startup'));
 		$this->addEventListenerTo('Cumula\\Autoloader', Autoloader::EVENT_AUTOLOAD, array($this, 'autoload'));
 
 
@@ -90,7 +98,7 @@ final class ComponentManager extends BaseComponent {
 	{
 		if(class_exists('AdminInterface\\AdminInterface'))
 		{
-			$this->addEventListenerTo('AdminInterface\\AdminInterface', ADMIN_COLLECT_SETTINGS_PAGES, 'setupAdminPages');
+			$this->addEventListenerTo('AdminInterface\\AdminInterface', 'ADMIN_COLLECT_SETTINGS_PAGES', 'setupAdminPages');
 		}
 	}
 
@@ -218,7 +226,7 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function loadComponents() {
 		if (empty($this->_installedClasses)) {
-			$this->installComponents($this->_availableClasses);
+			$this->installComponents($this->_installList);
 		}
 		
 		$this->parseComponentDir(COMPROOT);
