@@ -174,6 +174,23 @@ class Test_EventDispatcher extends Test_BaseTest {
         $this->assertEquals(1, $this->calls);
     }
 
+		/**
+		 * Test the getEvents method
+		 * @param void
+		 * @return void
+		 * @group all
+		 * @covers Cumula\EventDispatcher::getEvents
+		 **/
+		public function testGetEvents() 
+		{
+			$eventsBefore = count($this->eventDispatcher->getEvents());
+
+			$this->eventDispatcher->addEventListenerTo(get_class($this->eventDispatcher), 'testGetEvents', function() {});
+			
+			$eventsAfter = count($this->eventDispatcher->getEvents());
+			$this->assertGreaterThan($eventsBefore, $eventsAfter);
+		} // end function testGetEvents
+
     /**
      * HELPER METHODS |helpers
      */

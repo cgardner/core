@@ -96,6 +96,7 @@ class Test_YamlDataStore extends Test_BaseTest {
      * @covers YAMLDataStore\YAMLDataStore::update
      * @covers YAMLDataStore\YAMLDataStore::_save
      * @covers YAMLDataStore\YAMLDataStore::_dataStoreFile
+		 * @covers YAMLDataStore\YAMLDataStore::_createOrUpdate
      * @dataProvider createDataProvider
      **/
     public function testCreate($method) {
@@ -148,11 +149,10 @@ class Test_YamlDataStore extends Test_BaseTest {
 
         $deleteMe = $data1;
         for ($i = 0; $i < 2; $i++) {
-            $this->dataStore->destroy($deleteMe->key);
+            $this->dataStore->destroy($deleteMe);
             $contents = file($this->getDataStoreFile());
             if (is_object($deleteMe)) {
-                // Check the array
-								$this->assertContains(sprintf("%s: %s\n", $deleteMe->key, $deleteMe->value), $contents);
+							$this->assertFalse($this->dataStore->recordExists($deleteMe->key));
             }
             else {
                 // Check the string 
@@ -164,7 +164,7 @@ class Test_YamlDataStore extends Test_BaseTest {
                     }
                 }
                 $this->assertTrue($foundFlag);
-                $deleteMe = $data2;
+                $deleteMe = $data2->key;
             }
         }
     } // end function testDestroy
