@@ -48,7 +48,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 			if(!isset($obj->$field))
 				continue;
 			$keys[] = $field;
-			$values[] = is_numeric($obj->$field) ? $obj->$field : "'".$this->_db->escapeString($obj->$field)."'";
+			$values[] = is_numeric($obj->$field) ? $obj->$field : $this->escapeString($obj->$field);
 		}
 		$sql .= "(".implode(',', $keys).")";
 		$sql .= "VALUES (".implode(',', $values).");";
@@ -88,7 +88,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 		$fields = array();
 		foreach($this->_schema->getFields() as $field => $args) {
 			if(property_exists($obj, $field)) {
-				$fields[] = " $field=" . (is_numeric($obj->$field) ? $obj->$field : "'".$this->_db->escapeString($obj->$field)."'");
+				$fields[] = " $field=" . (is_numeric($obj->$field) ? $obj->$field : $this->escapeString($obj->$field));
 			}
 		}
 		$sql .= implode(", ", $fields);
@@ -139,9 +139,9 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 		if (is_numeric($args)) {
 			$sql .= "{$this->_schema->getIdField()}=$args";
 		} else if (is_array($args)) {
-			$conditions = array();
+			$conditions = array( '1' => '1');
 			foreach($args as $key => $val) {
-				$conditions[] = " ".$key."=" . (is_numeric($val) ? $val : "'".$this->_db->escapeString($val)."'");
+				$conditions[] = " ".$key."=" . (is_numeric($val) ? $val : $this->escapeString($val));
 			}
 			$sql .= implode(' AND ', $conditions);
 		} else {

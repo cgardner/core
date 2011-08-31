@@ -17,6 +17,9 @@ require_once dirname(__FILE__) . '/constants.inc';
 require_once dirname(__FILE__) . '/inflect.php';
 require_once dirname(__FILE__) . '/utils.php';
 
+// Load Exceptions
+require_once dirname(__FILE__) . '/../classes/Exception/DataStoreException.class.php';
+
 //Load interfaces
 require_once dirname(__FILE__) . '/../interfaces/CumulaSchema.interface.php';
 require_once dirname(__FILE__) . '/../interfaces/CumulaConfig.interface.php';
