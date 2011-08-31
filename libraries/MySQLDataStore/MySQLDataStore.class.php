@@ -133,7 +133,8 @@ class MySQLDataStore extends PDODataStore
 			$values[] = is_numeric($obj->$field) ? $obj->$field : $this->escapeString($obj->$field);
 		}
 		$sql = sprintf('INSERT INTO %s (%s) VALUES (%s)', $schemaName, implode(', ', $keys), implode(', ', $values));
-		return $this->doExec($sql);
+		$this->doExec($sql);
+		return $this->lastRowId();
 	}
 
 	/**
@@ -150,13 +151,14 @@ class MySQLDataStore extends PDODataStore
 
 		foreach ($schema->getFields() as $name => $field) 
 		{
-			if ($name !== $schemaId) {
+			if ($name !== $schemaId && isset($obj->$name)) {
 				$updates[] = sprintf('%s = %s', $name, $this->escapeString($obj->$name));
 			}
 		}
 		
 		$query = sprintf('UPDATE %s SET %s WHERE %s = %s', $schema->getName(), implode(', ', $updates), $schemaId, $this->escapeString($obj->$schemaId));
-		return $this->doExec($query);
+		$this->doExec($query);
+		return $obj->$schemaId;
 	} // end function update
 
 
@@ -181,11 +183,11 @@ class MySQLDataStore extends PDODataStore
 
 		if ($performUpdate) 
 		{
-			$this->update($obj);
+			return $this->update($obj);
 		}
 		else 
 		{
-			$this->create($obj);
+			return $this->create($obj);
 		}
 	} // end function createOrUpdate
 
