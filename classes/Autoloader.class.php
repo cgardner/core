@@ -101,6 +101,7 @@ class Autoloader extends EventDispatcher
 			'Cumula\\BaseMVCModel' => $dir .'/BaseMVCModel.class.php',
 			'Cumula\\SystemConfig' => $dir .'/SystemConfig.class.php',
 			'Cumula\\BaseSchema' => $dir .'/BaseSchema.class.php',
+			'Cumula\\Renderer' => $dir .'/Renderer.class.php',
 
 			// Exceptions
 			'Cumula\\EventException' => $dir .'/Exception/EventException.class.php',
@@ -266,7 +267,7 @@ class Autoloader extends EventDispatcher
 	 * @return void
 	 * @author Craig Gardner <craig@seabourneconsulting.com>
 	 **/
-	public static function setInstance(Autoloader $arg0) 
+	public static function setInstance($arg0) 
 	{
 		self::$instance = $arg0;
 		return $arg0;
