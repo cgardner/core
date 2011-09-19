@@ -251,14 +251,14 @@ abstract class BaseMVCController extends EventDispatcher {
 		if(($response = Response::getInstance()) && ($app = Application::getInstance())) {
 			$response->response['content'] = $output;
 			$response->response['headers']['Content-Type'] = $contentType;
-			$app->removeEventListener(BOOT_POSTPROCESS, array(Templater::getInstance(), 'render'));
+			$app->removeEventListener('boot_postprocess', array(Templater::getInstance(), 'render'));
 		}
 	}
 	
 	protected function renderNothing() {
 		if($app = Application::getInstance()) {
 			$response->response['content'] = '';
-			$app->removeEventListener(BOOT_POSTPROCESS, array(Templater::getInstance(), 'render'));
+			$app->removeEventListener('boot_postprocess', array(Templater::getInstance(), 'render'));
 		}
 	}
 	
