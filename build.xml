@@ -14,8 +14,32 @@
         <mkdir dir="${coverage.reportdir}" />
     </target>
 
+		<target name="test.one" depends="test.prepare" description="Run a single test class">
+			<propertyprompt propertyName="test.tmpclass" defaultValue="" promptText="Which Class would you like to run?" />
+			<phingCall target="test.execute">
+				<property name="test.class" value="${test.tmpclass}.Test" />
+				<property name="test.coverage" value="false" />
+			</phingCall>
+		</target>
+
+		<target name="test.execute" description="Execute unit tests">
+			<!-- Run the automated tests -->
+			<phpunit haltonerror="false" haltonfailure="false" codecoverage="${test.coverage}"
+					haltonskipped="false" bootstrap="${project.basedir}/test/bootstrap.php">
+					<formatter type="xml" usefile="true" todir="${tests.reportdir}" />
+					<formatter type="plain" usefile="false" />
+					<batchtest name="Cumula Automated Tests">
+							<fileset dir="${project.basedir}/test">
+									<include name="**/${test.class}.php" />
+									<exclude name="base/*.php" />
+									<exclude name="bootstrap.php" />
+							</fileset>
+					</batchtest>
+			</phpunit>
+		</target>
+
     <!-- Perform Automated Tests -->
-    <target name="test" depends="test.prepare" description="Run the Automated Tests">
+    <target name="test" depends="test.prepare" description="Run the Automated Tests and generate reports">
         <!-- Prepare the coverage report -->
         <coverage-setup database="${coverage.db}">
             <fileset dir="${project.basedir}">
@@ -32,19 +56,10 @@
             </fileset>
         </coverage-setup>
 
-        <!-- Run the automated tests -->
-        <phpunit haltonerror="false" haltonfailure="false" codecoverage="true"
-            haltonskipped="false" bootstrap="${project.basedir}/test/bootstrap.php">
-            <formatter type="xml" usefile="true" todir="${tests.reportdir}" />
-            <formatter type="plain" usefile="false" />
-            <batchtest name="Cumula Automated Tests">
-                <fileset dir="${project.basedir}/test">
-                    <include name="**/*.php" />
-                    <exclude name="base/*.php" />
-                    <exclude name="bootstrap.php" />
-                </fileset>
-            </batchtest>
-        </phpunit>
+				<phingCall target="test.execute">
+					<property name="test.coverage" value="true" />
+					<property name="test.class" value="*" />
+				</phingCall>
 
         <!-- Build the report -->
         <phpunitreport infile="${tests.reportdir}/testsuites.xml" todir="${tests.reportdir}" />
