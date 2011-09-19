@@ -38,8 +38,27 @@ class Test_BaseTest extends PHPUnit_Framework_TestCase {
      **/
     public function setUp() {
 			$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-      
+			$this->setupVfs();
     } // end function setUp
+
+		/**
+		 * Setup VFS Filestructure
+		 * @param void
+		 * @return void
+		 **/
+		private function setupVfs() 
+		{
+			vfsStream::setup('app');
+
+			$structure = array(
+				'app' => array(
+					'config' => array(),
+					'cache' => array(),
+				),
+			);
+
+			vfsStream::create($structure);
+		} // end function setupVfs
 
     /**
      * tearDown
