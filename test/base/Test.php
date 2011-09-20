@@ -58,6 +58,11 @@ class Test_BaseTest extends PHPUnit_Framework_TestCase {
 			);
 
 			vfsStream::create($structure);
+
+			defined('APPROOT') ||
+				define('APPROOT', vfsStream::url('app'));
+			defined('CONFIGROOT') ||
+				define('CONFIGROOT', vfsStream::url('app/config'));
 		} // end function setupVfs
 
     /**

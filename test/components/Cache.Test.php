@@ -17,10 +17,6 @@ class Test_Cache extends Test_BaseTest
 	public function setUp() 
 	{
 		parent::setUp();
-		defined('APPROOT') ||
-			define('APPROOT', vfsStream::url('app'));
-		defined('CONFIGROOT') ||
-			define('CONFIGROOT', vfsStream::url('app/config'));
 		\Cache\Cache::getInstance()->startup();
 	} // end function setUp
 
