@@ -42,9 +42,8 @@ class Test_BaseComponent extends Test_BaseTest {
 			defined('ROOT') || 
 					define('ROOT', dirname(BASE_DIR));
 
-			vfsStream::setup('componentConfig');
 			defined('CONFIGROOT') ||
-				define('CONFIGROOT', vfsStream::url('componentConfig'));
+				define('CONFIGROOT', vfsStream::url('app/config'));
 
 			$this->component = new TestBaseComponent();
     } // end function setUp
