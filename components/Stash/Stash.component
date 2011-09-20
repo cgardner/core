@@ -17,7 +17,7 @@ class Stash extends \Cumula\BaseComponent
 	 * Debug Constant
 	 * @var Boolean
 	 **/
-	const DEBUG = TRUE;
+	const DEBUG = FALSE;
 
 	/**
 	 * Table of stashes and the callbacks to call to get the stash
@@ -220,14 +220,13 @@ class Stash extends \Cumula\BaseComponent
 		}
 		else 
 		{
-			if ( $parts['scheme'] != "http" && $parts['scheme'] != "https" && $parts['scheme'] != "ftp" && $parts['scheme'] != "gopher" ) {
-
+			if (!isset($parts['scheme']) || ($parts['scheme'] != "http" && $parts['scheme'] != "https" && $parts['scheme'] != "ftp" && $parts['scheme'] != "gopher" )) {
 				if (self::DEBUG) {
 					var_dump('wrong scheme');
 				}
 			 	return FALSE;
 			}
-			else if ( !preg_match( "@^[0-9a-zA-Z]([-.]?[0-9a-zA-Z])*.[a-zA-Z]{2,4}$@", $parts['host'], $regs)) 
+			else if (!isset($parts['host']) || !preg_match( "@^[0-9a-zA-Z]([-.]?[0-9a-zA-Z])*.[a-zA-Z]{2,4}$@", $parts['host'], $regs)) 
 			{
 				if (self::DEBUG) {
 					var_dump('first preg_match');
