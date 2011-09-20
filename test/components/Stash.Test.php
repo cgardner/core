@@ -71,9 +71,13 @@ class Test_Stash extends Test_BaseTest
 			'google' => array('http://www.google.com', TRUE),
 			'cumula' => array('http://www.cumula.org', TRUE),
 			'unidiq' => array(uniqid('badurl_'), FALSE),
+			'badhost' => array(uniqid('http://www.') .'~.com', FALSE),
+			'baduser' => array('http://user~@localhost', FALSE),
+			'badpass' => array('http://user:pass~@localhost', FALSE),
+			'badpath' => array('http://localhost/%', FALSE),
+			'badquery' => array('http://localhost/?;='. uniqid(), FALSE),
 		);
 	} // end function isUrlDataProvider
-
 
 	/**
 	 * Test the get/set/addStashTable methods
