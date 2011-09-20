@@ -210,9 +210,7 @@ class Test_YamlDataStore extends Test_BaseTest {
 	public function testQuery() {
 		$data = $this->getData();
 		$this->dataStore->create($data);
-
-		$this->assertEquals($data->value, $this->dataStore->query($data->key));
-
+		$this->assertEquals($data->value, $this->dataStore->query(array('key' => $data->key)));
 		$this->assertNull($this->dataStore->query('doesNotExist'));
 	} // end function testQuery
 
