@@ -61,6 +61,22 @@ class Test_Stash extends Test_BaseTest
 	} // end function testIsUrl
 
 	/**
+	 * Test the get/set/addStashTable methods
+	 * @param void
+	 * @return void
+	 * @group all
+	 **/
+	public function testStashTableMethods() 
+	{
+		$stashName = uniqid('stash_');
+		$stashUrl = sprintf('http://www.cumula.org/?_=%s', $stashName);
+		$this->component->addStash($stashName, $stashUrl);
+
+		$fetchedStash = $this->component->stashExists($stashName);
+		$this->assertEquals($fetchedStash['url'], $stashUrl);
+	} // end function testStashTableMethods
+
+	/**
 	 * Data Provider for testIsUrl()
 	 * @param void
 	 * @return void
@@ -78,19 +94,4 @@ class Test_Stash extends Test_BaseTest
 			'badquery' => array('http://localhost/?;='. uniqid(), FALSE),
 		);
 	} // end function isUrlDataProvider
-
-	/**
-	 * Test the get/set/addStashTable methods
-	 * @param void
-	 * @return void
-	 * @group all
-	 **/
-	public function testStashTableMethods() 
-	{
-		$stashName = uniqid('stash_');
-		$stashUrl = sprintf('http://www.cumula.org/?_=%s', $stashName);
-		$this->component->addStash($stashName, $stashUrl);
-
-		$this->assertEquals($this->component->stashExists($stashName), $stashUrl);
-	} // end function testStashTableMethods
 } // end class Test_Stash extends Test_BaseTest
