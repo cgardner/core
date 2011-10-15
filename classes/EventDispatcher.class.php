@@ -200,6 +200,25 @@ class EventDispatcher {
 		}
 	}
 	
+	public function getEventListeners($event) {
+		$class = __CLASS__;
+		$calledClass = get_called_class();
+		$eventHash = $class::getEventHash();
+		if (isset($eventHash[$calledClass][$event]))
+			return $eventHash[$calledClass][$event];
+		else
+			return false;
+	}
+	
+	public function removeEventListeners($event) {
+		$class = __CLASS__;
+		$calledClass = get_called_class();
+		$eventHash = $class::getEventHash();
+		if (isset($eventHash[$calledClass][$event])) {
+			$eventHash[$calledClass][$event] = array();
+		}
+	}
+	
 	/**
 	 * Dispatches an event.  Data must be an array of variables that will be passed to any registered event handler.
 	 * 
