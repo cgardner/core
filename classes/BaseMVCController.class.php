@@ -353,7 +353,7 @@ abstract class BaseMVCController extends EventDispatcher {
 		$this->_alerts['messages'][] = $message;
 	}
 	
-	public function dispatch($event, $data = array()) {
+	public function dispatch($event, $data = array(), $callback = false) {
 		$this->component->dispatch($event, $data);
 	}
 }
