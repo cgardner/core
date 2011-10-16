@@ -123,6 +123,10 @@ class Devel extends BaseComponent {
 		$classInstance = get_class($instance);
 		$handlerClass = FALSE;
 
+		if(is_array($handler) && isset($handler[1]) && $handler[1] == 'logEventDispatch') {
+			return false;
+		}
+
 		// Default Message
 		$string = sprintf('%s dispatched by %s', $event_dispatched, $classInstance);
 

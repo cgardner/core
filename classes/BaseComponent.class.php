@@ -115,7 +115,7 @@ abstract class BaseComponent extends EventDispatcher {
 		$timestamp = date("r");
 		$message = "$timestamp $className: $message";
 		$args = array($logLevel, $message, $other_args);
-		$this->dispatch('message_logged', $args);
+		$this->dispatch('event_logged', $args);
 	}
 	
 

@@ -224,26 +224,36 @@ class EventDispatcher {
 	 * 
 	 * @param	string	The event to dispatch
 	 * @param	array 	An optional array or arguments to pass to the Event Listeners
+	 * @param	callable	An optional callback that the return is passed to
 	 */
-	public function dispatch($event, $data = array()) 
+	public function dispatch($event, $data = array(), $callback = false) 
 	{
 		if (($listeners = self::eventHashExists($event)) !== FALSE)
 		{
+			//if $callback is a string, wrap it as a callable array with $this
+			if(is_string($callback))
+				$callback = array($this, $callback);
+			
 			array_unshift($data, $event, $this);
 
 			global $level;
-			if ($event != 'eventdispatcher_event_dispatched')
+			
+			// Flag to determine whether to dispatch the before and after events
+			$fireBeforeAndAfter = (stripos($event, 'before_') === FALSE) && (stripos($event, 'after_') === FALSE);
+						
+			if ($event != 'eventdispatcher_event_dispatched' && $fireBeforeAndAfter)
 			{
 				$level++;
 			}
-
-			// Flag to determine whether to dispatch the before and after events
-			$fireBeforeAndAfter = (stripos($event, 'before_') === FALSE) && (stripos($event, 'after_') === FALSE);
-			if ($fireBeforeAndAfter)
+			
+			$beforeEvent = sprintf('before_%s', $event);
+			
+			if ($fireBeforeAndAfter && $this->getEventListeners($beforeEvent))
 			{
-				$beforeEvent = sprintf('before_%s', $event);
 				$this->dispatch($beforeEvent, $data);
 			}
+			
+			
 
 			//For each listener call the handler function	
 			foreach ($listeners as $event_handler) 
@@ -251,18 +261,22 @@ class EventDispatcher {
 				//Fire of an EVENT_DISPATCHED event if there are active listeners
 				if ($event != 'eventdispatcher_event_dispatched') 
 				{	
-					$this->dispatch('eventdispatcher_event_dispatched', array($event, $this, $event_handler, $level));
+					$this->dispatch('eventdispatcher_event_dispatched', array($event, $this, $event_handler, $level), $callback);
 				}
-				call_user_func_array($event_handler, $data);
+				if($callback)
+					call_user_func($callback, call_user_func_array($event_handler, $data));
+				else
+					call_user_func_array($event_handler, $data);
 			}
 
-			if ($fireBeforeAndAfter)
+			$afterEvent = sprintf('after_%s', $event);
+
+			if ($fireBeforeAndAfter && $this->getEventListeners($afterEvent))
 			{
-				$afterEvent = sprintf('after_%s', $event);
 				$this->dispatch($afterEvent, $data);
 			}
 
-			if ($event != 'eventdispatcher_event_dispatched')
+			if ($event != 'eventdispatcher_event_dispatched' && $fireBeforeAndAfter)
 			{
 				$level--;
 			}
