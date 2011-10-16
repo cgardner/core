@@ -45,6 +45,7 @@ class YAMLDataStore extends \Cumula\BaseDataStore {
 		$this->_storage = array();
 		$this->_sourceDirectory = $configValues['source_directory'];
 		$this->_filename = $configValues['filename'];
+		$this->connect();
 	}
 	
 	/* (non-PHPdoc)
@@ -81,7 +82,7 @@ class YAMLDataStore extends \Cumula\BaseDataStore {
 			unset($obj->$idField);
 			$this->_storage[$key] = $obj;
 		}
-		$this->_save();
+		return $this->_save();
 	}
 	
 	/* (non-PHPdoc)
@@ -98,7 +99,7 @@ class YAMLDataStore extends \Cumula\BaseDataStore {
 	 * @return unknown_type
 	 */
 	public function createOrUpdate($obj) {
-		$this->_createOrUpdate($obj);
+		return $this->_createOrUpdate($obj);
 	}
 	
 	/* (non-PHPdoc)
@@ -122,6 +123,10 @@ class YAMLDataStore extends \Cumula\BaseDataStore {
 	 * @see core/interfaces/DataStore#query($args, $order, $limit)
 	 */
 	public function query($args, $order = null, $limit = null) {
+		$idField = $this->getSchema()->getIdField();
+		if (isset($args[$idField])) {
+			$args = $args[$idField];
+		}
 		if ($this->recordExists($args)) {
 			$obj = $this->_storage[$args];
 		} else {
@@ -133,6 +138,11 @@ class YAMLDataStore extends \Cumula\BaseDataStore {
 	public function recordExists($id) {
 		if(!isset($this->_storage))
 			return false;
+
+		$idField = $this->getSchema()->getIdField();
+		if (is_array($id) && isset($id[$idField])) {
+			$id = $id[$idField];
+		}
 		return array_key_exists($id, $this->_storage);
 	}
 	
@@ -144,7 +154,7 @@ class YAMLDataStore extends \Cumula\BaseDataStore {
 		if(!empty($this->_storage)) {
 			$dumper = new \sfYamlDumper();
 			$yaml = $dumper->dump($this->_storage, 2);
-			file_put_contents($this->_dataStoreFile(), $yaml);
+			return file_put_contents($this->_dataStoreFile(), $yaml);
 		}
 	}
 	
@@ -177,7 +187,6 @@ class YAMLDataStore extends \Cumula\BaseDataStore {
 		if (file_exists($this->_dataStoreFile())) {
 			$yaml = new \sfYamlParser();
 			$this->_storage = $yaml->parse(file_get_contents($this->_dataStoreFile()));
-			//$this->_storage = Spyc::YAMLLoadString(file_get_contents($this->_dataStoreFile()));
 			return true;
 		} else {
 			return false;
