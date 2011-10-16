@@ -124,7 +124,7 @@ final class Application extends EventDispatcher {
 	public function __construct($startupCallback = null, $paths = null) {
 		$this->_setupConstants($paths);
 		$this->_setupBootstrap();
-				
+				d
 		parent::__construct();
 		
 		if(is_callable($startupCallback))
@@ -132,6 +132,7 @@ final class Application extends EventDispatcher {
 		
 		$this->boot();
 	}
+
 	
 	private function _setupConstants($paths = array()) {
         // Only define ROOT if it isn't already defined

@@ -14,43 +14,84 @@
         <mkdir dir="${coverage.reportdir}" />
     </target>
 
+		<!-- Execute Unit Tests for a single class -->
+		<target name="test.one" depends="test.prepare" description="Run a single test class">
+			<propertyprompt propertyName="test.tmpclass" defaultValue="" promptText="Which Class would you like to run?" />
+			<propertyprompt propertyName="test.buildreport" defaultValue="n" promptText="Would you like to build a report?" />
+			<phingCall target="test.execute">
+				<property name="test.class" value="${test.tmpclass}.Test" />
+			</phingCall>
+		</target>
+
+		<!-- Execute Unit Tests -->
+		<target name="test.execute" description="Execute unit tests">
+			<fail unless="test.class" msg="No Class available to Test" />
+
+			<if>
+				<and>
+					<not><isset property="test.coverage" /></not>
+					<equals arg1="${test.buildreport}" arg2="y" casesensitive="false" />
+				</and>
+				<then>
+					<property name="test.coverage" value="true" />
+				</then>
+				<else>
+					<property name="test.coverage" value="false" />
+				</else>
+			</if>
+
+			<if>
+				<equals arg1="${test.buildreport}" arg2="y" casesensitive="false" />
+				<then>
+					<!-- Prepare the coverage report -->
+					<coverage-setup database="${coverage.db}">
+							<fileset dir="${project.basedir}">
+									<include name="**/*.php" />
+									<include name="**/*.inc" />
+									<include name="**/*.component" />
+									<exclude name="interfaces/*" />
+									<exclude name="**/templates/*" />
+									<exclude name="test/**/*" />
+									<exclude name="**/views/**/*.php" />
+									<exclude name="**/template/*" />
+									<exclude name="**/components/**/libraries/**" />
+							</fileset>
+					</coverage-setup>
+				</then>
+			</if>
+			<!-- Run the automated tests -->
+			<phpunit haltonerror="false" haltonfailure="false" codecoverage="${test.coverage}"
+					haltonskipped="false" bootstrap="${project.basedir}/test/bootstrap.php">
+					<formatter type="xml" usefile="true" todir="${tests.reportdir}" />
+					<formatter type="plain" usefile="false" />
+					<batchtest name="Cumula Automated Tests">
+							<fileset dir="${project.basedir}/test">
+									<include name="**/${test.class}.php" />
+									<exclude name="base/*.php" />
+									<exclude name="bootstrap.php" />
+							</fileset>
+					</batchtest>
+			</phpunit>
+
+			<if>
+				<equals arg1="${test.buildreport}" arg2="y" casesensitive="false" />
+				<then>
+					<!-- Build the report -->
+					<phpunitreport infile="${tests.reportdir}/testsuites.xml" todir="${tests.reportdir}" />
+					<coverage-report outfile="${coverage.reportdir}/coverage.xml">
+							<report todir="${coverage.reportdir}" />
+					</coverage-report>
+				</then>
+			</if>
+		</target>
+
     <!-- Perform Automated Tests -->
-    <target name="test" depends="test.prepare" description="Run the Automated Tests">
-        <!-- Prepare the coverage report -->
-        <coverage-setup database="${coverage.db}">
-            <fileset dir="${project.basedir}">
-                <include name="**/*.php" />
-                <include name="**/*.inc" />
-                <include name="**/*.component" />
-                <exclude name="**/events.inc" />
-                <exclude name="interfaces/*" />
-                <exclude name="**/templates/*" />
-                <exclude name="test/**/*" />
-                <exclude name="**/views/**/*.php" />
-                <exclude name="**/template/*" />
-                <exclude name="components/**/libraries/**" />
-            </fileset>
-        </coverage-setup>
-
-        <!-- Run the automated tests -->
-        <phpunit haltonerror="false" haltonfailure="false" codecoverage="true"
-            haltonskipped="false" bootstrap="${project.basedir}/test/bootstrap.php">
-            <formatter type="xml" usefile="true" todir="${tests.reportdir}" />
-            <formatter type="plain" usefile="false" />
-            <batchtest name="Cumula Automated Tests">
-                <fileset dir="${project.basedir}/test">
-                    <include name="**/*.php" />
-                    <exclude name="base/*.php" />
-                    <exclude name="bootstrap.php" />
-                </fileset>
-            </batchtest>
-        </phpunit>
-
-        <!-- Build the report -->
-        <phpunitreport infile="${tests.reportdir}/testsuites.xml" todir="${tests.reportdir}" />
-        <coverage-report outfile="${coverage.reportdir}/coverage.xml">
-            <report todir="${coverage.reportdir}" />
-        </coverage-report>
+    <target name="test" depends="test.prepare" description="Run the Automated Tests and generate reports">
+				<phingCall target="test.execute">
+					<property name="test.coverage" value="true" />
+					<property name="test.class" value="*" />
+					<property name="test.buildreport" value="y" />
+				</phingCall>
     </target>
 
 		<target name="app.clean.all" depends="app.clean.prompt, app.clean.data, app.clean.config" 

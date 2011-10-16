@@ -115,15 +115,8 @@ class Templater extends BaseComponent implements CumulaTemplater {
 	public function renderTemplate($event, $dispatcher, $args) {
 		$args = $this->_processArgs($args);
 		$fileName = $this->_template_dir.DIRECTORY_SEPARATOR.$this->_template_file;
-		
-		extract($args, EXTR_OVERWRITE);
-		$title = $this->_title;
-		ob_start();
-			include $fileName;
-			$contents = ob_get_contents();
-		ob_end_clean();
-		$this->setOutput($contents);
-		return;
+		$args['title'] = $this->_title;
+		$this->setOutput(\Cumula\Renderer::renderFile($fileName, $args));
 	}
 	
 	protected function _processArgs($args) {

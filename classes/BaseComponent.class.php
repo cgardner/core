@@ -357,7 +357,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function defaultDataStore() {
-		return SystemConfig::getInstance()->getValue(SETTING_DEFAULT_DATASTORE);
+		return SystemConfig::getInstance()->getValue('default_datastore', 'YAMLDataStore\\YAMLDataStore');
 	}
 	
 	public function linkTo($title, $url, $args = array()) {

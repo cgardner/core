@@ -100,20 +100,26 @@ class Router extends BaseComponent {
 
 		//Trim off trailing slash
 		if(substr($path, strlen($path)-1, strlen($path)) == '/')
+		{
 			$path = substr($path, 0, strlen($path)-1);
+		}
 			
 		//Generate array of url segments
 		$segments = explode('/', $path);
 		//Iterate through passed routes
-		foreach($this->getEvents() as $route => $handlers) {
-			if($route == '/' && ($path == '/' || $path == '')) {
+		foreach ($this->getEvents() as $route => $handlers) 
+		{
+			if ($route == '/' && ($path == '/' || $path == '')) 
+			{
 				$return_handlers[$route] = array();
 				return $return_handlers;
 			}
 			
 			//Check if the event is a route, if not continue
 			if(substr($route, 0, 1) != '/')
-			continue;
+			{
+				continue;
+			}
 
 			//Extract route segemtns
 			$route_segments = explode('/', substr($route, 1, strlen($route)));
@@ -121,35 +127,42 @@ class Router extends BaseComponent {
 			$args = array();
 
 			if(count($segments) != count($route_segments))
+			{
 				continue;
+			}
 
 			//Iterate through all URL segments
-			for($i = 0; $i < count($segments); $i++) {
-				$segment = $segments[$i];
+			foreach($segments as $i => $segment)
+			{
 				$route_segment = $i < count($route_segments) ? $route_segments[$i] : false;
 
 				//If the route is shorter than the url, go to next route
-				if(!$route_segment) {
+				if(!$route_segment) 
+				{
 					$match = false;
 					break;
 				}
 
-
-
 				//Route segment is a variable, save for parsing
-				if(substr($route_segment, 0, 1) == '$') {
+				if(substr($route_segment, 0, 1) == '$') 
+				{
 					$args[substr($route_segment, 1, strlen($route_segment))] = $segment;
 					$match = true;
-				} else if($route_segment == $segment) {
+				} 
+				else if($route_segment == $segment) 
+				{
 					//Route segment and segment match, go to next iterator
 					$match = true;
-				} else {
+				} 
+				else 
+				{
 					$match = false;
 					break;
 				}
 
 				//If route is wildcard the rest of the url will match
-				if($route_segment == '*') {
+				if($route_segment == '*') 
+				{
 					$match = true;
 					break;
 				}

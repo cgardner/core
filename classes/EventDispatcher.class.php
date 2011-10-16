@@ -300,6 +300,20 @@ class EventDispatcher {
 		$eventHash = $class::getEventHash();
 		return isset($eventHash[$calledClass]) ? $eventHash[$calledClass] : FALSE;
 	} // end function getEvents
+	
+	public function eventIsRegistered($event) {
+		$class = __CLASS__;
+		$calledClass = get_called_class();
+		$eventHash = $class::getEventHash();
+		return (isset($eventHash[$calledClass]) && isset($eventHash[$calledClass][$event]));
+	}
+	
+	public function getEventListeners($event) {
+		$class = __CLASS__;
+		$calledClass = get_called_class();
+		$eventHash = $class::getEventHash();
+		return (isset($eventHash[$calledClass]) && isset($eventHash[$calledClass][$event])) ? $eventHash[$calledClass][$event] : FALSE;
+	}
 	/**
 	 * Get an Instance of a class
 	 * @param string $className Relative name of the class you're looking for

@@ -20,7 +20,7 @@ class UserManager extends BaseComponent {
 		$this->_userStore = new \SqliteDataStore\SqliteDataStore($schema, array('source_directory' => DATAROOT, 'filename' => 'user_store'));
 	}
 	
-	public function startup($route, $dispatcher) {
+	public function startup() {
 		$this->addEventListenerTo('Application', 'boot_preprocess', 'checkRoutes');
 		$this->addEventListenerTo('Router', 'router_collect_routes', 'sendRoutes');
 		$this->_userStore->connect();
