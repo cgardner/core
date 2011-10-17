@@ -33,8 +33,13 @@ class Logger extends BaseComponent {
 	/**
 	 * @return unknown_type
 	 */
+	
+	protected $_registered;
+	
 	public function __construct() {
 		parent::__construct();
+		$this->_registered = array();
+		
 		$log_dir = SystemConfig::getInstance()->getValue('log_directory', APPROOT.'/log');
 		$log_file = SystemConfig::getInstance()->getValue('environment', ENV_DEVELOPMENT).'.log';
 		$this->syslog = SystemConfig::getInstance()->getValue('syslog', FALSE);
@@ -42,17 +47,16 @@ class Logger extends BaseComponent {
 			mkdir($log_dir);
 		$schema = new SimpleSchema(array('id' => 'string'), 'id', 'log');
 		$this->dataStore = new WriteOnlyTextDataStore($schema, array('logfile' => $log_dir .'/'.$log_file));
-		
+		$this->addEventListenerTo('Application', 'event_dispatcher_created', 'registerForEvents');
 	}
 	
-	public function startup() {
+	public function registerForEvents($event, $dispatcher, $comp) {
+		$this->addEventListenerTo($comp, 'event_logged', 'logMessage');
+	}
+	
+	public function install() {
 		$cm = ComponentManager::getInstance();
-		if($cm) {
-			$comps = $cm->getEnabledComponents();
-			foreach($comps as $comp) {
-				$this->addEventListenerTo($comp, 'event_logged', 'logMessage');
-			}
-		}
+		$cm->registerStartupComponent($this);
 	}
 	
 	/**

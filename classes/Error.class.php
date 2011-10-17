@@ -41,7 +41,7 @@ class Error extends EventDispatcher {
 		}
 	}
 	
-	public static function handleException($exception) {
+	public static function handleException($e) {
 		$instance = static::getInstance();
 		if($instance && count($instance->getEventListeners('error_encountered'))) {
 			$instance->dispatch('error_encountered', array($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine()));
@@ -49,7 +49,7 @@ class Error extends EventDispatcher {
 		}	
 		
 		static::processError($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());
-		if ($error AND in_array($error, static::$exit_on)) {
+		if ($e->getCode() AND in_array($e->getCode(), static::$exit_on)) {
 			static::$handled = true;
 			exit;
 		}

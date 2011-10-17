@@ -188,6 +188,7 @@ final class Application extends EventDispatcher {
 	 * Initializes the boot process by adding the individual steps as events
 	 */
 	private function _setupBootstrap() {
+		//$this->addEvent('event_dispatcher_created');
 		foreach($this->bootProcess as $step) {
 			$this->addEvent($step);
 		}

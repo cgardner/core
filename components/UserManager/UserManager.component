@@ -48,6 +48,7 @@ class UserManager extends BaseComponent {
 		$this->dispatch('register_auth_domain');
 		$domain = $this->_parseRoutes($request);
 		if($domain) {
+			$this->_logInfo('setting domain to '.$domain);
 			if($app = \Cumula\Application::getInstance()) {
 				$router = \Cumula\Router::getInstance();
 				$app->removeEventListener('boot_process', array($router, 'processRoute'));
@@ -127,6 +128,8 @@ class UserManager extends BaseComponent {
 		
 		//Trim off forward slash
 		$path = substr($request->path, 1, strlen($request->path));
+
+		$this->_logInfo("path is ".$path);
 
 		//Trim off trailing slash
 		if(substr($path, strlen($path)-1, strlen($path)) == '/')

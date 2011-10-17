@@ -8,8 +8,8 @@ class Session extends BaseComponent {
 		parent::__construct();
 	
 		//Add  listener to app BOOT_INIT event
-		$this->addEventListenerTo('Application', 'boot_init', array($this, 'startSession'));
-		$this->addEventListenerTo('Application', 'boot_shutdown', array($this, 'clearFlash'));
+		$this->addEventListenerTo('Application', 'boot_init', 'startSession');
+		$this->addEventListenerTo('Application', 'boot_shutdown', 'clearFlash');
 	}
 	
 	public function clearFlash() {
@@ -22,6 +22,7 @@ class Session extends BaseComponent {
 	public function startSession() {
 		//session_name($this->_composeName());
 		session_start();
+		$this->_logInfo("session is ", $_SESSION);
 	}
   
 	public function endSession() {

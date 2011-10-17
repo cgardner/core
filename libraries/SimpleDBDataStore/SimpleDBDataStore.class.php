@@ -18,7 +18,7 @@ class SimpleDBDataStore extends BaseDataStore {
 			throw new Exception("Must have an access key and a secret key and a domain.");
 			
 		$this->_accessKey = $config['access_key'];
-		$this->_secretKey = $config['secret_key'];	
+		$this->_secretKey = $config['secret_key'];
 	}
 	
 	protected function _setDomain() {
@@ -57,6 +57,7 @@ class SimpleDBDataStore extends BaseDataStore {
 	
 	public function query($args, $order = array(), $limit = array()) {
 		$statement = '';
+			
 		if(count($args) > 0) {
 			$statement = "select * from ".$this->_domain." where ";
 			foreach($args as $key => $value) {
@@ -93,6 +94,7 @@ class SimpleDBDataStore extends BaseDataStore {
 	}
 	
 	public function connect() {
+		$this->_logInfo('connecting lib');
 		if($this->_accessKey && $this->_secretKey) {
 			$this->_service = new \SimpleDB($this->_accessKey, $this->_secretKey);
 			$this->_setDomain();

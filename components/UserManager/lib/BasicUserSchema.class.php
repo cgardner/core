@@ -10,7 +10,7 @@ class BasicUserSchema extends BaseSchema {
 	}
 	
 	public function getFields() {
-		return array('id' => array('type' => 'integer', 'required' => true),
+		return array('id' => array('type' => 'integer', 'autoincrement' => true),
 					'domain' => array('type' => 'string'),
 					'username' => array('type' => 'string'),
 					'password' => array('type' => 'string'));

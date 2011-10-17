@@ -65,10 +65,10 @@ final class ComponentManager extends BaseComponent {
 		// Set listeners for events
 		$this->addEventListener('component_startup_complete', array(&$this, 'startup'));
 
-		$this->addEventListenerTo('Application', 'boot_init', array(&$this, 'loadComponents'));
-		$this->addEventListenerTo('Application', 'boot_startup', array(&$this, 'startupComponents'));
-		$this->addEventListenerTo('Application', 'boot_shutdown', array(&$this, 'shutdown'));
-		$this->addEventListenerTo('Cumula\\Autoloader', 'event_autoload', array($this, 'autoload'));
+		$this->addEventListenerTo('Application', 'boot_init', 'loadComponents');
+		$this->addEventListenerTo('Application', 'boot_startup', 'startupComponents');
+		$this->addEventListenerTo('Application', 'boot_shutdown', 'shutdown');
+		$this->addEventListenerTo('Cumula\\Autoloader', 'event_autoload', 'autoload');
 
 
 		// Initialize config and settings
@@ -200,6 +200,7 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function startStartupComponents()
 	{
+
 		foreach ($this->_startupClasses as $className)
 		{
 			$this->startupComponent($className);

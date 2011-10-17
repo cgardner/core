@@ -50,10 +50,11 @@ class FormHelper extends BaseComponent {
 	
 	public function formCheck($event, $dispatcher, $request, $response) {
 		if(array_key_exists('validate_id', $request->params)) {
+			$this->_logInfo("params is ", $request->params);
 			$id = $request->params['validate_id'];
 			$key = $request->params['validate_value'];
 			//Check id:key is valid and matches saved version
-			$check_key = $this->_dataStore->query($id);
+			$check_key = $this->_dataStore->query(array('id' => $id));
 			//If key is not valid, return 
 			if($key != $check_key) {
 				$response->send405();

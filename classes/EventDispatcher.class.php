@@ -67,6 +67,15 @@ class EventDispatcher {
 		}
 		$this->addEvent('eventdispatcher_event_dispatched');
 		$this->addEvent('event_registered');
+		$this->addEvent('event_logged');
+		$disallow = array("Cumula\\EventDispatcher",
+							"Cumula\\Autoloader",
+							"Cumula\\Application");
+		if(class_exists("\\Cumula\\Application") && !in_array(get_called_class(), $disallow)) {
+			$app = \Cumula\Application::getInstance();
+			if($app)
+				$app->dispatch('event_dispatcher_created', array(get_called_class()));
+		}
 	}
 	
 	/**
@@ -338,6 +347,10 @@ class EventDispatcher {
 		return self::$_instances[$class];
 	}
 	
+	public static function getInstances() {
+		return self::$_instances;
+	}
+	
 	/**
 	 * Sets the instance of a class
 	 * 
@@ -368,4 +381,66 @@ class EventDispatcher {
 	{
 		static::$eventHash = $arg0;
 	} // end function setEventHash()
+	
+		/**********************************************
+	* Logging Functions
+	***********************************************/
+	/**
+	 * @param $message
+	 * @param $args
+	 * @return unknown_type
+	 */
+	protected function _logInfo($message, $args = null) {
+		$this->_logMessage(LOG_LEVEL_INFO, $message, $args);
+	}
+	
+	/**
+	 * @param $message
+	 * @param $args
+	 * @return unknown_type
+	 */
+	protected function _logDebug($message, $args = null) {
+		$this->_logMessage(LOG_LEVEL_DEBUG, $message, $args);
+	}
+
+	/**
+	 * @param $message
+	 * @param $args
+	 * @return unknown_type
+	 */
+	protected function _logError($message, $args = null) {
+		$this->_logMessage(LOG_LEVEL_ERROR, $message, $args);
+	}
+	
+	/**
+	 * @param $message
+	 * @param $args
+	 * @return unknown_type
+	 */
+	protected function _logWarning($message, $args = null) {
+		$this->_logMessage(LOG_LEVEL_WARN, $message, $args);
+	}
+	
+	/**
+	 * @param $message
+	 * @param $args
+	 * @return unknown_type
+	 */
+	protected function _logFatal($message, $args = null) {
+		$this->_logMessage(LOG_LEVEL_FATAL, $message, $args);
+	}
+	
+	/**
+	 * @param $logLevel
+	 * @param $message
+	 * @param $other_args
+	 * @return unknown_type
+	 */
+	protected function _logMessage($logLevel, $message, $other_args = null) {
+		$className = get_called_class();
+		$timestamp = date("r");
+		$message = "$timestamp $className: $message";
+		$args = array($logLevel, $message, $other_args);
+		$this->dispatch('event_logged', $args);
+	}
 }
