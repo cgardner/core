@@ -14,7 +14,7 @@ require_once dirname(__FILE__) . '/constants.inc';
 require_once dirname(__FILE__) . '/inflect.php';
 require_once dirname(__FILE__) . '/utils.php';
 
-require_once(implode(DIRECTORY_SEPARATOR, array(ROOT, 'cumula', 'classes', 'error.class.php')));
+require_once(implode(DIRECTORY_SEPARATOR, array(ROOT, 'cumula', 'classes', 'Error.class.php')));
 
 register_shutdown_function('handle_shutdown');
 set_exception_handler('handle_exception');
