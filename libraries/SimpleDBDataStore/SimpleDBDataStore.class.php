@@ -55,26 +55,41 @@ class SimpleDBDataStore extends BaseDataStore {
 		$this->_service->deleteAttributes($this->_domain, $this->_getIdValue($obj));
 	}
 	
-	public function query($args, $order = array(), $limit = array()) {
+	public function query($args = false, $order = array(), $limit = array()) {
 		$statement = '';
 			
-		if(count($args) > 0) {
-			$statement = "select * from ".$this->_domain." where ";
-			foreach($args as $key => $value) {
-				$statement .= "$key = '$value'";
+		if(is_array($args) || $args == false)	{
+			$statement = "select * from ".$this->_domain;
+			if(is_array($args) && count($args) > 0) {
+				$statement .= " where ";
+				foreach($args as $key => $value) {
+					$statement .= "$key = '$value'";
+				}
+			} 
+			$this->_logInfo("SimpleDB query statement is: ".$statement);
+			$result = $this->_service->select('', $statement);
+			$return = array();
+			foreach($result as $r) {
+				$obj = $this->newObj();
+				foreach($r['Attributes'] as $key => $value) {
+					$obj->$key = $value;
+				}
+				$obj->id = $r['Name'];
+				$return[] = $obj;
 			}
-		} 
-		$result = $this->_service->select('', $statement);
-		$return = array();
-		foreach($result as $r) {
-			$obj = $this->newObj();
-			foreach($r['Attributes'] as $key => $value) {
-				$obj->$key = $value;
+			return $return;
+		} else if (is_string($args)) {
+			$this->_logInfo('getting by id ', $args);
+			//Assume $args is an id and lookup the attribute for the object directly
+			$ret = $this->_service->getAttributes($this->_domain, $args);
+			if($ret) {
+				$this->_logInfo('simple db getAttributes return is', $ret);
+				$ret['id'] = $args;
+				return (object)$ret;
+			} else {
+				return false;
 			}
-			$obj->id = $r['Name'];
-			$return[] = $obj;
 		}
-		return $return;
 	}
 	
 	public function install() {
