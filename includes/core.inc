@@ -13,6 +13,7 @@ require_once dirname(__FILE__) . '/constants.inc';
 //Load utility functions
 require_once dirname(__FILE__) . '/inflect.php';
 require_once dirname(__FILE__) . '/utils.php';
+require_once realpath(dirname(__FILE__) . '/../classes/I.class.php');
 
 require_once(implode(DIRECTORY_SEPARATOR, array(ROOT, 'cumula', 'classes', 'Error.class.php')));
 
