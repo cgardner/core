@@ -50,7 +50,7 @@ class Autoloader extends EventDispatcher
 		// If we don't already know about the class, dispatch the event to find it.
 		if (($classFile = $instance->classExists($className)) === FALSE)
 		{
-			$instance->dispatch('event_autoload', array($className));
+			$instance->dispatch('event_autoload', array($className), 'registerClasses');
 			if (($classFile = $instance->classExists($className)) === FALSE)
 			{
 				return FALSE;
@@ -82,7 +82,7 @@ class Autoloader extends EventDispatcher
 		$dir = realpath(dirname(__FILE__));
 		$libDir = realpath($basedir .'/libraries/');
 		$interfaceDir = realpath($basedir .'/interfaces/');
-		$classes = array(
+		return array(
 			// Core Classes
 			'Cumula\\Autoloader' => $dir .'/Autoloader.class.php',
 			'Cumula\\Application' => $dir. '/Application.class.php',
@@ -112,8 +112,6 @@ class Autoloader extends EventDispatcher
 			'Cumula\\CumulaSchema' => $interfaceDir .'/CumulaSchema.interface.php',
 			'Cumula\\CumulaTemplater' => $interfaceDir .'/CumulaTemplater.interface.php',
 		);
-
-		$dispatcher->registerClasses($classes);
 	} // end function defaultAutoloader
 
 	/**
@@ -131,14 +129,16 @@ class Autoloader extends EventDispatcher
 		$libraryPath = realpath(dirname(__DIR__) .'/libraries');
 
 		$files = glob(sprintf('%s/*/*.class.php', $libraryPath), GLOB_NOSORT);
+		$classes = array();
 		foreach ($files as $file) 
 		{
 			$class = sprintf('%s\\%s', basename(dirname($file)), basename($file, '.class.php'));
 			if (stripos($file, str_replace('\\', '/', $class)) !== 0) 
 			{
-				$dispatcher->registerClass($class, $file);
+				$classes[$class] = $file; 
 			}
 		}
+		return $classes;
 	} // end function libraryAutoloader
 	/**
 	 * Register a class with the autoloader
@@ -203,7 +203,7 @@ class Autoloader extends EventDispatcher
 				}
 				else 
 				{
-					$instance->dispatch('event_autoload', array($className));
+					$instance->dispatch('event_autoload', array($className), 'registerClasses');
 					$class = __CLASS__;
 					return $class::absoluteClassName($className, TRUE);
 				}
