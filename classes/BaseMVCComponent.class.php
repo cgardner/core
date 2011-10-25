@@ -22,16 +22,16 @@ namespace Cumula;
  * @subpackage	Core
  * @author     Seabourne Consulting
  */
-abstract class BaseMVCComponent extends BaseComponent {
+abstract class BaseMVCComponent extends BaseComponent 
+{
 	protected $_routes;
-	
 	
 	/**
 	 * Constructor.  All events and handlers should be definied in the constructor.
-	 * 
 	 * @return unknown_type
 	 */
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		$this->_routes = array();
 	}
@@ -40,7 +40,8 @@ abstract class BaseMVCComponent extends BaseComponent {
 	 * Initialization function.  Loads the controller and model files for the component.
 	 * @return unknown_type
 	 */
-	public function startup() {
+	public function startup() 
+	{
 		//load component classes
 		$this->_loadFiles($this->config->getConfigValue('controller_dir', '/controllers'));
 		$this->_loadFiles($this->config->getConfigValue('model_dir', '/models'));
@@ -53,12 +54,13 @@ abstract class BaseMVCComponent extends BaseComponent {
 	 * 
 	 * @return unknown_type
 	 */
-	public function routes() {
+	public function routes() 
+	{
 		return $this->_routes;
 	}
 	
 	/**
-	 * elper function for registering a route with the router.
+	 * Helper function for registering a route with the router.
 	 * 
 	 * @param $route
 	 * @param $controller
@@ -66,7 +68,8 @@ abstract class BaseMVCComponent extends BaseComponent {
 	 * @param $args
 	 * @return unknown_type
 	 */
-	public function registerRoute($route, $controller, $method, $args = array()) {
+	public function registerRoute($route, $controller, $method, $args = array()) 
+	{
 		$this->_routes[$route] = array(array(&$controller, $method), $args);	
 	}
 	
@@ -76,23 +79,34 @@ abstract class BaseMVCComponent extends BaseComponent {
 	 * @param $file_dir
 	 * @return unknown_type
 	 */
-	protected function _loadFiles($file_dir) {
+	protected function _loadFiles($file_dir) 
+	{
 		$combined_dir = static::rootDirectory().$file_dir;
 		$namespace = basename(static::rootDirectory());
-		if(!file_exists($combined_dir))
+
+		if (!file_exists($combined_dir))
+		{
 			return;
+		}
+
 		$dir = dir($combined_dir);
-		while (false !== ($comp = $dir->read())) {
-			if(substr($comp, 0, 1) != '.') {
+		while (false !== ($comp = $dir->read())) 
+		{
+			if (substr($comp, 0, 1) != '.') 
+			{
 				$comp_dir = $dir->path.'/'.$comp;
 				$class_name = $comp;
 				$class_name = str_replace('.class', '', $class_name);
 				$class_name = str_replace('.php', '', $class_name);
 				$class_name = sprintf('%s\\%s', $namespace, $class_name);
-				if (is_file($comp_dir)) {
+
+				if (is_file($comp_dir)) 
+				{
 					require_once $comp_dir;
-					if(strpos($class_name, 'Controller'))
+					if (strpos($class_name, 'Controller'))
+					{
 						new $class_name($this);					
+					}
 				}
 			}
 		}
