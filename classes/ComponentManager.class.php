@@ -265,7 +265,9 @@ final class ComponentManager extends BaseComponent {
 		if(!isset($this->_components[$component_class]))
 		{
 			if ($enable_override || in_array($component_class, $this->_enabledClasses)) {
-				$this->_components[$component_class] = new $component_class();
+				$instance = new $component_class();
+				$this->_components[$component_class] = $instance;
+				$instance->installAssets();
 			}
 			else
 			{
@@ -339,7 +341,6 @@ final class ComponentManager extends BaseComponent {
 
 		if ($instance) {
 			$instance->install();
-			$instance->installAssets();
 		}
 
 		return $component;

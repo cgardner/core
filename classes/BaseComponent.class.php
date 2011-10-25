@@ -154,6 +154,11 @@ abstract class BaseComponent extends EventDispatcher {
 			$assetDir = implode(DIRECTORY_SEPARATOR, array(APPROOT, 'public', 'assets'));
 			if (is_dir($assetDir) === FALSE) {
 				mkdir($assetDir);
+			} else {
+				if($sc = $this->instance('SystemConfig')){
+					if($sc->getValue('setting_environment', false) != 'development')
+						return;
+				}
 			}
 
 			$componentPublicAssetDir = $assetDir . DIRECTORY_SEPARATOR . $class;
@@ -333,7 +338,6 @@ abstract class BaseComponent extends EventDispatcher {
 				}
 				$this->copyAssetFiles($file, $newDestination);
 			}
-
 		}
 		else {
 			// Copy the file to the public assets directory
