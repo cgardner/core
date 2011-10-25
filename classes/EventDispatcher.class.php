@@ -443,4 +443,8 @@ class EventDispatcher {
 		$args = array($logLevel, $message, $other_args);
 		$this->dispatch('event_logged', $args);
 	}
+	
+	protected function _log($message, $other_args = null) {
+		$this->_logInfo($message, $other_args);
+	}
 }

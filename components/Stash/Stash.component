@@ -47,11 +47,10 @@ class Stash extends \Cumula\BaseComponent
 	 **/
 	public function provideRoutes($event, $dispatcher) 
 	{
-		$routes = array(
+		return array(
 			'/stash/$stash' => array(&$this, 'handleStash'),
 			'/stash' => array(&$this, 'mainStash'),
 		);
-		$dispatcher->addRoutes($routes);
 	} // end function provideRoutes
 
 	/**

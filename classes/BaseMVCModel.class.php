@@ -52,8 +52,12 @@ abstract class BaseMVCModel extends EventDispatcher {
 		$res = static::getDataStore()->query($args, $order, $limit);
 		$class = get_called_class();
 		if($res && is_array($res)) {
-			for($i = 0; $i < count($res); $i++) {
-				$res[$i] = new $class($res[$i], true);
+			if(count($res) > 1) {
+				for($i = 0; $i < count($res); $i++) {
+					$res[$i] = new $class($res[$i], true);
+				}
+			} else {
+				$res = new $class($res[0], true);
 			}
 			return $res;
 		} else {
@@ -106,7 +110,10 @@ abstract class BaseMVCModel extends EventDispatcher {
 	}
 	
 	public function save() {
-		return $this->update();
+		if($this->exists)
+			return $this->update();
+		else
+			return $this->create();
 	}
 	
 	public function destroy() {
@@ -119,18 +126,18 @@ abstract class BaseMVCModel extends EventDispatcher {
 	public function create() {
 		$res = static::getDataStore()->create($this->rawObject());
 		if($res) {
-			$id = $this->_schema->getIdField();
-			$this->$id = $this->_dataStore->lastRowId();
+			$id = static::getSchema()->getIdField();
+			$this->$id = static::getDataStore()->lastRowId();
 			$this->exists = true;
 		}
 		return $res;
 	}
 	
 	public function update() {
-		return static::getDataStore()->createOrUpdate($this->rawObject());
+		return static::getDataStore()->update($this->rawObject());
 	}
 	
-	public function getSchema() {
+	public static function getSchema() {
 		//implemented by children classes
 	}
 	

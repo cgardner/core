@@ -54,7 +54,7 @@ abstract class BaseMVCComponent extends BaseComponent {
 	 * @return unknown_type
 	 */
 	public function routes() {
-		Router::getInstance()->addRoutes($this->_routes);
+		return $this->_routes;
 	}
 	
 	/**

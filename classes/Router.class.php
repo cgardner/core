@@ -51,7 +51,8 @@ class Router extends BaseComponent {
 	}
 
 	public function addRoutes($routes) {
-		$this->_collectedRoutes = array_merge($this->_collectedRoutes, $routes);
+		if(is_array($routes))
+			$this->_collectedRoutes = array_merge($this->_collectedRoutes, $routes);
 	}
 	
 	public function setRoutes($routes) {
@@ -63,7 +64,7 @@ class Router extends BaseComponent {
 	}
 
 	public function collectRoutes($event) {
-		$this->dispatch('router_collect_routes');
+		$this->dispatch('router_collect_routes', array(), 'addRoutes');
 		$routes = $this->_collectedRoutes;
 		if(!$routes)
 			return;

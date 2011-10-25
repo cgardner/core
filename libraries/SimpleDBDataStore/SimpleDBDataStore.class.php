@@ -57,6 +57,8 @@ class SimpleDBDataStore extends BaseDataStore {
 	
 	public function query($args = false, $order = array(), $limit = array()) {
 		$statement = '';
+		if(!$this->_service)
+			$this->connect();
 			
 		if(is_array($args) || $args == false)	{
 			$statement = "select * from ".$this->_domain;
