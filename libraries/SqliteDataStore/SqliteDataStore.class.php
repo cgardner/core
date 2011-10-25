@@ -34,10 +34,12 @@ class SqliteDataStore extends \Cumula\BaseSqlDataStore {
 	}
 	
 	protected function doExec($sql) {
+		$this->_log('SQL Executed', $sql);
 		return $this->_db->exec($sql);
 	}
 	
 	protected function doQuery($sql) {
+		$this->_log('SQL Queried', $sql);
 		return $this->_db->query($sql);
 	}
 
@@ -45,7 +47,7 @@ class SqliteDataStore extends \Cumula\BaseSqlDataStore {
 	 * @see core/interfaces/DataStore#connect()
 	 */
 	public function connect() {
-		$this->_db->exec($this->install());
+		$this->doExec($this->install());
 	}
 
 	/* (non-PHPdoc)

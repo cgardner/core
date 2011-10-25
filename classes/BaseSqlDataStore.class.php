@@ -71,7 +71,8 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 				$field .= $attrs['default'];
 			if(array_key_exists('autoincrement', $attrs))
 				$field .= $attrs['autoincrement'];
-				
+			if(array_key_exists('primary', $attrs))
+				$field .= $attrs['primary'];	
 			$fields[] = $field;	
 		}
 		$sql_output .= implode(', ', $fields).');';
@@ -86,6 +87,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	 * @see core/interfaces/DataStore#update($obj)
 	 */
 	public function update($obj) {
+		$this->_log('BaseSQLDataStore::update called');
 		$idField = $this->getSchema()->getIdField();
 		if(!$this->recordExists($obj->$idField))
 			return false;

@@ -6,7 +6,7 @@ abstract class BaseMVCModel extends EventDispatcher {
 	protected $_data;
 	protected static $_dataStore = array();
 	protected $_fieldsToSerialize = array();
-	protected $exists = false;
+	protected $exists;
 	
 	/**
 	 * Set Up the Data Store
@@ -36,7 +36,7 @@ abstract class BaseMVCModel extends EventDispatcher {
 		$fields = static::getFields();
 		foreach($fields as $field => $data) {
 			if(isset($args[$field]))
-				$this->$field = $args[$field];
+				$this->_data[$field] = $args[$field];
 		}
 		$this->exists = $exists;
 	}
@@ -134,7 +134,14 @@ abstract class BaseMVCModel extends EventDispatcher {
 	}
 	
 	public function update() {
+		$this->_log('MVCModel::update called');
 		return static::getDataStore()->update($this->rawObject());
+	}
+	
+	public function updateValues($vals) {
+		foreach($vals as $key => $value) {
+			$this->_data[$key] = $value;
+		}
 	}
 	
 	public static function getSchema() {
