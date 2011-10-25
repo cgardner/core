@@ -1,0 +1,51 @@
+<?php
+namespace Http;
+
+/**
+ * HTTP Component Class
+ * @package Cumula
+ * @author Craig Gardner <craig@seabourneconsulting.com>
+ **/
+class Http extends \Cumula\BaseComponent 
+{
+	/**
+	 * Startup Method
+	 * @param void
+	 * @return void
+	 **/
+	public function startup() 
+	{
+		$this->addEventListenerTo('Autoloader', 'event_autoload', 'autoload');
+	} // end function startup
+
+	/**
+	 * getInfo Method
+	 * @param void
+	 * @return array
+	 **/
+	public static function getInfo() 
+	{
+		return array(
+			'name' => 'HTTP Handling Component',
+			'description' => 'Helpers for making and handling HTTP Requests',
+			'dependencies' => array(),
+		);
+	} // end function getInfo
+
+	/**
+	 * Process the autoloader
+	 * @param string $event Event being dispatched
+	 * @param Object $dispatcher Object that dispatched the event
+	 * @param string $classNmae Name of the class being loaded
+	 * @return void
+	 **/
+	public function autoload($event, $dispatcher, $className) 
+	{
+		$libPath = realpath(dirname(__FILE__) .'/lib/');
+		$dispatcher->registerClasses(array(
+			'Http\\Client' => $libPath .'/Client.class.php',
+			'Http\\Response' => $libPath .'/Response.class.php',
+			'Http\\Base' => $libPath . '/Base.class.php',
+		));
+	} // end function autoload
+} // end class Http extends \Cumula\BaseComponent
