@@ -138,34 +138,55 @@ abstract class BaseMVCController extends EventDispatcher {
 		$this->_renderCalled = false;
 		$func = $this->_parseFunc($name);
 
-		if($arguments[1] instanceof Router) {
-			foreach($this->_before_filters as $filter) {
+		if($arguments[1] instanceof Router) 
+		{
+			foreach($this->_before_filters as $filter) 
+			{
 				//stop processing if the before filter returns false
-				if($filter instanceof \Closure) {
+				if($filter instanceof \Closure) 
+				{
 					if(call_user_func_array($filter, $arguments) === false)
 						return;
-				} else {
+				} 
+				else 
+				{
 					if (method_exists($this, $filter) && is_callable(array(&$this, $filter)) && call_user_func_array(array(&$this, $filter), $arguments) === false)
+					{
 						return;
+					}
 				}
 			}
 		}
 		
 		$output = null;
-		if(method_exists(static::_getThis(), $func)) {
+
+		if (method_exists(static::_getThis(), $func)) 
+		{
 			$output = call_user_func_array(array(static::_getThis(), $func), $arguments);
 		}
-		if(file_exists($this->getRenderFileName($func)) && !$this->_renderCalled) {
+		
+		if (file_exists($this->getRenderFileName($func)) && !$this->_renderCalled) 
+		{
 			$this->render($func);
-        }
-		
-		
-		foreach($this->_after_filters as $filter) {
-			if(method_exists($this, $filter) && is_callable(array(&$this, $filter))) 
-				call_user_func_array(array(&$this, $filter), $arguments);
 		}
 		
-		return $output;
+		
+		foreach ($this->_after_filters as $filter) 
+		{
+			if (method_exists($this, $filter) && is_callable(array(&$this, $filter))) 
+			{
+				call_user_func_array(array(&$this, $filter), $arguments);
+			}
+		}
+		
+		if (is_null($output))
+		{
+			parent::__call($name, $arguments);
+		}
+		else
+		{
+			return $output;
+		}
 	}
 	
 	
