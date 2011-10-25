@@ -141,19 +141,19 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 	 * @see core/interfaces/DataStore#query($args, $order, $limit)
 	 */
 	public function query($args, $order = array(), $limit = array()) {
-		$sql = "SELECT * FROM {$this->getSchema()->getName()} WHERE ";
+		$sql = "SELECT * FROM {$this->getSchema()->getName()} ";
 		//Args is an id
 		if (is_numeric($args)) {
-			$sql .= "{$this->getSchema()->getIdField()}=$args";
-		} else if (is_array($args)) {
+			$sql .= "WHERE {$this->getSchema()->getIdField()}=$args";
+		} else if (is_array($args) && !empty($args)) {
 			$conditions = array();
+			$sql .= 'WHERE ';
 			foreach($args as $key => $val) {
 				$conditions[] = " ".$key."=" . (is_numeric($val) ? $val : $this->escapeString($val));
 			}
 			$sql .= implode(' AND ', $conditions);
 		} else {
-			//no parsible arguments found
-			return false;
+			// do nothing, no args passed
 		}
     
     if (!empty($order) && is_array($order)) {
