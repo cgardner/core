@@ -199,7 +199,7 @@ final class Application extends EventDispatcher {
 	 */
 	public function boot() {
 		foreach($this->bootProcess as $step) {
-			$this->dispatch($step, array(Request::getInstance(), Response::getInstance()));
+			$this->$step(array(Request::getInstance(), Response::getInstance()));
 		}
 	}
 	
