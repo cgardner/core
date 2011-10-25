@@ -2,6 +2,14 @@
 
 class DummyComponent {
 	public function __call($name, $args) {
+		return $this->_triggerError();
+	}
+	
+	public function __get($name) {
+		return $this->_triggerError();
+	}
+	
+	private function _triggerError() {
 		trigger_error('You called an instance which doesnt exist');
 	}
 }
