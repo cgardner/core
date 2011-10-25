@@ -78,6 +78,21 @@ class EventDispatcher {
 		}
 	}
 	
+
+	/**
+	 * Implement the magic __call metho
+	 * @param string $method Method called
+	 * @param mixed $params parameters passed to the method call.
+	 * @return void
+	 **/
+	public function __call($name, $args) 
+	{
+		array_unshift($args, $name);
+		if (($listeners = self::eventHashExists($name)) !== FALSE) {
+			call_user_func_array(array($this, 'dispatch'), $args);
+		}
+	} // end function __call
+
 	/**
 	 * Registers an event in the internal registry.  Raises an exception if trying to re-register an existing event.  This ensures
 	 * that components don't unwittingly use the same event title.
