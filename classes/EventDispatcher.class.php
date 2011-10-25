@@ -61,7 +61,7 @@ class EventDispatcher {
 		self::setInstance($this);
 		
 		global $level;
-		if(!isset($level))
+		if (!isset($level))
 		{
 			$level = 0;
 		}
@@ -71,10 +71,13 @@ class EventDispatcher {
 		$disallow = array("Cumula\\EventDispatcher",
 							"Cumula\\Autoloader",
 							"Cumula\\Application");
-		if(class_exists("\\Cumula\\Application") && !in_array(get_called_class(), $disallow)) {
+		if (class_exists("\\Cumula\\Application") && !in_array(get_called_class(), $disallow)) 
+		{
 			$app = \Cumula\Application::getInstance();
 			if($app)
+			{
 				$app->dispatch('event_dispatcher_created', array(get_called_class()));
+			}
 		}
 	}
 	
@@ -84,7 +87,8 @@ class EventDispatcher {
 	 * 
 	 * @param	string	The event to add to the registry.
 	 */
-	public function addEvent($event) {
+	public function addEvent($event) 
+	{
 		$class = __CLASS__;
 		$calledClass = get_called_class();
 		$eventHash = $class::getEventHash();
@@ -102,7 +106,8 @@ class EventDispatcher {
 	 * 
 	 * @param	string	The event to remove from the registry.
 	 */
-	public function removeEvent($event) {
+	public function removeEvent($event) 
+	{
 		$class = __CLASS__;
 		$calledClass = get_called_class();
 		$eventHash = $class::getEventHash();
@@ -119,7 +124,8 @@ class EventDispatcher {
 	 * @param	string	The event to bind to
 	 * @param	function	a function, or an array containing the class and method, or a closure.  Uses the same syntax as call_user_func_array.
 	 */
-	public function addEventListener($event, $handler) {
+	public function addEventListener($event, $handler) 
+	{
 		$this->addEventListenerTo(get_called_class(), $event, $handler);
 	}
 	
@@ -130,7 +136,8 @@ class EventDispatcher {
 	 * @param	string	The event to bind to
 	 * @param	function|string	A string or closure.  If a string, must be a publicly accessible function in the EventDispatcher instance.
 	 */
-	public function addEventListenerTo($class, $event, $function) {
+	public function addEventListenerTo($class, $event, $function) 
+	{
 		if (is_string($function)) 
 		{
 			$callback = array($this, $function);
@@ -139,7 +146,6 @@ class EventDispatcher {
 		{
 			$callback = $function;
 		} 
-		
 
 		$myClass = __CLASS__;
 		$absClass = Autoloader::absoluteClassName($class);
@@ -209,11 +215,13 @@ class EventDispatcher {
 		}
 	}
 	
-	public function removeEventListeners($event) {
+	public function removeEventListeners($event) 
+	{
 		$class = __CLASS__;
 		$calledClass = get_called_class();
 		$eventHash = $class::getEventHash();
-		if (isset($eventHash[$calledClass][$event])) {
+		if (isset($eventHash[$calledClass][$event])) 
+		{
 			$eventHash[$calledClass][$event] = array();
 		}
 	}
@@ -230,8 +238,10 @@ class EventDispatcher {
 		if (($listeners = self::eventHashExists($event)) !== FALSE)
 		{
 			//if $callback is a string, wrap it as a callable array with $this
-			if(is_string($callback))
+			if (is_string($callback))
+			{
 				$callback = array($this, $callback);
+			}
 			
 			array_unshift($data, $event, $this);
 
@@ -252,8 +262,6 @@ class EventDispatcher {
 				$this->dispatch($beforeEvent, $data);
 			}
 			
-			
-
 			//For each listener call the handler function	
 			foreach ($listeners as $event_handler) 
 			{
@@ -262,10 +270,13 @@ class EventDispatcher {
 				{	
 					$this->dispatch('eventdispatcher_event_dispatched', array($event, $this, $event_handler, $level), $callback);
 				}
+
+				$result = call_user_func_array($event_handler, $data);
+				
 				if($callback)
-					call_user_func($callback, call_user_func_array($event_handler, $data));
-				else
-					call_user_func_array($event_handler, $data);
+				{
+					call_user_func($callback, $result);
+				}
 			}
 
 			$afterEvent = sprintf('after_%s', $event);
@@ -300,19 +311,22 @@ class EventDispatcher {
 		return isset($eventHash[$calledClass]) ? $eventHash[$calledClass] : FALSE;
 	} // end function getEvents
 	
-	public function eventIsRegistered($event) {
+	public function eventIsRegistered($event) 
+	{
 		$class = __CLASS__;
 		$calledClass = get_called_class();
 		$eventHash = $class::getEventHash();
 		return (isset($eventHash[$calledClass]) && isset($eventHash[$calledClass][$event]));
 	}
 	
-	public function getEventListeners($event) {
+	public function getEventListeners($event) 
+	{
 		$class = __CLASS__;
 		$calledClass = get_called_class();
 		$eventHash = $class::getEventHash();
 		return (isset($eventHash[$calledClass]) && isset($eventHash[$calledClass][$event])) ? $eventHash[$calledClass][$event] : FALSE;
 	}
+
 	/**
 	 * Get an Instance of a class
 	 * @param string $className Relative name of the class you're looking for
@@ -337,7 +351,8 @@ class EventDispatcher {
 	 * 
 	 * @return BaseComponent|bool	The instance, if it exists, otherwise false
 	 */
-	public static function getInstance() {
+	public static function getInstance() 
+	{
 		$class = get_called_class();
 		if (!isset(self::$_instances[$class]))
 		{
@@ -347,7 +362,8 @@ class EventDispatcher {
 		return self::$_instances[$class];
 	}
 	
-	public static function getInstances() {
+	public static function getInstances() 
+	{
 		return self::$_instances;
 	}
 	
@@ -356,9 +372,11 @@ class EventDispatcher {
 	 * 
 	 * @param	BaseComponent	The instance to set.
 	 */
-	public static function setInstance($instance) {
+	public static function setInstance($instance) 
+	{
 		self::$_instances[get_class($instance)] = $instance;
 	}
+
 	/**
 	 * Getter for $this->eventHash
 	 * @param void
@@ -382,24 +400,26 @@ class EventDispatcher {
 		static::$eventHash = $arg0;
 	} // end function setEventHash()
 	
-		/**********************************************
-	* Logging Functions
-	***********************************************/
+	/**********************************************
+	 * Logging Functions
+	 ***********************************************/
 	/**
 	 * @param $message
 	 * @param $args
 	 * @return unknown_type
 	 */
-	protected function _logInfo($message, $args = null) {
+	protected function _logInfo($message, $args = null) 
+	{
 		$this->_logMessage(LOG_LEVEL_INFO, $message, $args);
 	}
 	
 	/**
 	 * @param $message
-	 * @param $args
+	  * @param $args
 	 * @return unknown_type
 	 */
-	protected function _logDebug($message, $args = null) {
+	protected function _logDebug($message, $args = null) 
+	{
 		$this->_logMessage(LOG_LEVEL_DEBUG, $message, $args);
 	}
 
@@ -408,7 +428,8 @@ class EventDispatcher {
 	 * @param $args
 	 * @return unknown_type
 	 */
-	protected function _logError($message, $args = null) {
+	protected function _logError($message, $args = null) 
+	{
 		$this->_logMessage(LOG_LEVEL_ERROR, $message, $args);
 	}
 	
@@ -417,7 +438,8 @@ class EventDispatcher {
 	 * @param $args
 	 * @return unknown_type
 	 */
-	protected function _logWarning($message, $args = null) {
+	protected function _logWarning($message, $args = null) 
+	{
 		$this->_logMessage(LOG_LEVEL_WARN, $message, $args);
 	}
 	
@@ -426,7 +448,8 @@ class EventDispatcher {
 	 * @param $args
 	 * @return unknown_type
 	 */
-	protected function _logFatal($message, $args = null) {
+	protected function _logFatal($message, $args = null) 
+	{
 		$this->_logMessage(LOG_LEVEL_FATAL, $message, $args);
 	}
 	
@@ -436,7 +459,8 @@ class EventDispatcher {
 	 * @param $other_args
 	 * @return unknown_type
 	 */
-	protected function _logMessage($logLevel, $message, $other_args = null) {
+	protected function _logMessage($logLevel, $message, $other_args = null) 
+	{
 		$className = get_called_class();
 		$timestamp = date("r");
 		$message = "$timestamp $className: $message";
@@ -444,7 +468,8 @@ class EventDispatcher {
 		$this->dispatch('event_logged', $args);
 	}
 	
-	protected function _log($message, $other_args = null) {
+	protected function _log($message, $other_args = null) 
+	{
 		$this->_logInfo($message, $other_args);
 	}
 }
