@@ -120,7 +120,7 @@ abstract class BaseMVCController extends EventDispatcher {
 				$method = $first;
 			if($route == 'index') {
 				$new_route = '/'.$class.'/'.$controller;
-				$this->component->registerRoute($new_route, &$this, "____".$method);
+				$this->component->registerRoute($new_route, $this, "____".$method);
 			}
 			$route = '/'.$class.'/'.$controller.'/'.$route;
 		}
