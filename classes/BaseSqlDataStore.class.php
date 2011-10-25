@@ -145,6 +145,7 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 		//Args is an id
 		if (is_numeric($args)) {
 			$sql .= "WHERE {$this->getSchema()->getIdField()}=$args";
+		// Args is an array
 		} else if (is_array($args) && !empty($args)) {
 			$conditions = array();
 			$sql .= 'WHERE ';
@@ -152,6 +153,9 @@ abstract class BaseSqlDataStore extends BaseDataStore {
 				$conditions[] = " ".$key."=" . (is_numeric($val) ? $val : $this->escapeString($val));
 			}
 			$sql .= implode(' AND ', $conditions);
+		// Args is a string of sql that will be appended
+		} elseif (is_string($args)) {
+			$sql .= 'WHERE ' . $args . ' ';
 		} else {
 			// do nothing, no args passed
 		}
