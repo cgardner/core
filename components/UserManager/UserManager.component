@@ -59,13 +59,20 @@ class UserManager extends BaseComponent {
 		}
 	}
 	
-	public function __call($name, $args) {
-		if(strlen($name) > 7 && substr($name, 0, 7) == 'process') {
-			$name = str_replace('process', '', $name);
-			if(array_key_exists($name, $this->_domains))
-				$this->authDomain($name);
+	public function __call($name, $args) 
+	{
+		if (preg_match('@^process(.*)$@', $name, $matches) > 0)
+		{
+			if (array_key_exists($matches[1], $this->_domains))
+			{
+				$this->authDomain($matches[1]);
+			}
+			return;
 		}
-		return;
+		else
+		{
+			parent::__call($name, $args);
+		}
 	}
 	
 	public function authDomain($domain) {
