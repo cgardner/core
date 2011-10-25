@@ -68,8 +68,7 @@ final class ComponentManager extends BaseComponent {
 		$this->addEventListenerTo('Application', 'boot_init', 'loadComponents');
 		$this->addEventListenerTo('Application', 'boot_startup', 'startupComponents');
 		$this->addEventListenerTo('Application', 'boot_shutdown', 'shutdown');
-		$this->addEventListenerTo('Cumula\\Autoloader', 'event_autoload', 'autoload');
-
+		$this->addEventListenerTo('Cumula\\Autoloader', 'event_autoload', 'getComponentFiles');
 
 		// Initialize config and settings
 		$this->config = new \StandardConfig\StandardConfig(CONFIGROOT, 'components.yaml');
@@ -79,40 +78,29 @@ final class ComponentManager extends BaseComponent {
 		$this->_output = array();
 	}
 	
-    /**
-     * Implementation of the getInfo method
-     * @param void
-     * @return array
-     **/
-    public static function getInfo() {
-        return array(
-            'name' => 'Component Manager',
-            'description' => 'Component to manage other components',
-            'version' => '0.1.0',
-            'dependencies' => array(),
-        );
-    } // end function getInfo
+	/**
+	 * Implementation of the getInfo method
+	 * @param void
+	 * @return array
+	 **/
+	public static function getInfo() 
+	{
+		return array(
+			'name' => 'Component Manager',
+			'description' => 'Component to manage other components',
+			'version' => '0.1.0',
+			'dependencies' => array(),
+		);
+	} // end function getInfo
+	
 	/**
 	 * Implementation of the basecomponent startup function.
 	 * 
 	 */
-
 	public function startup()
 	{
 		$this->addEventListenerTo('AdminInterface', 'admin_collect_settings_pages', 'setupAdminPages');
 	}
-
-	/**
-	 * Populate the Autoloader
-	 * @param string $event Name of the Event that was dispatched
-	 * @param Cumula\Autoloader $dispatcher Object that dispatched the event
-	 * @param string $className Name of the class being loaded
-	 * @return void
-	 **/
-	public function autoload($event, $dispatcher, $className)
-	{
-		$dispatcher->registerClasses($this->getComponentFiles());
-	} // end function autoload
 
 	/**
 	 * Defines and adds the admin pages to the admin interface, exposing the installed/enabled class lists.
