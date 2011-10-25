@@ -10,6 +10,7 @@ class Error extends EventDispatcher {
 	public static $levels = array(
 		0                  => 'Error',
 		E_ERROR            => 'Error',
+		E_RECOVERABLE_ERROR => 'Error',
 		E_WARNING          => 'Warning',
 		E_PARSE            => 'Parsing Error',
 		E_NOTICE           => 'Notice',
