@@ -41,7 +41,9 @@ class Cache extends \Cumula\BaseComponent
 	 **/
 	public function populateAutoloader($event, $dispatcher, $className) 
 	{
-		$dispatcher->registerClass('Cache\\Schema', dirname(__FILE__) .'/lib/Schema.class.php');
+		return array(
+			'Cache\\Schema' => dirname(__FILE__) .'/lib/Schema.class.php',
+		);
 	} // end function populateAutoloader
 
 	/**

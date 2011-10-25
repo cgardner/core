@@ -97,7 +97,9 @@ class AdminInterface extends BaseComponent {
 	 **/
 	public function autoload($event, $dispatcher, $className) 
 	{
-		$dispatcher->registerClass('AdminInterface\\AdminPage', realpath(dirname(__FILE__) .'/lib/AdminPage.class.php'));
+		return array(
+			'AdminInterface\\AdminPage' => realpath(dirname(__FILE__)) .'/lib/AdminPage.class.php',
+		);
 	} // end function autoload
 	
 	/**
