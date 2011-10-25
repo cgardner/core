@@ -66,8 +66,16 @@ class Logger extends BaseComponent {
 	 * @return unknown_type
 	 */
 	public function logMessage($event, $dispatcher, $level, $message, $other_info = null) {
-		if($other_info)
+		if ($other_info) 
+		{
 			$other_info = "\nArgs:\n ".var_export($other_info, true);
+		}
+
+		if (is_array($other_info) && count($other_info) == 0)
+		{
+			$other_info = NULL;
+		}
+
 		$this->dataStore->create(array($level, $message, $other_info));
 
 		// Output to the system log if configured
