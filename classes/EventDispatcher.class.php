@@ -327,7 +327,6 @@ class EventDispatcher {
 		return (isset($eventHash[$calledClass]) && isset($eventHash[$calledClass][$event])) ? $eventHash[$calledClass][$event] : FALSE;
 	}
 
-
 	/**
 	 * Getters and Setters
 	 */
@@ -337,17 +336,6 @@ class EventDispatcher {
 	 * @return BaseComponent|bool	The instance, if it exists, otherwise false
 	 */
 	public static function instance() 
-	{
-		$class = get_called_class();
-		if (!isset(self::$_instances[$class]))
-		{
-			$instance = new $class();
-			self::setInstance($instance);
-		}
-		return self::$_instances[$class];
-	}
-	
-	public static function getInstances() 
 	{
 		return self::$_instances;
 	}
