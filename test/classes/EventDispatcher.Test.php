@@ -77,7 +77,7 @@ class Test_EventDispatcher extends Test_BaseTest {
      * @param void
      * @return void
      * @group all
-     * @covers Cumula\EventDispatcher::getInstance
+     * @covers Cumula\EventDispatcher::instance
      * @covers Cumula\EventDispatcher::setInstance
      **/
     public function testStaticGetInstance() {
@@ -85,7 +85,7 @@ class Test_EventDispatcher extends Test_BaseTest {
         $this->eventDispatcher->addEvent($eventId);
         $this->eventDispatcher->addEventListener($eventId, array($this, 'eventDispatched'));
 
-        $instance = EventDispatcherClass::getInstance();
+        $instance = EventDispatcherClass::instance();
         $this->assertEquals($this->eventDispatcher, $instance);
     } // end function testStaticGetInstance
 
@@ -103,7 +103,7 @@ class Test_EventDispatcher extends Test_BaseTest {
 			$this->assertInstanceOf('Cumula\\Router', $instance);
 
 			// Add the class to the autoloader so it can be found
-			Cumula\Autoloader::getInstance()->registerClass('EventDispatcherClass', __FILE__);
+			Cumula\Autoloader::instance()->registerClass('EventDispatcherClass', __FILE__);
 
 			$instance = $this->eventDispatcher->myInstance('EventDispatcherClass');
 			$this->assertInstanceOf('EventDispatcherClass', $instance);
@@ -211,7 +211,7 @@ class EventDispatcherClass extends Cumula\EventDispatcher {
 	 **/
 	public function myInstance($className) 
 	{
-		return $this->instance($className);
+		return \I($className);
 	} // end function myInstance
 }
 

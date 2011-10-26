@@ -41,9 +41,9 @@ class Logger extends BaseComponent
 		parent::__construct();
 		$this->_registered = array();
 		
-		$log_dir = SystemConfig::getInstance()->getValue('log_directory', APPROOT.'/log');
-		$log_file = SystemConfig::getInstance()->getValue('environment', ENV_DEVELOPMENT).'.log';
-		$this->syslog = SystemConfig::getInstance()->getValue('syslog', FALSE);
+		$log_dir = SystemConfig::instance()->getValue('log_directory', APPROOT.'/log');
+		$log_file = SystemConfig::instance()->getValue('environment', ENV_DEVELOPMENT).'.log';
+		$this->syslog = SystemConfig::instance()->getValue('syslog', FALSE);
 		if (!file_exists($log_dir))
 		{
 			mkdir($log_dir);
@@ -60,7 +60,7 @@ class Logger extends BaseComponent
 	
 	public function install() 
 	{
-		$cm = ComponentManager::getInstance();
+		$cm = ComponentManager::instance();
 		$cm->registerStartupComponent($this);
 	}
 	

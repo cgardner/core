@@ -16,8 +16,8 @@
 	#welcome { margin:100px auto; text-align:center; width:530px; }
 </style>
 
-<?php echo \Session\Session::getInstance()->warning; ?>
-<?php echo \Session\Session::getInstance()->notice; ?>
+<?php echo \Session\Session::instance()->warning; ?>
+<?php echo \Session\Session::instance()->notice; ?>
 
 <div id="welcome">
 	<h1>Cumula</h1>

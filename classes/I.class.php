@@ -15,9 +15,9 @@ class DummyComponent {
 }
 
 function I($component) {
-	$loader = \Cumula\Autoloader::getInstance();
+	$loader = \Cumula\Autoloader::instance();
 	if($abs = $loader->absoluteClassName($component)) {
-		return $abs::getInstance();
+		return $abs::instance();
 	} else {
 		return new DummyComponent();
 	}
