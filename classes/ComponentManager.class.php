@@ -195,10 +195,9 @@ final class ComponentManager extends BaseComponent {
 	 */
 	public function startStartupComponents()
 	{
-		foreach ($this->_startupClasses as $className)
-		{
-			$this->startupComponent($className);
-		}
+		$this->each($this->_startupClasses, function($className) {
+			\I('ComponentManager')->startupComponent($className);
+		});
 	}
 
 	/**
@@ -307,14 +306,24 @@ final class ComponentManager extends BaseComponent {
 	{
 		if (is_null($this->componentFiles) || count($this->componentFiles) == 0)
 		{
-			foreach(glob(sprintf('{%s*/*.component,%s*/*.component}', COMPROOT, CONTRIBCOMPROOT), GLOB_BRACE) as $file)
-			{
+			$this->each(glob(sprintf('{%s*/*.component,%s*/*.component}', COMPROOT, CONTRIBCOMPROOT), GLOB_BRACE), function($file) {
 				$basename = basename($file, '.component');
-				$this->componentFiles[sprintf('%s\\%s', $basename, $basename)] = $file;
-			}
+				\I('ComponentManager')->addComponentFile(sprintf('%s\\%s', $basename, $basename), $file);
+			});
 		}
 		return $this->componentFiles;
 	} // end function getComponentFiles
+
+	/**
+	 * Add A Component File
+	 * @param string $className Name of the class being added
+	 * @param string $filename File where the class can be found
+	 * @return void
+	 **/
+	public function addComponentFile($className, $filename) 
+	{
+		$this->componentFiles[$className] = $filename;
+	} // end function addComponentFile
 
 	/*
 	 * *************************************************************************
