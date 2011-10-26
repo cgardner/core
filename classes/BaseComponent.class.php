@@ -155,7 +155,7 @@ abstract class BaseComponent extends EventDispatcher {
 			if (is_dir($assetDir) === FALSE) {
 				mkdir($assetDir);
 			} else {
-				if($sc = $this->instance('SystemConfig')){
+				if($sc = \I('SystemConfig')){
 					if($sc->getValue('setting_environment', false) != 'development')
 						return;
 				}
@@ -237,7 +237,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function addOutputBlock($block) {
-		$response = Response::getInstance();
+		$response = Response::instance();
 		
 		if(empty($response->response['data'][$block->data['variable_name']]))
 		{
@@ -278,7 +278,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function redirectTo($url) {
-		Response::getInstance()->send302($this->completeUrl($url));
+		Response::instance()->send302($this->completeUrl($url));
 	}
 	
 	/**
@@ -288,7 +288,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function completeUrl($url) {
-		$base = SystemConfig::getInstance()->getValue(SETTING_DEFAULT_BASE_PATH);
+		$base = SystemConfig::instance()->getValue(SETTING_DEFAULT_BASE_PATH);
 		return ($base == '/') ? $url : $base.$url;
 	}
 	
@@ -298,7 +298,7 @@ abstract class BaseComponent extends EventDispatcher {
 	 * @return unknown_type
 	 */
 	public function defaultDataStore() {
-		return SystemConfig::getInstance()->getValue('default_datastore', 'YAMLDataStore\\YAMLDataStore');
+		return SystemConfig::instance()->getValue('default_datastore', 'YAMLDataStore\\YAMLDataStore');
 	}
 	
 	public function linkTo($title, $url, $args = array()) {

@@ -73,7 +73,7 @@ class EventDispatcher {
 							"Cumula\\Application");
 		if (class_exists("\\Cumula\\Application") && !in_array(get_called_class(), $disallow)) 
 		{
-			$app = \Cumula\Application::getInstance();
+			$app = \Cumula\Application::instance();
 			if($app)
 			{
 				$app->dispatch('event_dispatcher_created', array(get_called_class()));
@@ -150,7 +150,7 @@ class EventDispatcher {
 		$myClass = __CLASS__;
 		$absClass = Autoloader::absoluteClassName($class);
 		$myClass::addClassListenerHash($absClass, $event, $callback);
-		$myClass::getInstance()->dispatch('event_registered', array($absClass, $event));
+		$myClass::instance()->dispatch('event_registered', array($absClass, $event));
 	}
 	
 	/**
@@ -327,21 +327,6 @@ class EventDispatcher {
 		return (isset($eventHash[$calledClass]) && isset($eventHash[$calledClass][$event])) ? $eventHash[$calledClass][$event] : FALSE;
 	}
 
-	/**
-	 * Get an Instance of a class
-	 * @param string $className Relative name of the class you're looking for
-	 * @return Object Instance of the class you've requested
-	 **/
-	public function instance($className) 
-	{
-		$absClass = Autoloader::absoluteClassName($className);
-		if ($absClass === FALSE || !is_callable($absClass, 'getInstance')) 
-		{
-			return FALSE;
-		}
-		$instance = $absClass::getInstance();
-		return $instance;
-	} // end function instance
 
 	/**
 	 * Getters and Setters
@@ -351,7 +336,7 @@ class EventDispatcher {
 	 * 
 	 * @return BaseComponent|bool	The instance, if it exists, otherwise false
 	 */
-	public static function getInstance() 
+	public static function instance() 
 	{
 		$class = get_called_class();
 		if (!isset(self::$_instances[$class]))

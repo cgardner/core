@@ -60,8 +60,8 @@ abstract class BaseMVCController extends EventDispatcher {
   
 	protected function _setTemplate() {
 		if ($this->_template) {
-			Templater::getInstance()->setTemplateDir(APPROOT.DIRECTORY_SEPARATOR.'templates');
-			Templater::getInstance()->setTemplateFile($this->_template);
+			Templater::instance()->setTemplateDir(APPROOT.DIRECTORY_SEPARATOR.'templates');
+			Templater::instance()->setTemplateFile($this->_template);
 		}	
 	}
 	
@@ -248,17 +248,17 @@ abstract class BaseMVCController extends EventDispatcher {
 	}
 	
 	protected function renderPlain($output, $useTemplate = false, $contentType = 'text/plain') {
-		if(($response = Response::getInstance()) && ($app = Application::getInstance())) {
+		if(($response = Response::instance()) && ($app = Application::instance())) {
 			$response->response['content'] = $output;
 			$response->response['headers']['Content-Type'] = $contentType;
-			$app->removeEventListener('boot_postprocess', array(Templater::getInstance(), 'postProcessRender'));
+			$app->removeEventListener('boot_postprocess', array(Templater::instance(), 'postProcessRender'));
 		}
 	}
 	
 	protected function renderNothing() {
-		if($app = Application::getInstance()) {
+		if($app = Application::instance()) {
 			$response->response['content'] = '';
-			$app->removeEventListener('boot_postprocess', array(Templater::getInstance(), 'postProcessRender'));
+			$app->removeEventListener('boot_postprocess', array(Templater::instance(), 'postProcessRender'));
 		}
 	}
 	
@@ -296,7 +296,7 @@ abstract class BaseMVCController extends EventDispatcher {
 	 */
 	protected function redirectTo($url) {
 		if(substr($url, 0, 1) == '/') {
-			$base_path = SystemConfig::getInstance()->getValue(SETTING_DEFAULT_BASE_PATH, '');
+			$base_path = SystemConfig::instance()->getValue(SETTING_DEFAULT_BASE_PATH, '');
 			$url = $base_path.$url;
 		}
 		$this->component->redirectTo($url);

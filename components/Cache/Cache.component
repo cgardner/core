@@ -70,7 +70,7 @@ class Cache extends \Cumula\BaseComponent
 	 **/
 	public static function get($cacheName, $bin = 'cache') 
 	{
-		$instance = self::getInstance();
+		$instance = self::instance();
 		$instance->dispatch('cache_populate_datastores');
 		$cache = (array)$instance->getDataStore($bin)->query(array('cid' => $cacheName), array(), 1);
 		return isset($cache['data']) ? unserialize($cache['data']) : FALSE;
@@ -89,7 +89,7 @@ class Cache extends \Cumula\BaseComponent
 			'bin' => 'cache',
 			'expire' => Cache::PERMANENT,
 		);
-		$instance = self::getInstance();
+		$instance = self::instance();
 		$instance->dispatch('cache_populate_datastores');
 
 		$dataStore = $instance->getDataStore($options['bin']);

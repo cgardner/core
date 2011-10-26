@@ -49,12 +49,12 @@ class UserManager extends BaseComponent {
 		$domain = $this->_parseRoutes($request);
 		if($domain) {
 			$this->_logInfo('setting domain to '.$domain);
-			if($app = \Cumula\Application::getInstance()) {
-				$router = \Cumula\Router::getInstance();
+			if($app = \Cumula\Application::instance()) {
+				$router = \Cumula\Router::instance();
 				$app->removeEventListener('boot_process', array($router, 'processRoute'));
 				$this->addEventListenerTo('Application', 'boot_process', 'process'.$domain);
-				$this->instance('Session')->domain = $domain;
-				$this->instance('Session')->returnUrl = $request->path;
+				\I('Session')->domain = $domain;
+				\I('Session')->returnUrl = $request->path;
 			}
 		}
 	}
@@ -70,9 +70,9 @@ class UserManager extends BaseComponent {
 	
 	public function authDomain($domain) {
 		//Check if the session $user var is set
-		if(isset($this->instance('Session')->user)) {
+		if(isset(\I('Session')->user)) {
 			//if found, process the route as is without doing anything
-			$this->instance('Router')->processRoute('boot_proces', $this->instance('Application'), $this->instance('Request'), $this->instance('Response'));
+			\I('Router')->processRoute('boot_proces', \I('Application'), \I('Request'), \I('Response'));
 		} else {
 			//if not, redirect the user to the login page, pass the original path and domain in the session for the user
 			$this->redirectTo('/user/login');
@@ -84,8 +84,8 @@ class UserManager extends BaseComponent {
 	}
 	
 	public function logout() {
-		unset($this->instance('Session')->user);
-		$this->instance('Session')->notice = 'You have been logged out.';
+		unset(\I('Session')->user);
+		\I('Session')->notice = 'You have been logged out.';
 		$this->redirectTo('/');
 	}
 	
@@ -107,15 +107,15 @@ class UserManager extends BaseComponent {
 	}
 	
 	public function authenticate($route, $router, $args) {
-		$domain = $this->instance('Session')->domain;
-		$returnUrl = $this->instance('Session')->returnUrl;
+		$domain = \I('Session')->domain;
+		$returnUrl = \I('Session')->returnUrl;
 
 		//get the username and credentail from auth
 		if($this->_userStore->query(array('domain' => $domain, 'username' => $args['username'], 'password' => md5($args['password'])))) {
 			$this->redirectTo($returnUrl);
-			$this->instance('Session')->user = new \stdClass();
+			\I('Session')->user = new \stdClass();
 		} else {
-			$this->instance('Session')->warning = 'Username or Password Incorrect.';
+			\I('Session')->warning = 'Username or Password Incorrect.';
 			$this->redirectTo('/user/login');
 		}
 		//check the username/auth against the domain, pulling from the specified datastore

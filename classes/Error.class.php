@@ -29,7 +29,7 @@ class Error extends EventDispatcher {
 	public static $handled = false;
 	
 	public static function handleError($error, $message, $file, $line) {	
-		$instance = static::getInstance();
+		$instance = static::instance();
 		if($instance && count($instance->getEventListeners('error_encountered'))) {
 			$instance->dispatch('error_encountered', array($error, $message, $file, $line));
 			return;
@@ -43,7 +43,7 @@ class Error extends EventDispatcher {
 	}
 	
 	public static function handleException($e) {
-		$instance = static::getInstance();
+		$instance = static::instance();
 		if($instance && count($instance->getEventListeners('error_encountered'))) {
 			$instance->dispatch('error_encountered', array($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine()));
 			return;
@@ -59,7 +59,7 @@ class Error extends EventDispatcher {
 	public static function handleShutdown() {
 		$last_error = error_get_last();
 		if ($last_error AND in_array($last_error['type'], static::$exit_on) && !static::$handled) {
-			$instance = static::getInstance();
+			$instance = static::instance();
 			if($instance && count($instance->getEventListeners('error_encountered'))) {
 				$instance->dispatch('error_encountered', array($last_error['type'], $last_error['message'], $last_error['file'], $last_error['line']));
 			} else {

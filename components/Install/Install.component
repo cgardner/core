@@ -58,19 +58,19 @@ class Install extends BaseComponent {
 	
 	
 	public function saveUser($route, $router, $args) {
-		$um = $this->instance('UserManager');
+		$um = \I('UserManager');
 		if($args['password'] == $args['passconf']) {
 			$um->createUser('admin_interface', $args['username'], $args['password']);
 			$this->redirectTo('/install/finished');
 		} else {
-			$this->instance('Session')->warning = 'Password and confirmation don\'t match!';
+			\I('Session')->warning = 'Password and confirmation don\'t match!';
 			$this->redirectTo('/install/setup_user');
 		}
 	}
 	
 	public function finished() {
 		$this->_setTemplate();
-		$this->instance('ComponentManager')->uninstallComponent('Install');
+		\I('ComponentManager')->uninstallComponent('Install');
 		$this->render();
 	}
 	

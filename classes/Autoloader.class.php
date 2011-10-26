@@ -33,7 +33,7 @@ class Autoloader extends EventDispatcher
 	public static function setup() 
 	{
 		spl_autoload_register(array('Cumula\\Autoloader', 'load'));
-		$instance = self::getInstance();
+		$instance = self::instance();
 		$instance->addEvent('event_autoload');
 		$instance->addEventListenerTo('Cumula\\Autoloader', 'event_autoload', array($instance, 'defaultAutoloader'));
 		$instance->addEventListenerTo('Cumula\\Autoloader', 'event_autoload', array($instance, 'libraryAutoloader'));
@@ -46,7 +46,7 @@ class Autoloader extends EventDispatcher
 	 **/
 	public static function load($className) 
 	{
-		$instance = self::getInstance();
+		$instance = self::instance();
 		// If we don't already know about the class, dispatch the event to find it.
 		if (($classFile = $instance->classExists($className)) === FALSE)
 		{
@@ -102,6 +102,8 @@ class Autoloader extends EventDispatcher
 			'Cumula\\SystemConfig' => $dir .'/SystemConfig.class.php',
 			'Cumula\\BaseSchema' => $dir .'/BaseSchema.class.php',
 			'Cumula\\Renderer' => $dir .'/Renderer.class.php',
+			'Cumula\\Error' => $dir .'/Error.class.php',
+			'I' => $dir .'/I.class.php',
 
 			// Exceptions
 			'Cumula\\EventException' => $dir .'/Exception/EventException.class.php',
@@ -179,7 +181,7 @@ class Autoloader extends EventDispatcher
 		 **/
 		public static function absoluteClassName($className, $secondCall = FALSE) 
 		{
-			$instance = self::getInstance();
+			$instance = self::instance();
 			$cache = $instance->getCache();
 			if (isset($cache[$className]) || $className == __CLASS__)
 			{
@@ -246,30 +248,4 @@ class Autoloader extends EventDispatcher
 		return $this;
 	} // end function setCache()
 
-	/**
-	 * Getter for $this->instance
-	 * @param void
-	 * @return Cumula\Autoloader
-	 * @author Craig Gardner <craig@seabourneconsulting.com>
-	 **/
-	public static function getInstance() 
-	{
-		if (is_null(self::$instance)) 
-		{
-			self::setInstance(new Autoloader());
-		}
-		return self::$instance;
-	} // end function getInstance()
-	
-	/**
-	 * Setter for $this->instance
-	 * @param Cumula\Autoloader
-	 * @return void
-	 * @author Craig Gardner <craig@seabourneconsulting.com>
-	 **/
-	public static function setInstance($arg0) 
-	{
-		self::$instance = $arg0;
-		return $arg0;
-	} // end function setInstance()
 } // end class Autoloader extends EventDispatcher

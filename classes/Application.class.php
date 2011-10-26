@@ -199,17 +199,18 @@ final class Application extends EventDispatcher {
 	 */
 	public function boot() {
 		foreach($this->bootProcess as $step) {
-			$this->dispatch($step, array(Request::getInstance(), Response::getInstance()));
+			$this->dispatch($step, array(Request::instance(), Response::instance()));
 		}
 	}
 	
 	public static function __callStatic($name, $args) {
 		if(strstr($name, 'get')) {
 			$className = str_replace('get', '', "$name\\$name");
-            if (class_exists($className)) {
-                return call_user_func(array($className, 'getInstance'));
-            }
-            return FALSE;
+			if (class_exists($className)) 
+			{
+				return call_user_func(array($className, 'instance'));
+			}
+			return FALSE;
 		}
 	}
 }
